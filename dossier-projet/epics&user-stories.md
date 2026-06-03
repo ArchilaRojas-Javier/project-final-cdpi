@@ -12,107 +12,212 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
 ## EPIC 1 - Recherche de supplément
 
 - **User story 1:** En tant que visiteur, je veux accéder aux informations d’un supplément: posologie, précautions, moment de prise en tapant son nom dans une barre de recherche, afin d’obtenir tous les détails nécessaires pour le consommer correctement.
-    - **CA 1 :** Étant donné que le visiteur est sur la page de recherche,
-quand il saisit le nom exact d’un supplément existant et valide la recherche,
-alors le filtrage affiche la fiche détaillée de ce supplément avec : sa posologie, ses précautions et les recommandations de prise.
-    - **CA 2 :** Étant donné que le visiteur saisit un nom qui ne correspond à aucun supplément enregistré,
-quand il lance la recherche,
-alors le système affiche un message informatif du type `Aucun supplément trouvé pour ce terme `.
-    - **CA 3 :** Étant donné que le visiteur n’a rien écrit dans le champ de recherche,
-quand il tente de lancer la recherche,
-alors le système ne déclenche pas la recherche et affiche un message d’erreur indiquant qu’un terme doit être saisi.
-    - **CA 4 :** Étant donné que le visiteur écrit le nom du supplément en majuscules, en minuscules ou en mélangeant les deux,
-quand il lance la recherche,
-alors le système ignore la casse et retourne la fiche du supplément correspondant.
-    - **CA 5 :** Étant donné que le visiteur tape seulement une partie du nom,
-quand il lance la recherche,
-alors le système affiche une liste de tous les suppléments dont le nom contient ces caractères, permettant au visiteur de choisir celui qu’il souhaite.
-    - **CA 6 :** Étant donné que le visiteur saisit des caractères spéciaux ou un script 
-     dans le champ de recherche, 
-     quand la recherche est exécutée,
-alors le système ne l’interprète pas comme du code, affiche un message d’erreur et traite ces caractères comme du texte normal sans risque de sécurité.
+    
+    - **C.A 1:** Étant donné que le visiteur est sur la page de recherche,
+    quand il saisit le nom exact d’un supplément existant et valide la recherche,   
+    alors le filtrage affiche la fiche détaillée de ce supplément avec : sa posologie, ses précautions et les recommandations de prise.
+    
+    - **C.A 2 :** Étant donné que le visiteur saisit un nom qui ne correspond à aucun supplément enregistré,
+    quand il lance la recherche,
+    alors le système affiche un message informatif du type `Aucun supplément trouvé pour ce terme `.
+    
+    - **C.A 3 :** Étant donné que le visiteur n’a rien écrit dans le champ de recherche,
+    quand il tente de lancer la recherche,
+    alors le système ne déclenche pas la recherche et affiche un message d’erreur indiquant qu’un terme doit être saisi.
+    
+    - **C.A 4 :** Étant donné que le visiteur écrit le nom du supplément en majuscules, en minuscules ou en mélangeant les deux,
+    quand il lance la recherche,
+    alors le système ignore la casse et retourne la fiche du supplément         correspondant.
+    
+    - **C.A 5 :** Étant donné que le visiteur tape seulement une partie du nom,
+    quand il lance la recherche,
+    alors le système affiche une liste de tous les suppléments dont le nom contient ces caractères, permettant au visiteur de choisir celui qu’il souhaite.
+    
+    - **C.A 6 :** Étant donné que le visiteur saisit des caractères spéciaux ou un script dans le champ de recherche, 
+    quand la recherche est exécutée,
+    alors le système ne l’interprète pas comme du code, affiche un message d’erreur et traite ces caractères comme du texte normal sans risque de sécurité.
+
 
 - **User story 2:** En tant que visiteur, je veux obtenir des suggestions de suppléments en fonction du bienfait recherché afin de choisir un suppléments.
-    - **CA 1 :** Étant donné que le visiteur souhaite obtenir une suggestion,
-quand il écrit un bienfait reconnu et valide,
-alors le système affiche une liste cliquable de suppléments liés à ce bienfait, chaque élément menant à la fiche détaillée correspondante.
-    - **CA 2 :** Étant donné que le visiteur saisit un bienfait qui n’est associé à aucun supplément en base,
-quand il lance la recherche,
-alors le système affiche le message `Aucun supplément trouvé pour ce bienfait`.
+    
+    - **C.A 1 :** Étant donné que le visiteur souhaite obtenir une suggestion,
+    quand il écrit un bienfait reconnu et valide,
+    alors le système affiche une liste cliquable de suppléments liés à ce bienfait, chaque élément menant à la fiche détaillée correspondante.
+    
+    - **C.A 2 :** Étant donné que le visiteur saisit un bienfait qui n’est associé à aucun supplément en base,
+    quand il lance la recherche,
+    alors le système affiche le message `Aucun supplément trouvé pour ce bienfait`.
 
 **NOTE :** Les critères de validation de la barre de recherche (champ vide, caractères spéciaux, insensibilité à la casse) décrits dans la user story 1 s’appliquent également à cette fonctionnalité.
     
 ## EPIC 2 - Inscription et authentification
 
+
 - **User story 3:** En tant que visiteur, je veux créer un compte personnel en fournissant une adresse email et un mot de passe, afin d’accéder aux fonctionnalités privées de suivi et de rappels.
-    - **CA 1 :** Étant donné que le visiteur est sur le formulaire d’inscription,
-quand il saisit une adresse email valide non utilisée et un mot de passe d’au moins 8 caractères alphanumériques, puis valide,
-alors le système chiffré le mot de passe avec bcrypt, crée le compte, connecte automatiquement l’utilisateur et le redirige vers le tableau de bord avec un message de confirmation ` Votre compte a été créé avec succès`.
-    - **CA 2 :** Étant donné que le visiteur saisit une adresse email déjà associée à un compte existant,
-quand il soumet le formulaire,
-alors le système refuse l’inscription et affiche un message d’erreur ` Cette adresse email est déjà utilisée `.
-    - **CA 3 :** Étant donné que le visiteur saisit un mot de passe de moins de 8 caractères,
-quand il soumet le formulaire,
-alors le système refuse l’inscription et demande un mot de passe d’au moins 8 caractères.
-    - **CA 4 :** Étant donné que le visiteur saisit un mot de passe sans aucun chiffre ni lettre,
-quand il soumet le formulaire,
-alors le système refuse et indique que le mot de passe doit contenir au moins un chiffre et une lettre.
-    - **CA 5 :** Étant donné que le visiteur saisit une adresse email sans format valide,
-quand il soumet le formulaire,
-alors un message d’erreur explicite lui demande de saisir une adresse email correcte.
-    - **CA 6 :** Étant donné que le visiteur insère du code malveillant dans les champs email ou mot de passe,
-quand il soumet le formulaire,
-alors le code n’est pas exécuté, et le système affiche un message d’erreur générique ` Saisie invalide `.
-    - **CA 7 :** Étant donné que le visiteur remplit le champ "Confirmer le mot de passe",
-quand les deux mots de passe ne correspondent pas,
-alors le système bloque l’envoi et affiche `Les mots de passe ne correspondent pas`
+    
+    - **C.A 1 :** Étant donné que le visiteur est sur le formulaire d’inscription,
+    quand il saisit une adresse email valide non utilisée et un mot de passe d’au moins 8 caractères alphanumériques, puis valide,
+    alors le système chiffré le mot de passe avec bcrypt, crée le compte, connecte automatiquement l’utilisateur et le redirige vers le tableau de bord avec un message de confirmation ` Votre compte a été créé avec succès`.
+    
+    - **C.A 2 :** Étant donné que le visiteur saisit une adresse email déjà associée à un compte existant,
+    quand il soumet le formulaire,
+    alors le système refuse l’inscription et affiche le message d’erreur ` Cette adresse email est déjà utilisée `.
+    
+    - **C.A 3 :** Étant donné que le visiteur saisit un mot de passe de moins de 8 caractères,
+    quand il soumet le formulaire,
+    alors le système refuse l’inscription et demande un mot de passe d’au moins 8 caractères.
+    
+    - **C.A 4 :** Étant donné que le visiteur saisit un mot de passe sans aucun chiffre ni lettre,
+    quand il soumet le formulaire,
+    alors le système refuse et indique que le mot de passe doit contenir au moins un chiffre et une lettre.
+    
+    - **C.A 5 :** Étant donné que le visiteur saisit une adresse email sans format valide,
+    quand il soumet le formulaire,
+    alors un message d’erreur explicite lui demande de saisir une adresse email correcte.
+    
+    - **C.A 6 :** Étant donné que le visiteur insère du code malveillant dans les champs email ou mot de passe,
+    quand il soumet le formulaire,
+    alors le code n’est pas exécuté, et le système affiche le message d’erreur générique ` Saisie invalide `.
+    
+    - **C.A 7 :** Étant donné que le visiteur remplit le champ "Confirmer le mot de passe",
+    quand les deux mots de passe ne correspondent pas,
+    alors le système bloque l’envoi et affiche le message de erreur `Les mots de passe ne correspondent pas`
+
 
 - **User story 4:** En tant qu’utilisateur inscrit, je veux me connecter à mon compte avec mes identifiants: email et mot de passe, afin de retrouver mon historique de consommation et mes notes.
-    - **CA 1 :** Étant donné que l’utilisateur est sur la page de connexion,
-quand il saisit son email et son mot de passe valides,
-alors le système vérifie l’email, compare le mot de passe haché, génère un token JWT et redirige vers le tableau de bord.
-    - **CA 2 :** Étant donné que l’email saisi n’existe pas en base,
-quand l’utilisateur tente de se connecter,
-alors un message d’erreur `Email ou mot de passe incorrect`  s’affiche.
-    - **CA 3 :** Étant donné que l’email existe mais que le mot de passe est incorrect,
-quand la tentative de connexion a lieu,
-alors le système refuse l’accès et affiche message générique `Email ou mot de passe incorrect `.
-    - **CA 4 :** Étant donné que l’utilisateur laisse les champs email ou mot de passe vides,
-quand il soumet le formulaire,
-alors un message d’erreur lui demande de remplir tous les champs.
+    
+    - **C.A 1 :** Étant donné que l’utilisateur est sur la page de connexion,
+    quand il saisit son email et son mot de passe valides,
+    alors le système vérifie l’email, compare le mot de passe haché, génère un token JWT et redirige vers le tableau de bord.
+    
+    - **C.A 2 :** Étant donné que l’email saisi n’existe pas en base,
+    quand l’utilisateur tente de se connecter,
+    alors le message d’erreur `Email ou mot de passe incorrect`  s’affiche.
+    
+    - **C.A 3 :** Étant donné que l’email existe mais que le mot de passe est incorrect,
+    quand la tentative de connexion a lieu,
+    alors le système refuse l’accès et affiche le message générique `Email ou mot de passe incorrect `.
+    
+    - **C.A 4 :** Étant donné que l’utilisateur laisse les champs email ou mot de passe vides,
+    quand il soumet le formulaire,
+    alors un message d’erreur lui demande de remplir tous les champs.
 
-**NOTE:** Tous les mots de passe utilisateur sont hachés avec l'algorithme bcrypt côté serveur avant d'être stockés dans la base de données. Lors de la connexion, le système compare le mot de passe saisi au hash enregistré.
+- **User story 5:** En tant que visiteur, je veux pouvoir créer un compte ou me connecter en utilisant mon compte Google, afin de simplifier l’inscription et d’autoriser l’application à gérer mes rappels dans Google Calendar.
+
+    - **C.A 1 :** Étant donné que le visiteur clique sur "Se connecter avec Google",
+    quand il accepte les autorisations demandées,
+    alors un compte utilisateur est créé ou lié s’il existe déjà avec le même email et il est redirigé vers le tableau de bord connecté.
+
+    - **C.A 2 :** Étant donné que le visiteur lance la connexion Google,
+    quand il refuse les autorisations,
+    alors l’applic$ation affiche un message indiquant que l’accès au calendrier est nécessaire pour les rappels, et propose de réessayer ou de s’inscrire par email.
+
+    - **C.A 3 :** Étant donné que l'utilisateur connecté via Google ferme sa session,
+    quand il se déconnecte,
+    alors l'application ferme sa session locale sans révoquer l'accès à Google Calendar, ce qui permet aux rappels existants de continuer à fonctionner normalement.
+
+**NOTE:** Tous les mots de passe utilisateur sont hachés avec            l'algorithme bcrypt côté serveur avant d'être stockés dans la base de données. Lors de la connexion, le système compare le mot de passe saisi au hash enregistré.
+L’authentification utilise OAuth 2.0. Les scopes demandés sont email, profile et https://www.googleapis.com/auth/calendar.events. Les tokens sont stockés de manière sécurisée côté serveur et ne sont jamais exposés au client.
+La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit explicitement de dissocier son compte Google, une fonctionnalité qui peut être ajoutée dans une version ultérieure.
+
 
 ## EPIC 3 - Espace membre
 
-- **User story 8:**
-    - En tant qu’utilisateur connecté, je veux accéder à un tableau de bord résumant mes prises du jour: ce que j’ai déjà pris et ce qu’il me reste à prendre, et, pour chaque supplément en cours, le nombre de jours restants si j’ai défini une durée, afin d’avoir une vision claire et rapide de mon suivi quotidien.
-    - **CA 1 :** kjrfkjf
-    - **CA 1 :** kjrfkjf
-    - **CA 1 :** kjrfkjf
+- **User story 6:** En tant qu’utilisateur connecté, je veux accéder à un tableau de bord résumant pour chaque supplément en cours, le nombre de jours restants et la dose journaliére, afin d’avoir une vision claire et rapide de mon suivi quotidien.
+    
+    - **C.A 1 :** Étant donné que l’utilisateur connecté suit au moins un supplément avec une durée définie,
+    quand il accède au tableau de bord,
+    alors il voit chaque supplément, la dose journalière et le nombre de jours restants.
+    
+    - **C.A 2 :** Étant donné que l’utilisateur n’a aucun supplément dans son suivi actif,
+    quand il arrive sur le tableau de bord,
+    alors un message l’informe : ` Vous n’avez aucun suivi en cours. Ajoutez un supplément pour commencer.`
+    
+- **User story 7:** En tant qu'utilisateur connecté, lorsque j'ajoute un supplément à mon suivi, je peux personnaliser la durée, la dose, l'heure et la consigne. Si j'ai lié mon compte Google, je peux également activer des rappels quotidiens dans Google Calendar pour recevoir une notification sur mon téléphone avec l'heure, la dose et la consigne. Je peux modifier ou désactiver ces rappels à tout moment.
 
-- **User story 9:**
-    - En tant qu’utilisateur connecté, je veux pouvoir activer un rappel quotidien pour chacun de mes suppléments, en choisissant une heure de notification, afin de ne pas oublier mes prises et d’adapter les alertes à mes besoins. Je peux également le désactiver à tout moment.
-    - **CA 1 :** kjrfkjf
-    - **CA 1 :** kjrfkjf
-    - **CA 1 :** kjrfkjf
+    - **C.A 1 :** Étant donné que l'utilisateur a cliqué sur "Ajouter à mon suivi",
+    quand le formulaire s'affiche,
+    alors les champs suivants sont pré-remplis à partir des données recommandées du supplément : durée, dose, heure de prise, consigne, et l'utilisateur peut les modifier avant validation.
 
-- **User story 3:**
-    - En tant qu’utilisateur, Je veux disposer d’un historique de mes prises de suppléments pour suivre ma consommation sur le long terme.
-    - **CA 1 :** kjrfkjf
-    - **CA 1 :** kjrfkjf
-    - **CA 1 :** kjrfkjf
+    - **C.A 2 :** Étant donné que l'utilisateur connecté est sur la fiche d'un supplément et clique sur "Ajouter à mon suivi",
+    et valide,
+    alors le supplément est ajouté à son suivi avec les valeurs saisies, et apparaît dans le tableau de bord.
 
-- **User story 4:**
-    - En tant qu’utilisateur, je veux prendre note des effets constatés après avoir consommé un supplément afin de documenter mon expérience.
-    - **CA 1 :** kjrfkjf
-    - **CA 1 :** kjrfkjf
-    - **CA 1 :** kjrfkjf
+    - **C.A 3 :** Étant donné que l'utilisateur a coché "Activer les rappels Google Calendar" et a configuré les champs,
+    quand il valide l'ajout,
+    alors un événement récurrent quotidien est créé dans son Google Calendar principal avec :
 
-- **User story 5:**
-    - En tant qu’utilisateur, je veux partager mon expérience sous forme de commentaire pour aider les autres utilisateurs qui cherchent de l’information.
-    - **CA 1 :** kjrfkjf
-    - **CA 1 :** kjrfkjf
-    - **CA 1 :** kjrfkjf
+    Titre : "Prendre [nom du supplément] – [dose]",
+
+    Heure de début : celle choisie,
+
+    Description : [la consigne],
+
+    Récurrence : du jour de début jusqu'à la date de fin
+
+    Rappel par notification standard Google
+    et un message de confirmation  "Vos rappels ont été programmés dans Google Calendar" s'affiche.
+
+    - **C.A 4 :** Étant donné que l'utilisateur souhaite arrêter les rappels,
+    quand il désactive l'option de rappel pour ce supplément ou supprime le supplément de son suivi,
+    alors l'événement récurrent est immédiatement supprimé de son Google Calendar.
+
+    - **C.A 5 :** Étant donné que l'utilisateur n'a pas encore lié son compte Google ou a révoqué l'accès au calendrier,
+    quand il essaie d'activer les rappels,
+    alors le système lui propose de se connecter avec Google et d'accorder la permission "Gérer vos calendriers". Sans cette autorisation, l'option de rappel reste grisée.
+
+    C.A 6 : Étant donné que les données envoyées à Google Calendar (nom du supplément, consigne) proviennent de la base ou de la saisie utilisateur,    
+    quand l'événement est créé,
+    alors toutes les chaînes sont échappées pour éviter toute injection, et seuls les champs nécessaires sont transmis.
+    
+- **User story 8:** En tant qu’utilisateur connecté, je veux prendre note des effets constatés après avoir consommé un supplément afin de documenter mon expérience.
+
+    - **C.A 1 :** Étant donné que l’utilisateur consulte la fiche d’un supplément qu’il suit ou son suivi,
+    quand il rédige une note et l’enregistre,
+    alors la note est associée à son compte et au supplément, avec la date de création, et est consultable dans son espace.
+
+    - **C.A 2 :** Étant donné que l’utilisateur a déjà rédigé une ou plusieurs notes,
+    quand il accède à la section « Mes notes » ou à l’historique du supplément,
+    alors il voit la liste de ses notes avec leur date, dans l’ordre antéchronologique.
+
+    - **C.A 3 :** Étant donné que l’utilisateur souhaite corriger une note,
+    quand il clique sur <button>Modifier</button>  ou  <button>Supprimer</button>,
+    alors les modifications sont enregistrées ou la note est supprimée et un message de confirmation s'affiche.
+
+    - **C.A 4 :** Étant donné que l’utilisateur saisit des caractères spéciaux ou du code malveillant dans le champ note, quand il enregistre, alors le système échappe ces caractères et les traite comme du texte normal, empêchant ainsi toute exécution de code malveillant.
+
+
+- **User story 9:** En tant qu’utilisateur, Je veux disposer d’un historique de mes prises de suppléments pour suivre ma consommation sur le long terme.
+
+    - **C.A 1 :** Étant donné que l’utilisateur a ajouté un ou plusieurs suppléments à son suivi,
+    quand il accède à son historique,
+    alors il voit une liste contenant pour chaque supplément : son nom, la date de début de la prise, la date de fin si elle est terminée, ou la mention En cours, et le nombre de notes associées.
+
+    - **C.A 2 :** Étant donné que l’utilisateur sélectionne un supplément dans la liste,
+    quand il clique dessus,
+    alors il peut voir le détail complet : dates de début et de fin, durée totale calculée en jours, et la liste complète de ses notes personnelles pour cette supplémentation avec sa date.
+
+    - **C.A 1 :** Étant donné que l’utilisateur n’a jamais enregistré de supplément dans son suivi,
+    quand il accède à l’historique,
+    alors le système affiche un message informatif : `Vous n’avez pas encore de supplémentation enregistrée.`
+
+- **User story 10:** En tant qu’utilisateur, je veux partager mon expérience sous forme de commentaire pour aider les autres utilisateurs qui cherchent de l’information.
+
+    - **C.A 1 :** Étant donné que l’utilisateur est sur la fiche d’un supplément,
+    quand il écrit un commentaire et le publie,
+    alors le commentaire apparaît dans la liste publique, avec son prénom ou pseudo et la date.
+
+    - **C.A 2 :** Étant donné que n’importe quel visiteur consulte la fiche detaille d'un supplément,
+    quand il descend à la section commentaire, 
+    alors il voit tous les commentaires approuvés, classés du plus récent au plus ancien.
+
+    - **C.A 3 :** Étant donné que l’utilisateur publie un commentaire,
+    quand le commentaire contient des caractères interdits ou un script,
+    alors le système le rejette ou l’échappe, et le contenu dangereux n’est pas exécuté.
+
+    - **C.A 4 :** Étant donné que l’auteur d’un commentaire le consulte,
+    quand il clique sur <button>Supprimer</button>,
+    alors le commentaire est retiré de la fiche.
+
 
 ## EPIC 2 - Dahsboard Vendor
