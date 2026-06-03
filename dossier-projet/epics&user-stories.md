@@ -32,8 +32,6 @@ alors le système affiche une liste de tous les suppléments dont le nom contien
      quand la recherche est exécutée,
 alors le système ne l’interprète pas comme du code, affiche un message d’erreur et traite ces caractères comme du texte normal sans risque de sécurité.
 
-    
-
 - **User story 2:** En tant que visiteur, je veux obtenir des suggestions de suppléments en fonction du bienfait recherché afin de choisir un suppléments.
     - **CA 1 :** Étant donné que le visiteur souhaite obtenir une suggestion,
 quand il écrit un bienfait reconnu et valide,
@@ -44,22 +42,46 @@ alors le système affiche le message `Aucun supplément trouvé pour ce bienfait
 
 **NOTE :** Les critères de validation de la barre de recherche (champ vide, caractères spéciaux, insensibilité à la casse) décrits dans la user story 1 s’appliquent également à cette fonctionnalité.
     
-## EPIC 4 - Inscription et authentification
+## EPIC 2 - Inscription et authentification
 
-- **User story 6:***
-    - En tant que visiteur, je veux créer un compte personnel en fournissant une adresse email et un mot de passe, afin d’accéder aux fonctionnalités privées de suivi et de rappels.
-    - **CA 1 :** kjrfkjf
-    - **CA 1 :** kjrfkjf
-    - **CA 1 :** kjrfkjf
+- **User story 3:** En tant que visiteur, je veux créer un compte personnel en fournissant une adresse email et un mot de passe, afin d’accéder aux fonctionnalités privées de suivi et de rappels.
+    - **CA 1 :** Étant donné que le visiteur est sur le formulaire d’inscription,
+quand il saisit une adresse email valide non utilisée et un mot de passe d’au moins 8 caractères alphanumériques, puis valide,
+alors le système chiffré le mot de passe avec bcrypt, crée le compte, connecte automatiquement l’utilisateur et le redirige vers le tableau de bord avec un message de confirmation ` Votre compte a été créé avec succès`.
+    - **CA 2 :** Étant donné que le visiteur saisit une adresse email déjà associée à un compte existant,
+quand il soumet le formulaire,
+alors le système refuse l’inscription et affiche un message d’erreur ` Cette adresse email est déjà utilisée `.
+    - **CA 3 :** Étant donné que le visiteur saisit un mot de passe de moins de 8 caractères,
+quand il soumet le formulaire,
+alors le système refuse l’inscription et demande un mot de passe d’au moins 8 caractères.
+    - **CA 4 :** Étant donné que le visiteur saisit un mot de passe sans aucun chiffre ni lettre,
+quand il soumet le formulaire,
+alors le système refuse et indique que le mot de passe doit contenir au moins un chiffre et une lettre.
+    - **CA 5 :** Étant donné que le visiteur saisit une adresse email sans format valide,
+quand il soumet le formulaire,
+alors un message d’erreur explicite lui demande de saisir une adresse email correcte.
+    - **CA 6 :** Étant donné que le visiteur insère du code malveillant dans les champs email ou mot de passe,
+quand il soumet le formulaire,
+alors le code n’est pas exécuté, et le système affiche un message d’erreur générique ` Saisie invalide `.
+    - **CA 7 :** Étant donné que le visiteur remplit le champ "Confirmer le mot de passe",
+quand les deux mots de passe ne correspondent pas,
+alors le système bloque l’envoi et affiche `Les mots de passe ne correspondent pas`
 
-- **User story 7:**
-    - En tant qu’utilisateur inscrit, je veux me connecter à mon compte avec mes identifiants: email et mot de passe, afin de retrouver mon historique de consommation et mes notes.
-    - **CA 1 :** kjrfkjf
-    - **CA 1 :** kjrfkjf
-    - **CA 1 :** kjrfkjf
+- **User story 4:** En tant qu’utilisateur inscrit, je veux me connecter à mon compte avec mes identifiants: email et mot de passe, afin de retrouver mon historique de consommation et mes notes.
+    - **CA 1 :** Étant donné que l’utilisateur est sur la page de connexion,
+quand il saisit son email et son mot de passe valides,
+alors le système vérifie l’email, compare le mot de passe haché, génère un token JWT et redirige vers le tableau de bord.
+    - **CA 2 :** Étant donné que l’email saisi n’existe pas en base,
+quand l’utilisateur tente de se connecter,
+alors un message d’erreur `Email ou mot de passe incorrect`  s’affiche.
+    - **CA 3 :** Étant donné que l’email existe mais que le mot de passe est incorrect,
+quand la tentative de connexion a lieu,
+alors le système refuse l’accès et affiche message générique `Email ou mot de passe incorrect `.
+    - **CA 4 :** Étant donné que l’utilisateur laisse les champs email ou mot de passe vides,
+quand il soumet le formulaire,
+alors un message d’erreur lui demande de remplir tous les champs.
 
-## EPIC 2 - Dahsboard Vendor
-
+**NOTE:** Tous les mots de passe utilisateur sont hachés avec l'algorithme bcrypt côté serveur avant d'être stockés dans la base de données. Lors de la connexion, le système compare le mot de passe saisi au hash enregistré.
 
 ## EPIC 3 - Espace membre
 
@@ -92,3 +114,5 @@ alors le système affiche le message `Aucun supplément trouvé pour ce bienfait
     - **CA 1 :** kjrfkjf
     - **CA 1 :** kjrfkjf
     - **CA 1 :** kjrfkjf
+
+## EPIC 2 - Dahsboard Vendor
