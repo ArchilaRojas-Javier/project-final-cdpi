@@ -19,7 +19,7 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     
     - **C.A 2 :** Étant donné que le visiteur saisit un nom qui ne correspond à aucun supplément enregistré,
     quand il lance la recherche,
-    alors le système affiche un message informatif du type `Aucun supplément trouvé pour ce terme `.
+    alors le système affiche un message informatif du type `Aucun supplément trouvé pour ce terme`.
     
     - **C.A 3 :** Étant donné que le visiteur n’a rien écrit dans le champ de recherche,
     quand il tente de lancer la recherche,
@@ -92,7 +92,7 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     
     - **C.A 2 :** Étant donné que l’email saisi n’existe pas en base,
     quand l’utilisateur tente de se connecter,
-    alors le message d’erreur `Email ou mot de passe incorrect`  s’affiche.
+    alors le message d’erreur `Email ou mot de passe incorrect` s’affiche.
     
     - **C.A 3 :** Étant donné que l’email existe mais que le mot de passe est incorrect,
     quand la tentative de connexion a lieu,
@@ -140,23 +140,24 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
     alors les champs suivants sont pré-remplis à partir des données recommandées du supplément : durée, dose, heure de prise, consigne, et l'utilisateur peut les modifier avant validation.
 
     - **C.A 2 :** Étant donné que l'utilisateur connecté est sur la fiche d'un supplément et clique sur "Ajouter à mon suivi",
-    et valide,
+    quand il valide,
     alors le supplément est ajouté à son suivi avec les valeurs saisies, et apparaît dans le tableau de bord.
 
     - **C.A 3 :** Étant donné que l'utilisateur a coché "Activer les rappels Google Calendar" et a configuré les champs,
     quand il valide l'ajout,
     alors un événement récurrent quotidien est créé dans son Google Calendar principal avec :
 
-    Titre : "Prendre [nom du supplément] – [dose]",
+        - Titre : "Prendre [nom du supplément] – [dose]",
 
-    Heure de début : celle choisie,
+        - Heure de début : celle choisie,
 
-    Description : [la consigne],
+        - Description : [la consigne],
 
-    Récurrence : du jour de début jusqu'à la date de fin
+        - Récurrence : du jour de début jusqu'à la date de fin
 
-    Rappel par notification standard Google
-    et un message de confirmation  "Vos rappels ont été programmés dans Google Calendar" s'affiche.
+        - Rappel par notification standard Google
+
+        et un message de confirmation  "Vos rappels ont été programmés dans Google Calendar" s'affiche.
 
     - **C.A 4 :** Étant donné que l'utilisateur souhaite arrêter les rappels,
     quand il désactive l'option de rappel pour ce supplément ou supprime le supplément de son suivi,
@@ -195,7 +196,7 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
 
     - **C.A 2 :** Étant donné que l’utilisateur sélectionne un supplément dans la liste,
     quand il clique dessus,
-    alors il peut voir le détail complet : dates de début et de fin, durée totale calculée en jours, et la liste complète de ses notes personnelles pour cette supplémentation avec leur date.
+    alors il peut voir le détail complet : dates de début et de fin, durée totale calculée en jours, et la liste complète de ses notes personnelles pour cette supplémentation avec leurs dates.
 
     - **C.A 3 :** Étant donné que l’utilisateur n’a jamais enregistré de supplément dans son suivi,
     quand il accède à l’historique,
@@ -223,26 +224,26 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
 
     - **C.A 1 :** Étant donné que le visiteur vient de créer un compte par email,
     quand il est redirigé vers le tableau de bord,
-    alors un profil vide lui est attribué et il peut les actualiser depuis "Mon profil".
+    alors un profil vide lui est attribué et il peut le compléter depuis "Mon profil".
 
     - **C.A 2 :** Étant donné que l'utilisateur est connecté,
     quand il accède à la page "Mon profil",
     alors il voit ses informations actuelles : nom, âge, photo ou avatar par défaut.
 
 
-    - **C.A 3:** Étant donné que le visiteur se connecte via Google pour la première fois,
+    - **C.A 3 :** Étant donné que le visiteur se connecte via Google pour la première fois,
     quand il accepte les autorisations,
-    alors son profil est pré-rempli avec les donnes récupérés depuis son compte Google.
+    alors son profil est pré-rempli avec les données récupérées depuis son compte Google.
 
-    - **C.A 4:** Étant donné que l'utilisateur est sur "Mon profil",
+    - **C.A 4 :** Étant donné que l'utilisateur est sur "Mon profil",
     quand il modifie son nom et/ou son âge et valide,
     alors les nouvelles informations sont enregistrées et mises à jour dans la base de données.
 
-    - **C.A 5:** Étant donné que l'utilisateur souhaite ajouter ou changer sa photo,
+    - **C.A 5 :** Étant donné que l'utilisateur souhaite ajouter ou changer sa photo,
     quand il sélectionne un fichier image valide (JPG, PNG) et valide,
     alors la photo est sauvegardée sur le serveur et associée à son profil, remplaçant l'ancienne.
 
-    - **C.A 6:** Étant donné que l'utilisateur modifie son profil,
+    - **C.A 6 :** Étant donné que l'utilisateur modifie son profil,
     quand il soumet le formulaire,
     alors toutes les données sont échappées, le fichier image est vérifié côté serveur pour empêcher tout code malveillant, et les champs vides restent acceptables.
 
@@ -251,7 +252,7 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
 
 - **User Story 11 :** En tant qu’administrateur connecté, je veux pouvoir consulter la liste de tous les commentaires publiés et supprimer ceux qui sont inappropriés, afin de garantir la qualité et la sécurité des échanges sur l’application.
 
-    - **C.A 1 :**Étant donné qu’un utilisateur connecté n’a pas le rôle admin,
+    - **C.A 1 :** Étant donné qu’un utilisateur connecté n’a pas le rôle admin,
     quand il tente d’accéder à la page de modération,   
     alors le système le déconnecte automatiquement, affiche le message "Accès non autorisé" et le redirige vers le formulaire de connexion.
 
