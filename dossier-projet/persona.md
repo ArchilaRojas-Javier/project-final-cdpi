@@ -12,11 +12,11 @@
     - Cherche une information claire et  structure. 
 
 - Nom: Joe
-- Age: 18 +
+- Age: 18 + et plus
 - Proffesion: N/A
 - Objectifs: s'informer sûr un supplement en particuliere, suivre ça consumation et bénefices
 - Frustrations: il oublie quand il doit prendre ou quand doit arrêter de prendre un supplémente.
 - Comportements:
-    - Prend un ou plusieur suppléments quotidiennement
-    - utilise parfois des alarmes ou des notes pour se rappeler
-    - Souhaite noter ce qu'il ressent pour ajuster sa routine
+    - Prend un ou plusieur suppléments quotidiennement.
+    - utilise parfois des alarmes ou des notes pour se rappeler.
+    - Souhaite noter ce qu'il ressent pour ajuster sa routine.
