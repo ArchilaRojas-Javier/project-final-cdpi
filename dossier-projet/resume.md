@@ -1,6 +1,6 @@
-# "Vitaguide", "Infosuppl", "VitaInfo", "Vitam-in"
+# "VITAM-IN"
 
-Destinée à toute personne, avec ou sans carences en vitamines, souhaitant consommer des suppléments de façon contrôlée pour en tirer des bienfaits, l’application (titre à définir) réunit et centralise toute l’information utile sur les principaux suppléments vitaminiques disponibles en vente libre.
+Destinée à toute personne, avec ou sans carences en vitamines, souhaitant consommer des suppléments de façon contrôlée pour en tirer des bienfaits, VITAM-IN réunit et centralise toute l’information utile sur les principaux suppléments vitaminiques disponibles en vente libre.
 
 - quand il est recommandé de prendre un supplément 
 - quand il n’est pas recommandé de le prendre 
