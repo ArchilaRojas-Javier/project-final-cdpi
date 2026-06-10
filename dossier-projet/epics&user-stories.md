@@ -27,7 +27,7 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     
     - **C.A 4 :** Étant donné que le visiteur écrit le nom du supplément en majuscules, en minuscules ou en mélangeant les deux,
     quand il lance la recherche,
-    alors le système ignore la casse et retourne la fiche du supplément         correspondant.
+    alors le système ignore la casse et retourne la fiche du supplément correspondant.
     
     - **C.A 5 :** Étant donné que le visiteur tape seulement une partie du nom,
     quand il lance la recherche,
@@ -38,7 +38,8 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     alors le système ne l’interprète pas comme du code, affiche un message d’erreur et traite ces caractères comme du texte normal sans risque de sécurité.
 
 
-- **User story 2:** En tant que visiteur, je veux obtenir des suggestions de suppléments en fonction du bienfait recherché afin de choisir un supplément.
+- **User story 2:** En tant que visiteur, je veux obtenir des suggestions de suppléments en fonction du bienfait recherché
+ afin de choisir un supplément.
     
     - **C.A 1 :** Étant donné que le visiteur souhaite obtenir une suggestion,
     quand il écrit un bienfait reconnu et valide,
@@ -102,7 +103,36 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     quand il soumet le formulaire,
     alors un message d’erreur lui demande de remplir tous les champs.
 
-- **User story 5:** En tant que visiteur, je veux pouvoir créer un compte ou me connecter en utilisant mon compte Google, afin de simplifier l’inscription et d’autoriser l’application à gérer mes rappels dans Google Calendar.
+- **User story 5:** En tant qu’utilisateur inscrit, je veux pouvoir réinitialiser mon mot de passe en fournissant l’adresse email associée à mon compte, afin de retrouver l’accès à mon espace personnel.
+
+    - **C.A 1 :** Étant donné que l’utilisateur a oublié son mot de passe,
+    quand il saisit son adresse email dans le formulaire de récupération et valide,
+    alors un email contenant un lien unique et temporaire de réinitialisation est envoyé à cette adresse, et un message de confirmation générique s’affiche : 
+    "Si un compte existe avec cette adresse, un email de réinitialisation vient d’être envoyé."
+
+    - **C.A 2 :** Étant donné que l’adresse email saisie n’existe pas dans la base,
+    quand le formulaire est soumis,
+    alors le même message générique est affiché, sans préciser que l’email est inconnu par protection de la confidentialité.
+
+    - **C.A 3 :** Étant donné que l’utilisateur clique sur le lien de réinitialisation reçu par email,
+    quand le lien est valide et n’a pas expiré,
+    alors il est redirigé vers une page lui permettant de définir un nouveau mot de passe.
+
+    - **C.A 4 :** Étant donné que l’utilisateur définit un nouveau mot de passe conforme,
+    quand il valide,
+    alors le mot de passe est haché avec bcrypt et enregistré en base, l’ancien token de réinitialisation est invalidé, et l’utilisateur est redirigé vers la page de connexion avec un message de succès.
+
+    - **C.A 5 :** Étant donné que le lien de réinitialisation est expiré ou invalide,
+    quand l’utilisateur clique dessus,
+    alors le système refuse l’accès et affiche un message d’erreur indiquant que le lien n’est plus valide, invitant à faire une nouvelle demande.
+
+    - **C.A 6 :** Étant donné que l’utilisateur soumet le formulaire de récupération avec un champ vide,
+    quand il valide,
+    alors un message d’erreur lui demande de saisir une adresse email.
+
+    - **C.A 7 :** Le lien de réinitialisation contient un token aléatoire stocké haché en base de donnes avec une durée de validité limitée de 1 heure. Aucune information sur l’existence du compte n’est divulguée dans les messages d’erreur ou de succès.
+
+- **User story 6:** En tant que visiteur, je veux pouvoir créer un compte ou me connecter en utilisant mon compte Google, afin de simplifier l’inscription et d’autoriser l’application à gérer mes rappels dans Google Calendar.
 
     - **C.A 1 :** Étant donné que le visiteur clique sur "Se connecter avec Google",
     quand il accepte les autorisations demandées,
@@ -123,7 +153,7 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
 
 ## EPIC 3 - Espace membre
 
-- **User story 6:** En tant qu’utilisateur connecté, je veux accéder à un tableau de bord résumant pour chaque supplément en cours, le nombre de jours restants et la dose journaliére, afin d’avoir une vision claire et rapide de mon suivi quotidien.
+- **User story 7:** En tant qu’utilisateur connecté, je veux accéder à un tableau de bord résumant pour chaque supplément en cours, le nombre de jours restants et la dose journaliére, afin d’avoir une vision claire et rapide de mon suivi quotidien.
     
     - **C.A 1 :** Étant donné que l’utilisateur connecté suit au moins un supplément avec une durée définie,
     quand il accède au tableau de bord,
@@ -133,7 +163,7 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
     quand il arrive sur le tableau de bord,
     alors un message l’informe : ` Vous n’avez aucun suivi en cours. Ajoutez un supplément pour commencer.`
     
-- **User story 7:** En tant qu'utilisateur connecté, lorsque j'ajoute un supplément à mon suivi, je peux personnaliser la durée, la dose, l'heure et la consigne. Si j'ai lié mon compte Google, je peux également activer des rappels quotidiens dans Google Calendar pour recevoir une notification sur mon téléphone avec l'heure, la dose et la consigne. Je peux modifier ou désactiver ces rappels à tout moment.
+- **User story 8:** En tant qu'utilisateur connecté, lorsque j'ajoute un supplément à mon suivi, je peux personnaliser la durée, la dose, l'heure et la consigne. Si j'ai lié mon compte Google, je peux également activer des rappels quotidiens dans Google Calendar pour recevoir une notification sur mon téléphone avec l'heure, la dose et la consigne. Je peux modifier ou désactiver ces rappels à tout moment.
 
     - **C.A 1 :** Étant donné que l'utilisateur a cliqué sur "Ajouter à mon suivi",
     quand le formulaire s'affiche,
@@ -171,7 +201,7 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
     quand l'événement est créé,
     alors toutes les chaînes sont échappées pour éviter toute injection, et seuls les champs nécessaires sont transmis.
     
-- **User story 8:** En tant qu’utilisateur connecté, je veux prendre note des effets constatés après avoir consommé un supplément afin de documenter mon expérience.
+- **User story 9:** En tant qu’utilisateur connecté, je veux prendre note des effets constatés après avoir consommé un supplément afin de documenter mon expérience.
 
     - **C.A 1 :** Étant donné que l’utilisateur consulte la fiche d’un supplément qu’il suit ou son suivi,
     quand il rédige une note et l’enregistre,
@@ -188,7 +218,7 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
     - **C.A 4 :** Étant donné que l’utilisateur saisit des caractères spéciaux ou du code malveillant dans le champ note, quand il enregistre, alors le système échappe ces caractères et les traite comme du texte normal, empêchant ainsi toute exécution de code malveillant.
 
 
-- **User story 9:** En tant qu’utilisateur, Je veux disposer d’un historique de mes prises de suppléments pour suivre ma consommation sur le long terme.
+- **User story 10:** En tant qu’utilisateur, Je veux disposer d’un historique de mes prises de suppléments pour suivre ma consommation sur le long terme.
 
     - **C.A 1 :** Étant donné que l’utilisateur a ajouté un ou plusieurs suppléments à son suivi,
     quand il accède à son historique,
@@ -202,7 +232,7 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
     quand il accède à l’historique,
     alors le système affiche un message informatif : `Vous n’avez pas encore de supplémentation enregistrée.`
 
-- **User story 10:** En tant qu’utilisateur, je veux partager mon expérience sous forme de commentaire pour aider les autres utilisateurs qui cherchent de l’information.
+- **User story 11:** En tant qu’utilisateur, je veux partager mon expérience sous forme de commentaire pour aider les autres utilisateurs qui cherchent de l’information.
 
     - **C.A 1 :** Étant donné que l’utilisateur est sur la fiche d’un supplément,
     quand il écrit un commentaire et le publie,
@@ -250,7 +280,7 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
 
 ## EPIC 4 – Administration
 
-- **User Story 11 :** En tant qu’administrateur connecté, je veux pouvoir consulter la liste de tous les commentaires publiés et supprimer ceux qui sont inappropriés, afin de garantir la qualité et la sécurité des échanges sur l’application.
+- **User Story 12 :** En tant qu’administrateur connecté, je veux pouvoir consulter la liste de tous les commentaires publiés et supprimer ceux qui sont inappropriés, afin de garantir la qualité et la sécurité des échanges sur l’application.
 
     - **C.A 1 :** Étant donné qu’un utilisateur connecté n’a pas le rôle admin,
     quand il tente d’accéder à la page de modération,   
@@ -268,7 +298,7 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
     quand la requête est envoyée,
     alors le système vérifie un jeton CSRF pour éviter les attaques, et tous les commentaires affichés sont échappés pour prévenir toute injection XSS.
 
-- **User Story 12 :** En tant qu’administrateur connecté, je veux pouvoir ajouter un nouveau supplément au catalogue ou retirer un supplément existant, afin de maintenir à jour les informations proposées aux utilisateurs.
+- **User Story 13 :** En tant qu’administrateur connecté, je veux pouvoir ajouter un nouveau supplément au catalogue ou retirer un supplément existant, afin de maintenir à jour les informations proposées aux utilisateurs.
 
     - **C.A 1 :** Étant donné que l’administrateur est connecté et accède à la section "Gestion des suppléments",
     quand la page se charge,
