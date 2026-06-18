@@ -163,7 +163,7 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
     quand il arrive sur le tableau de bord,
     alors un message l’informe : ` Vous n’avez aucun suivi en cours. Ajoutez un supplément pour commencer.`
     
-- **User story 8:** En tant qu'utilisateur connecté, lorsque j'ajoute un supplément à mon suivi, je peux personnaliser la durée, la dose, l'heure et la consigne. Si j'ai lié mon compte Google, je peux également activer des rappels quotidiens dans Google Calendar pour recevoir une notification sur mon téléphone avec l'heure, la dose et la consigne. Je peux modifier ou désactiver ces rappels à tout moment.
+- **User story 8:** En tant qu’utilisateur connecté, lorsque j’ajoute un supplément à mon suivi, je peux personnaliser la durée, la dose, l’heure et la consigne. Si j’ai autorisé l’accès à mon Google Calendar, je peux également activer des rappels quotidiens directement dans ce calendrier pour recevoir une notification sur mon téléphone. Je peux modifier ou désactiver ces rappels à tout moment.
 
     - **C.A 1 :** Étant donné que l'utilisateur a cliqué sur "Ajouter à mon suivi",
     quand le formulaire s'affiche,
@@ -193,9 +193,9 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
     quand il désactive l'option de rappel pour ce supplément ou supprime le supplément de son suivi,
     alors l'événement récurrent est immédiatement supprimé de son Google Calendar.
 
-    - **C.A 5 :** Étant donné que l'utilisateur n'a pas encore lié son compte Google ou a révoqué l'accès au calendrier,
-    quand il essaie d'activer les rappels,
-    alors le système lui propose de se connecter avec Google et d'accorder la permission "Gérer vos calendriers". Sans cette autorisation, l'option de rappel reste grisée.
+    - **C.A 5 :** Étant donné que l’utilisateur n’a pas encore autorisé l’accès à son Google Calendar,
+    quand il essaie d’activer les rappels,
+    alors le système lui propose soit de se connecter avec un compte Google ou d’autoriser uniquement l’accès au calendrier. Sans cette autorisation, l’option de rappel Google Calendar reste grisée.
 
     - **C.A 6 :** Étant donné que les données envoyées à Google Calendar (nom du supplément, consigne) proviennent de la base ou de la saisie utilisateur,    
     quand l'événement est créé,
