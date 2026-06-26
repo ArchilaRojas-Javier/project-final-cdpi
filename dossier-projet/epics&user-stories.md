@@ -1,6 +1,3 @@
-
-
-
 # EPICS & USER STORIES
 
 ## Lexiques
@@ -49,12 +46,26 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     quand il lance la recherche,
     alors le système affiche le message `Aucun supplément trouvé pour ce bienfait`.
 
+- **User story 3:** En tant que visiteur, je veux pouvoir parcourir les suppléments par catégorie afin de découvrir les produits plus facilement.
+
+    - **C.A 1 :** Étant donné qu’au moins une catégorie existe en base,
+    quand le visiteur accède à la page des catégories,
+    alors la liste des catégories disponibles s’affiche.
+    
+    - **C.A 2 :** Étant donné que le visiteur sélectionne une catégorie,
+    quand il clique dessus,
+    alors la liste des suppléments appartenant à cette catégorie apparaît.
+    
+    - **C.A 3 :** Étant donné qu’une catégorie ne contient aucun supplément,
+    quand le visiteur y accède,
+    alors le message « Aucun supplément dans cette catégorie » est affiché.
+
 **NOTE :** Les critères de validation de la barre de recherche (champ vide, caractères spéciaux, insensibilité à la casse) décrits dans la user story 1 s’appliquent également à cette fonctionnalité.
     
 ## EPIC 2 - Inscription et authentification
 
 
-- **User story 3:** En tant que visiteur, je veux créer un compte personnel en fournissant une adresse email et un mot de passe, afin d’accéder aux fonctionnalités privées de suivi et de rappels.
+- **User story 4:** En tant que visiteur, je veux créer un compte personnel en fournissant une adresse email et un mot de passe, afin d’accéder aux fonctionnalités privées de suivi et de rappels.
     
     - **C.A 1 :** Étant donné que le visiteur est sur le formulaire d’inscription,
     quand il saisit une adresse email valide non utilisée et un mot de passe d’au moins 8 caractères alphanumériques, puis valide,
@@ -85,7 +96,7 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     alors le système bloque l’envoi et affiche le message d'erreur `Les mots de passe ne correspondent pas`
 
 
-- **User story 4:** En tant qu’utilisateur inscrit, je veux me connecter à mon compte avec mes identifiants: email et mot de passe, afin de retrouver mon historique de consommation et mes notes.
+- **User story 5:** En tant qu’utilisateur inscrit, je veux me connecter à mon compte avec mes identifiants: email et mot de passe, afin de retrouver mon historique de consommation et mes notes.
     
     - **C.A 1 :** Étant donné que l’utilisateur est sur la page de connexion,
     quand il saisit son email et son mot de passe valides,
@@ -103,7 +114,7 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     quand il soumet le formulaire,
     alors un message d’erreur lui demande de remplir tous les champs.
 
-- **User story 5:** En tant qu’utilisateur inscrit, je veux pouvoir réinitialiser mon mot de passe en fournissant l’adresse email associée à mon compte, afin de retrouver l’accès à mon espace personnel.
+- **User story 6:** En tant qu’utilisateur inscrit, je veux pouvoir réinitialiser mon mot de passe en fournissant l’adresse email associée à mon compte, afin de retrouver l’accès à mon espace personnel.
 
     - **C.A 1 :** Étant donné que l’utilisateur a oublié son mot de passe,
     quand il saisit son adresse email dans le formulaire de récupération et valide,
@@ -132,7 +143,7 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
 
     - **C.A 7 :** Le lien de réinitialisation contient un token aléatoire stocké haché en base de donnes avec une durée de validité limitée de 1 heure. Aucune information sur l’existence du compte n’est divulguée dans les messages d’erreur ou de succès.
 
-- **User story 6:** En tant que visiteur, je veux pouvoir créer un compte ou me connecter en utilisant mon compte Google, afin de simplifier l’inscription et d’autoriser l’application à gérer mes rappels dans Google Calendar.
+- **User story 7:** En tant que visiteur, je veux pouvoir créer un compte ou me connecter en utilisant mon compte Google, afin de simplifier l’inscription et d’autoriser l’application à gérer mes rappels dans Google Calendar.
 
     - **C.A 1 :** Étant donné que le visiteur clique sur "Se connecter avec Google",
     quand il accepte les autorisations demandées,
@@ -153,7 +164,7 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
 
 ## EPIC 3 - Espace membre
 
-- **User story 7:** En tant qu’utilisateur connecté, je veux accéder à un tableau de bord résumant pour chaque supplément en cours, le nombre de jours restants et la dose journaliére, afin d’avoir une vision claire et rapide de mon suivi quotidien.
+- **User story 8:** En tant qu’utilisateur connecté, je veux accéder à un tableau de bord résumant pour chaque supplément en cours, le nombre de jours restants et la dose journaliére, afin d’avoir une vision claire et rapide de mon suivi quotidien.
     
     - **C.A 1 :** Étant donné que l’utilisateur connecté suit au moins un supplément avec une durée définie,
     quand il accède au tableau de bord,
@@ -163,7 +174,7 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
     quand il arrive sur le tableau de bord,
     alors un message l’informe : ` Vous n’avez aucun suivi en cours. Ajoutez un supplément pour commencer.`
     
-- **User story 8:** En tant qu’utilisateur connecté, lorsque j’ajoute un supplément à mon suivi, je peux personnaliser la durée, la dose, l’heure et la consigne. Si j’ai autorisé l’accès à mon Google Calendar, je peux également activer des rappels quotidiens directement dans ce calendrier pour recevoir une notification sur mon téléphone. Je peux modifier ou désactiver ces rappels à tout moment.
+- **User story 9:** En tant qu’utilisateur connecté, lorsque j’ajoute un supplément à mon suivi, je peux personnaliser la durée, la dose, l’heure et la consigne. Si j’ai autorisé l’accès à mon Google Calendar, je peux également activer des rappels quotidiens directement dans ce calendrier pour recevoir une notification sur mon téléphone. Je peux modifier ou désactiver ces rappels à tout moment.
 
     - **C.A 1 :** Étant donné que l'utilisateur a cliqué sur "Ajouter à mon suivi",
     quand le formulaire s'affiche,
@@ -201,7 +212,7 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
     quand l'événement est créé,
     alors toutes les chaînes sont échappées pour éviter toute injection, et seuls les champs nécessaires sont transmis.
     
-- **User story 9:** En tant qu’utilisateur connecté, je veux prendre note des effets constatés après avoir consommé un supplément afin de documenter mon expérience.
+- **User story 10:** En tant qu’utilisateur connecté, je veux prendre note des effets constatés après avoir consommé un supplément afin de documenter mon expérience.
 
     - **C.A 1 :** Étant donné que l’utilisateur consulte la fiche d’un supplément qu’il suit ou son suivi,
     quand il rédige une note et l’enregistre,
@@ -218,7 +229,7 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
     - **C.A 4 :** Étant donné que l’utilisateur saisit des caractères spéciaux ou du code malveillant dans le champ note, quand il enregistre, alors le système échappe ces caractères et les traite comme du texte normal, empêchant ainsi toute exécution de code malveillant.
 
 
-- **User story 10:** En tant qu’utilisateur, Je veux disposer d’un historique de mes prises de suppléments pour suivre ma consommation sur le long terme.
+- **User story 11:** En tant qu’utilisateur, Je veux disposer d’un historique de mes prises de suppléments pour suivre ma consommation sur le long terme.
 
     - **C.A 1 :** Étant donné que l’utilisateur a ajouté un ou plusieurs suppléments à son suivi,
     quand il accède à son historique,
@@ -232,25 +243,33 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
     quand il accède à l’historique,
     alors le système affiche un message informatif : `Vous n’avez pas encore de supplémentation enregistrée.`
 
-- **User story 11:** En tant qu’utilisateur, je veux partager mon expérience sous forme de commentaire pour aider les autres utilisateurs qui cherchent de l’information.
+- **User story 12:** En tant qu’utilisateur, je veux interagir avec la communauté via les commentaires (publier, répondre, aimer, signaler), afin de partager mon expérience et d’aider les autres utilisateurs.
 
-    - **C.A 1 :** Étant donné que l’utilisateur est sur la fiche d’un supplément,
-    quand il écrit un commentaire et le publie,
-    alors le commentaire apparaît dans la liste publique, avec son prénom ou pseudo et la date.
+    - **C.A 1 :** Étant donné que l’utilisateur publie un commentaire racine sur la fiche d’un supplément,
+    quand il valide,
+    alors le commentaire est enregistré avec et le message "Votre commentaire est en attente de validation" est affiché. Il n’est pas visible publiquement.
 
-    - **C.A 2 :** Étant donné que n’importe quel visiteur consulte la fiche détaillée d'un supplément,
-    quand il descend à la section commentaire, 
-    alors il voit tous les commentaires approuvés, classés du plus récent au plus ancien.
+    - **C.A 2 :** Seuls les commentaires racines approuvés par un administrateur sont affichés publiquement.
 
-    - **C.A 3 :** Étant donné que l’utilisateur publie un commentaire,
-    quand le commentaire contient des caractères interdits ou un script,
-    alors le système le rejette ou l’échappe, et le contenu dangereux n’est pas exécuté.
+    - **C.A 3 :** Étant donné que l’utilisateur consulte un commentaire approuvé,
+    quand il clique sur "Répondre" et rédige une réponse,
+    alors celle-ci est publiée immédiatement, sans approbation, et apparaît sous le commentaire parent.
 
-    - **C.A 4 :** Étant donné que l’auteur d’un commentaire le consulte,
-    quand il clique sur <button>Supprimer</button>,
-    alors le commentaire est retiré de la fiche.
+    - **C.A 4 :** Étant donné que l’utilisateur voit un commentaire ou une réponse,
+    quand il clique sur le bouton « J’aime »,
+    alors le like est enregistré, un seul like par utilisateur et par commentaire, et le compteur s’incrémente.
+    S’il clique à nouveau, le like est retiré.
 
-- **User story Bonus:** En tant qu'utilisateur connecté, je veux accéder à mon profil personnel pour y renseigner ou consulter mes informations de base: nom, âge, pseudo, photo/avatar, afin de personnaliser mon expérience dans l'application.
+    - **C.A 5 :** Étant donné que l’utilisateur voit un commentaire ou une réponse inapproprié(e),
+    quand il clique sur "Signaler" et confirme,
+    alors un signalement est enregistré avec la date et l’auteur du signalement.
+    Un message "Signalement envoyé" s’affiche. Un utilisateur ne peut signaler qu’une seule fois le même commentaire.
+
+    - **C.A 6 :** L’auteur d’un commentaire ou d’une réponse peut le supprimer.
+
+    - **C.A 7 :** Tous les conten sont échappés pour prévenir les injections XSS. Les caractères interdits ou les scripts sont neutralisés.
+
+- **User story 13:** En tant qu'utilisateur connecté, je veux accéder à mon profil personnel pour y renseigner ou consulter mes informations de base: nom, âge,  photo/avatar, afin de personnaliser mon expérience dans l'application.
 
     - **C.A 1 :** Étant donné que le visiteur vient de créer un compte par email,
     quand il est redirigé vers le tableau de bord,
@@ -280,46 +299,40 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
 
 ## EPIC 4 – Administration
 
-- **User Story 12 :** En tant qu’administrateur connecté, je veux pouvoir consulter la liste de tous les commentaires publiés et supprimer ceux qui sont inappropriés, afin de garantir la qualité et la sécurité des échanges sur l’application.
+- **User Story 14 :** En tant qu’administrateur connecté, je veux pouvoir modérer les commentaires : approuver les commentaires racines, consulter les signalements et supprimer des commentaires ou réponses inappropriés, afin de garantir la qualité des échanges.
 
-    - **C.A 1 :** Étant donné qu’un utilisateur connecté n’a pas le rôle admin,
-    quand il tente d’accéder à la page de modération,   
-    alors le système le déconnecte automatiquement, affiche le message "Accès non autorisé" et le redirige vers le formulaire de connexion.
+    - **C.A 1 :** *(Sécurité)* L’accès à la section de modération est réservé aux administrateurs. Toute tentative d’un utilisateur standard le déconnecte et le redirige vers la connexion avec le message "Accès non autorisé".
 
-    - **C.A 2 :** Étant donné que l’administrateur est connecté et accède à la section "Modération",
+    - **C.A 2 :** Étant donné que l’administrateur accède à la modération,
     quand la page se charge,
-    alors il voit la liste de tous les commentaires, classés par date, avec : le texte, le nom du supplément concerné, l’auteur, et la date de publication.
+    alors il voit deux onglets : "En attente", commentaires racines non approuvés, et "Signalements", commentaires signalés.
 
-    - **C.A 3 :** Étant donné que l’administrateur consulte la liste des commentaires,
-    quand il clique sur "Supprimer" à côté d’un commentaire et confirme l’action,
-    alors le commentaire est définitivement retiré de la base de données et disparaît de la fiche supplément correspondante.
+    - **C.A 3 :** Dans l’onglet "En attente", l’administrateur peut cliquer sur "Approuver" pour un commentaire racine. Le commentaire devient alors public.
 
-    - **C.A 4 :** Étant donné que l’administrateur effectue une action de modération,
-    quand la requête est envoyée,
-    alors le système vérifie un jeton CSRF pour éviter les attaques, et tous les commentaires affichés sont échappés pour prévenir toute injection XSS.
+    - **C.A 4 :** Dans l’onglet "Signalements", l’administrateur voit la liste des commentaires signalés, avec l’auteur du signalement et la date. Il peut supprimer le commentaire incriminé ou ignorer le signalement.
 
-- **User Story 13 :** En tant qu’administrateur connecté, je veux pouvoir ajouter un nouveau supplément au catalogue ou retirer un supplément existant, afin de maintenir à jour les informations proposées aux utilisateurs.
+    - **C.A 5 :** Lorsqu’un commentaire ou une réponse est supprimé par l’administrateur, il disparaît définitivement de la base de données et de la fiche supplément.
 
-    - **C.A 1 :** Étant donné que l’administrateur est connecté et accède à la section "Gestion des suppléments",
-    quand la page se charge,
-    alors il voit la liste de tous les suppléments existants, avec leur nom et un bouton <button>Supprimer</button> pour chacun.
+    - **C.A 6 :** Toute action de modération est protégée par un jeton CSRF et les contenus affichés sont échappés. (A VER ESTO NO LO SE RICK)
 
-    - **C.A 2 :** Étant donné que l’administrateur souhaite ajouter un nouveau supplément,
-    quand il remplit le formulaire: nom, description, bienfaits, posologie recommandée, durée recommandée, moment de prise, précautions et valide,
-    alors le supplément est créé dans la base de données et apparaît immédiatement dans le catalogue public.
+- **User Story 15 :** En tant qu’administrateur connecté, je veux pouvoir ajouter, modifier ou supprimer des suppléments du catalogue, en leur associant des catégories et des bienfaits, afin de maintenir à jour les informations proposées aux utilisateurs.
 
-    - **C.A 3 :** Étant donné que l’administrateur souhaite supprimer un supplément,
-    quand il clique sur « Supprimer » et confirme l’action,
-    alors le supplément est retiré de la base de données, ainsi que tous les commentaires et suivis associés, et il n’est plus visible dans le catalogue.
+    - **C.A 1 :** *(Sécurité)* L’accès à la section de modération est réservé aux administrateurs. Toute tentative d’un utilisateur standard le déconnecte et le redirige vers la connexion avec le message "Accès non autorisé".
 
-    - **C.A 4 :** Étant donné que le formulaire d’ajout est soumis avec des champs obligatoires vides,
-    quand l’administrateur valide,
-    alors un message d’erreur explicite lui demande de remplir les champs requis.
+    - **C.A 2 :** L’administrateur voit la liste de tous les suppléments avec leur nom, catégories associées et un bouton "Supprimer".
 
-    - **C.A 5 :** Étant donné que les données saisies sont enregistrées,
-    quand elles contiennent des caractères spéciaux ou du code malveillant,
-    alors le système échappe les caractères et empêche toute exécution de code.
+    - **C.A 3 :** Le formulaire d’ajout contient les champs : nom, description, posologie recommandée, durée recommandée, moment de prise, précautions, et des listes déroulantes multiples pour choisir les catégories et les bénéfices. À la validation, le supplément est créé et les associations enregistrées.
 
-    - **C.A 6 :** Étant donné qu’un utilisateur connecté n’a pas le rôle admin,
-    quand il tente d’accéder à la section "Gestion des suppléments",
-    alors le système le déconnecte automatiquement, affiche le message "Accès non autorisé" et le redirige vers le formulaire de connexion.
+    - **C.A 4 :** En cliquant sur un supplément, l’administrateur peut modifier toutes ses informations, y compris les catégories et bénéfices. Les changements sont enregistrés.
+
+    - **C.A 5 :** La suppression d’un supplément entraîne la suppression de tous les commentaires et suivis associés. Les catégories et bénéfices ne sont pas supprimés.
+
+    - **C.A 6 :** Les champs obligatoires vides ou les formats invalides sont signalés. Les contenus sont échappés contre les failles XSS.
+
+- **User Story 16 :** En tant qu’administrateur connecté, je veux pouvoir créer, modifier et supprimer des catégories et des bénéfices, afin de structurer le catalogue.
+
+    - **C.A 1 :** *(Sécurité)* Accès réservé aux administrateurs.
+    - **C.A 2 :** Deux sous-sections distinctes : "Catégories" et  "Bénéfices".
+    - **C.A 3 (CRUD) :** Pour chaque entité, l’administrateur peut lister, ajouter, modifier le nom, et supprimer, les associations correspondantes sont supprimées en cascade.
+    - **C.A 4 :** Les noms en double sont refusés avec un message d’erreur.
+    - **C.A 5 :** Les champs vides sont rejetés. Protection XSS sur les noms.
