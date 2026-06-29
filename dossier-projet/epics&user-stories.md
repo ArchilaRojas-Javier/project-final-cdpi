@@ -5,6 +5,9 @@
 - *Supplément* : 
 Dans le cadre de l’application, un supplément désigne un produit disponible en vente libre, destiné à compléter l’alimentation courante. Il se présente sous forme de gélules, comprimés, poudres ou liquides, et contient un ou plusieurs nutriments (vitamines, minéraux, acides aminés, extraits de plantes, etc.) dans un but de maintien du bien-être.
 
+    - *Type de supplément* :
+  Désigne la famille biochimique ou l’origine d’un supplément : Minéral, Vitamine, Plante, Acide aminé, etc. Chaque supplément appartient à un seul type.
+
 
 ## EPIC 1 - Recherche de supplément
 
@@ -46,19 +49,19 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     quand il lance la recherche,
     alors le système affiche le message `Aucun supplément trouvé pour ce bienfait`.
 
-- **User story 3:** En tant que visiteur, je veux pouvoir parcourir les suppléments par catégorie afin de découvrir les produits plus facilement.
+- **User story 3:** En tant que visiteur, je veux pouvoir parcourir les suppléments par type de supplément afin de découvrir les produits plus facilement.
 
-    - **C.A 1 :** Étant donné qu’au moins une catégorie existe en base,
-    quand le visiteur accède à la page des catégories,
-    alors la liste des catégories disponibles s’affiche.
+    - **C.A 1 :** Étant donné qu’au moins un type existe en base,
+    quand le visiteur accède à la page des types de supplément,
+    alors la liste des types disponibles s’affiche.
     
-    - **C.A 2 :** Étant donné que le visiteur sélectionne une catégorie,
+    - **C.A 2 :** Étant donné que le visiteur sélectionne un type,
     quand il clique dessus,
-    alors la liste des suppléments appartenant à cette catégorie apparaît.
+    alors la liste des suppléments appartenant à ce type apparaît.
     
-    - **C.A 3 :** Étant donné qu’une catégorie ne contient aucun supplément,
+    - **C.A 3 :** Étant donné qu’un type de supplément ne contient aucun supplément,
     quand le visiteur y accède,
-    alors le message « Aucun supplément dans cette catégorie » est affiché.
+    alors le message « Aucun supplément dans ce type » est affiché.
 
 **NOTE :** Les critères de validation de la barre de recherche (champ vide, caractères spéciaux, insensibilité à la casse) décrits dans la user story 1 s’appliquent également à cette fonctionnalité.
     

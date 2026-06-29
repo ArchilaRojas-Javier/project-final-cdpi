@@ -4,4 +4,4 @@
 
 ![Diagramme use case](images/useCase.png)
 
-https://drive.google.com/uc?export=view&id=1c8R1YaVMYY-GYKJIC0XmPsC_PPtsEEXr
+https://drive.google.com/file/d/1bR-wCmpMEsYRCluRrjYmsbJnjBorLv1z/view?usp=sharing
