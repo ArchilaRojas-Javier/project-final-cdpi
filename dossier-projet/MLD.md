@@ -85,19 +85,19 @@ erDiagram
         datetime created_at
     }
 
-    Like {
+       Like {
         int id_like PK
         int user_id FK
-        int comment_id FK_NULL
-        int response_id FK_NULL
+        int comment_id FK "nullable"
+        int response_id FK "nullable"
         datetime created_at
     }
 
     Report {
         int id_report PK
         int user_id FK
-        int comment_id FK_NULL
-        int response_id FK_NULL
+        int comment_id FK "nullable"
+        int response_id FK "nullable"
         string reason
         datetime created_at
     }

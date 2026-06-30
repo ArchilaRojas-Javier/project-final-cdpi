@@ -19,7 +19,7 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     
     - **C.A 2 :** Étant donné que le visiteur saisit un nom qui ne correspond à aucun supplément enregistré,
     quand il lance la recherche,
-    alors le système affiche un message informatif du type `Aucun supplément trouvé pour ce terme`.
+    alors le système affiche un message indiquant qu’aucun résultat n’a été trouvé.
     
     - **C.A 3 :** Étant donné que le visiteur n’a rien écrit dans le champ de recherche,
     quand il tente de lancer la recherche,
@@ -47,7 +47,7 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     
     - **C.A 2 :** Étant donné que le visiteur saisit un bienfait qui n’est associé à aucun supplément en base,
     quand il lance la recherche,
-    alors le système affiche le message `Aucun supplément trouvé pour ce bienfait`.
+    alors le système affiche un message indiquant qu’aucun supplément ne correspond à ce bienfait.
 
 - **User story 3:** En tant que visiteur, je veux pouvoir parcourir les suppléments par type de supplément afin de découvrir les produits plus facilement.
 
@@ -61,7 +61,7 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     
     - **C.A 3 :** Étant donné qu’un type de supplément ne contient aucun supplément,
     quand le visiteur y accède,
-    alors le message « Aucun supplément dans ce type » est affiché.
+    alors un message indiquant que ce type de supplément ne contient aucun produit est affiché.
 
 **NOTE :** Les critères de validation de la barre de recherche (champ vide, caractères spéciaux, insensibilité à la casse) décrits dans la user story 1 s’appliquent également à cette fonctionnalité.
     
@@ -72,19 +72,19 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     
     - **C.A 1 :** Étant donné que le visiteur est sur le formulaire d’inscription,
     quand il saisit une adresse email valide non utilisée et un mot de passe d’au moins 8 caractères alphanumériques, puis valide,
-    alors le système chiffre le mot de passe avec bcrypt, crée le compte, connecte automatiquement l’utilisateur et le redirige vers le tableau de bord avec un message de confirmation ` Votre compte a été créé avec succès`.
+    alors le système chiffre le mot de passe avec bcrypt, crée le compte, connecte automatiquement l’utilisateur et le redirige vers le tableau de bord avec un message de confirmation de création de compte.
     
     - **C.A 2 :** Étant donné que le visiteur saisit une adresse email déjà associée à un compte existant,
     quand il soumet le formulaire,
-    alors le système refuse l’inscription et affiche le message d’erreur ` Cette adresse email est déjà utilisée `.
+    alors le système refuse l’inscription et affiche un message indiquant que cette adresse email est déjà associée à un compte.
     
     - **C.A 3 :** Étant donné que le visiteur saisit un mot de passe de moins de 8 caractères,
     quand il soumet le formulaire,
-    alors le système refuse l’inscription et demande un mot de passe d’au moins 8 caractères.
+    alors le système refuse l’inscription et affiche un message indiquant les critères de longueur du mot de passe.
     
     - **C.A 4 :** Étant donné que le visiteur saisit un mot de passe sans aucun chiffre ni lettre,
     quand il soumet le formulaire,
-    alors le système refuse et indique que le mot de passe doit contenir au moins un chiffre et une lettre.
+    alors le système refuse l’inscription et affiche un message indiquant les critères de complexité du mot de passe.
     
     - **C.A 5 :** Étant donné que le visiteur saisit une adresse email sans format valide,
     quand il soumet le formulaire,
@@ -92,11 +92,11 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     
     - **C.A 6 :** Étant donné que le visiteur insère du code malveillant dans les champs email ou mot de passe,
     quand il soumet le formulaire,
-    alors le code n’est pas exécuté, et le système affiche le message d’erreur générique ` Saisie invalide `.
+    alors le code n’est pas exécuté, et le système affiche un message d’erreur générique indiquant que la saisie est invalide.
     
     - **C.A 7 :** Étant donné que le visiteur remplit le champ "Confirmer le mot de passe",
     quand les deux mots de passe ne correspondent pas,
-    alors le système bloque l’envoi et affiche le message d'erreur `Les mots de passe ne correspondent pas`
+    alors le système bloque l’envoi et affiche un message indiquant que les mots de passe ne correspondent pas.
 
 
 - **User story 5:** En tant qu’utilisateur inscrit, je veux me connecter à mon compte avec mes identifiants: email et mot de passe, afin de retrouver mon historique de consommation et mes notes.
@@ -107,11 +107,11 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     
     - **C.A 2 :** Étant donné que l’email saisi n’existe pas en base,
     quand l’utilisateur tente de se connecter,
-    alors le message d’erreur `Email ou mot de passe incorrect` s’affiche.
+    alors un message d’erreur indiquant que les identifiants sont incorrects s’affiche.
     
     - **C.A 3 :** Étant donné que l’email existe mais que le mot de passe est incorrect,
     quand la tentative de connexion a lieu,
-    alors le système refuse l’accès et affiche le message générique `Email ou mot de passe incorrect `.
+    alors le système refuse l’accès et affiche un message d’erreur indiquant que les identifiants sont incorrects.
     
     - **C.A 4 :** Étant donné que l’utilisateur laisse les champs email ou mot de passe vides,
     quand il soumet le formulaire,
@@ -121,8 +121,7 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
 
     - **C.A 1 :** Étant donné que l’utilisateur a oublié son mot de passe,
     quand il saisit son adresse email dans le formulaire de récupération et valide,
-    alors un email contenant un lien unique et temporaire de réinitialisation est envoyé à cette adresse, et un message de confirmation générique s’affiche : 
-    "Si un compte existe avec cette adresse, un email de réinitialisation vient d’être envoyé."
+    alors un email contenant un lien unique et temporaire de réinitialisation est envoyé à cette adresse, et un message indiquant que si l’adresse est reconnue, un email a été envoyé s’affiche.
 
     - **C.A 2 :** Étant donné que l’adresse email saisie n’existe pas dans la base,
     quand le formulaire est soumis,
@@ -144,7 +143,7 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     quand il valide,
     alors un message d’erreur lui demande de saisir une adresse email.
 
-    - **C.A 7 :** Le lien de réinitialisation contient un token aléatoire stocké haché en base de donnes avec une durée de validité limitée de 1 heure. Aucune information sur l’existence du compte n’est divulguée dans les messages d’erreur ou de succès.
+    - **C.A 7 :** Le lien de réinitialisation contient un token aléatoire stocké haché en base de données avec une durée de validité limitée de 1 heure. Aucune information sur l’existence du compte n’est divulguée dans les messages d’erreur ou de succès.
 
 - **User story 7:** En tant que visiteur, je veux pouvoir créer un compte ou me connecter en utilisant mon compte Google, afin de simplifier l’inscription et d’autoriser l’application à gérer mes rappels dans Google Calendar.
 
@@ -167,7 +166,7 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
 
 ## EPIC 3 - Espace membre
 
-- **User story 8:** En tant qu’utilisateur connecté, je veux accéder à un tableau de bord résumant pour chaque supplément en cours, le nombre de jours restants et la dose journaliére, afin d’avoir une vision claire et rapide de mon suivi quotidien.
+- **User story 8:** En tant qu’utilisateur connecté, je veux accéder à un tableau de bord résumant pour chaque supplément en cours, le nombre de jours restants et la dose journalière, afin d’avoir une vision claire et rapide de mon suivi quotidien.
     
     - **C.A 1 :** Étant donné que l’utilisateur connecté suit au moins un supplément avec une durée définie,
     quand il accède au tableau de bord,
@@ -175,7 +174,7 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
     
     - **C.A 2 :** Étant donné que l’utilisateur n’a aucun supplément dans son suivi actif,
     quand il arrive sur le tableau de bord,
-    alors un message l’informe : ` Vous n’avez aucun suivi en cours. Ajoutez un supplément pour commencer.`
+    alors un message informatif indiquant qu’aucun suivi n’est en cours s’affiche.
     
 - **User story 9:** En tant qu’utilisateur connecté, lorsque j’ajoute un supplément à mon suivi, je peux personnaliser la durée, la dose, l’heure et la consigne. Si j’ai autorisé l’accès à mon Google Calendar, je peux également activer des rappels quotidiens directement dans ce calendrier pour recevoir une notification sur mon téléphone. Je peux modifier ou désactiver ces rappels à tout moment.
 
@@ -201,7 +200,7 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
 
         - Rappel par notification standard Google
 
-        et un message de confirmation  "Vos rappels ont été programmés dans Google Calendar" s'affiche.
+        et un message de confirmation de programmation des rappels s'affiche.
 
     - **C.A 4 :** Étant donné que l'utilisateur souhaite arrêter les rappels,
     quand il désactive l'option de rappel pour ce supplément ou supprime le supplément de son suivi,
@@ -244,13 +243,13 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
 
     - **C.A 3 :** Étant donné que l’utilisateur n’a jamais enregistré de supplément dans son suivi,
     quand il accède à l’historique,
-    alors le système affiche un message informatif : `Vous n’avez pas encore de supplémentation enregistrée.`
+    alors le système affiche un message informatif indiquant qu’aucune supplémentation n’est enregistrée.
 
 - **User story 12:** En tant qu’utilisateur, je veux interagir avec la communauté via les commentaires (publier, répondre, aimer, signaler), afin de partager mon expérience et d’aider les autres utilisateurs.
 
     - **C.A 1 :** Étant donné que l’utilisateur publie un commentaire racine sur la fiche d’un supplément,
     quand il valide,
-    alors le commentaire est enregistré avec et le message "Votre commentaire est en attente de validation" est affiché. Il n’est pas visible publiquement.
+    alors le commentaire est enregistré et un message indiquant que le commentaire est en attente de validation est affiché. Il n’est pas visible publiquement.
 
     - **C.A 2 :** Seuls les commentaires racines approuvés par un administrateur sont affichés publiquement.
 
@@ -266,11 +265,11 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
     - **C.A 5 :** Étant donné que l’utilisateur voit un commentaire ou une réponse inapproprié(e),
     quand il clique sur "Signaler" et confirme,
     alors un signalement est enregistré avec la date et l’auteur du signalement.
-    Un message "Signalement envoyé" s’affiche. Un utilisateur ne peut signaler qu’une seule fois le même commentaire.
+    Un message de confirmation de signalement s’affiche. Un utilisateur ne peut signaler qu’une seule fois le même commentaire.
 
     - **C.A 6 :** L’auteur d’un commentaire ou d’une réponse peut le supprimer.
 
-    - **C.A 7 :** Tous les conten sont échappés pour prévenir les injections XSS. Les caractères interdits ou les scripts sont neutralisés.
+    - **C.A 7 :** Tous les contenus sont échappés pour prévenir les injections XSS. Les caractères interdits ou les scripts sont neutralisés.
 
 - **User story 13:** En tant qu'utilisateur connecté, je veux accéder à mon profil personnel pour y renseigner ou consulter mes informations de base: nom, âge,  photo/avatar, afin de personnaliser mon expérience dans l'application.
 
@@ -281,7 +280,6 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
     - **C.A 2 :** Étant donné que l'utilisateur est connecté,
     quand il accède à la page "Mon profil",
     alors il voit ses informations actuelles : nom, âge, photo ou avatar par défaut.
-
 
     - **C.A 3 :** Étant donné que le visiteur se connecte via Google pour la première fois,
     quand il accepte les autorisations,
@@ -304,7 +302,7 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
 
 - **User Story 14 :** En tant qu’administrateur connecté, je veux pouvoir modérer les commentaires : approuver les commentaires racines, consulter les signalements et supprimer des commentaires ou réponses inappropriés, afin de garantir la qualité des échanges.
 
-    - **C.A 1 :** *(Sécurité)* L’accès à la section de modération est réservé aux administrateurs. Toute tentative d’un utilisateur standard le déconnecte et le redirige vers la connexion avec le message "Accès non autorisé".
+    - **C.A 1 :** *(Sécurité)* L’accès à la section de modération est réservé aux administrateurs. Toute tentative d’un utilisateur standard le déconnecte et le redirige vers la connexion avec un message d’erreur d’accès non autorisé.
 
     - **C.A 2 :** Étant donné que l’administrateur accède à la modération,
     quand la page se charge,
@@ -318,24 +316,24 @@ La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit ex
 
     - **C.A 6 :** Toute action de modération est protégée par un jeton CSRF et les contenus affichés sont échappés. (A VER ESTO NO LO SE RICK)
 
-- **User Story 15 :** En tant qu’administrateur connecté, je veux pouvoir ajouter, modifier ou supprimer des suppléments du catalogue, en leur associant des catégories et des bienfaits, afin de maintenir à jour les informations proposées aux utilisateurs.
+- **User Story 15 :** En tant qu’administrateur connecté, je veux pouvoir ajouter, modifier ou supprimer des suppléments du catalogue, en leur associant un type de supplément et des bienfaits, afin de maintenir à jour les informations proposées aux utilisateurs.
 
-    - **C.A 1 :** *(Sécurité)* L’accès à la section de modération est réservé aux administrateurs. Toute tentative d’un utilisateur standard le déconnecte et le redirige vers la connexion avec le message "Accès non autorisé".
+    - **C.A 1 :** *(Sécurité)* L’accès à la section de gestion du catalogue est réservé aux administrateurs. Toute tentative d’un utilisateur standard le déconnecte et le redirige vers la connexion avec un message d’erreur d’accès non autorisé.
 
-    - **C.A 2 :** L’administrateur voit la liste de tous les suppléments avec leur nom, catégories associées et un bouton "Supprimer".
+    - **C.A 2 :** L’administrateur voit la liste de tous les suppléments avec leur nom, type de supplément associé et un bouton "Supprimer".
 
-    - **C.A 3 :** Le formulaire d’ajout contient les champs : nom, description, posologie recommandée, durée recommandée, moment de prise, précautions, et des listes déroulantes multiples pour choisir les catégories et les bénéfices. À la validation, le supplément est créé et les associations enregistrées.
+    - **C.A 3 :** Le formulaire d’ajout contient les champs : nom, description, posologie recommandée, durée recommandée, moment de prise, précautions, une liste déroulante pour choisir le type de supplément, et une liste déroulante multiple pour choisir les bénéfices. À la validation, le supplément est créé et les associations enregistrées.
 
-    - **C.A 4 :** En cliquant sur un supplément, l’administrateur peut modifier toutes ses informations, y compris les catégories et bénéfices. Les changements sont enregistrés.
+    - **C.A 4 :** En cliquant sur un supplément, l’administrateur peut modifier toutes ses informations, y compris le type de supplément et les bénéfices. Les changements sont enregistrés.
 
-    - **C.A 5 :** La suppression d’un supplément entraîne la suppression de tous les commentaires et suivis associés. Les catégories et bénéfices ne sont pas supprimés.
+    - **C.A 5 :** La suppression d’un supplément entraîne la suppression de tous les commentaires et suivis associés. Les types de supplément et bénéfices ne sont pas supprimés.
 
     - **C.A 6 :** Les champs obligatoires vides ou les formats invalides sont signalés. Les contenus sont échappés contre les failles XSS.
 
-- **User Story 16 :** En tant qu’administrateur connecté, je veux pouvoir créer, modifier et supprimer des catégories et des bénéfices, afin de structurer le catalogue.
+- **User Story 16 :** En tant qu’administrateur connecté, je veux pouvoir créer, modifier et supprimer des types de supplément et des bénéfices, afin de structurer le catalogue.
 
     - **C.A 1 :** *(Sécurité)* Accès réservé aux administrateurs.
-    - **C.A 2 :** Deux sous-sections distinctes : "Catégories" et  "Bénéfices".
-    - **C.A 3 (CRUD) :** Pour chaque entité, l’administrateur peut lister, ajouter, modifier le nom, et supprimer, les associations correspondantes sont supprimées en cascade.
+    - **C.A 2 :** Deux sous-sections distinctes : "Types de supplément" et "Bénéfices".
+    - **C.A 3 (CRUD) :** Pour chaque entité, l’administrateur peut lister, ajouter, modifier le nom, et supprimer ; les associations correspondantes sont supprimées en cascade.
     - **C.A 4 :** Les noms en double sont refusés avec un message d’erreur.
     - **C.A 5 :** Les champs vides sont rejetés. Protection XSS sur les noms.
