@@ -98,7 +98,7 @@ erDiagram
         int user_id FK
         int comment_id FK "nullable"
         int response_id FK "nullable"
-        string reason
+        enum reason
         datetime created_at
     }
 
