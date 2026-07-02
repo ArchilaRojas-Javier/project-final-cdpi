@@ -5,11 +5,12 @@
 ```mermaid
 erDiagram
     User {
-        int id_user PK
+        int id PK
         string email
         string password_hash
         string full_name
-        int age
+        enum sex
+        json role
         string avatar_path
         string oauth_provider
         string oauth_id
@@ -17,73 +18,73 @@ erDiagram
     }
 
     SupplementType {
-        int id_supplement_type PK
+        int id PK
         string name
     }
 
     Supplement {
-        int id_supplement PK
+        int id PK
         string name
         string description
-        string recommended_dosage
-        int recommended_duration_days
-        string intake_time
+        json dosage_schedule
+        int on_duration_days
+        int off_duration_days
         string precautions
+        int supplement_type_id FK
     }
 
     Benefit {
-        int id_benefit PK
+        int id PK
         string name
     }
 
     UserSupplement {
-        int id_user_supplement PK
+        int id PK
         datetime start_date
-        datetime end_date
-        string dosage
-        string intake_time
-        string instructions
+        int duration_days
+        json dosage_schedule      
+        string precautions
     }
 
     Reminder {
-        int id_reminder PK
+        int id PK
         string google_event_id
         bool is_active
         datetime created_at
     }
 
     Note {
-        int id_note PK
+        int id PK
         text content
         datetime created_at
     }
 
     Comment {
-        int id_comment PK
+        int id PK
         text content
         bool is_approved
         datetime created_at
     }
 
     Response {
-        int id_response PK
+        int id PK
         text content
         datetime created_at
     }
 
     Like {
-        int id_like PK
+        int id PK
         datetime created_at
     }
 
     Report {
-        int id_report PK
+        int id PK
         string reason
         datetime created_at
     }
 
     PasswordReset {
-        int id_password_reset PK
+        int id PK
         string token_hash
         datetime expires_at
     }
