@@ -40,9 +40,16 @@ class Supplement
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'supplement', orphanRemoval: true)]
     private Collection $comment;
 
+    /**
+     * @var Collection<int, UserSupplement>
+     */
+    #[ORM\OneToMany(targetEntity: UserSupplement::class, mappedBy: 'supplement', orphanRemoval: true)]
+    private Collection $usersupplement;
+
     public function __construct()
     {
         $this->comment = new ArrayCollection();
+        $this->usersupplement = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -146,6 +153,36 @@ class Supplement
             // set the owning side to null (unless already changed)
             if ($comment->getSupplement() === $this) {
                 $comment->setSupplement(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserSupplement>
+     */
+    public function getUsersupplement(): Collection
+    {
+        return $this->usersupplement;
+    }
+
+    public function addUsersupplement(UserSupplement $usersupplement): static
+    {
+        if (!$this->usersupplement->contains($usersupplement)) {
+            $this->usersupplement->add($usersupplement);
+            $usersupplement->setSupplement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersupplement(UserSupplement $usersupplement): static
+    {
+        if ($this->usersupplement->removeElement($usersupplement)) {
+            // set the owning side to null (unless already changed)
+            if ($usersupplement->getSupplement() === $this) {
+                $usersupplement->setSupplement(null);
             }
         }
 

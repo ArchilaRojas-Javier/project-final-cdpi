@@ -25,6 +25,14 @@ class UserSupplement
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $precautions = null;
 
+    #[ORM\ManyToOne(inversedBy: 'userSupplements')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
+    #[ORM\ManyToOne(inversedBy: 'usersupplement')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Supplement $supplement = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +82,30 @@ class UserSupplement
     public function setPrecautions(?string $precautions): static
     {
         $this->precautions = $precautions;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getSupplement(): ?Supplement
+    {
+        return $this->supplement;
+    }
+
+    public function setSupplement(?Supplement $supplement): static
+    {
+        $this->supplement = $supplement;
 
         return $this;
     }
