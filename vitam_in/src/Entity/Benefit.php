@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\BenefitRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BenefitRepository::class)]
@@ -15,6 +17,17 @@ class Benefit
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
+
+    /**
+     * @var Collection<int, Supplement>
+     */
+    #[ORM\ManyToMany(targetEntity: Supplement::class, mappedBy: 'supplementbenefit')]
+    private Collection $supplements;
+
+    public function __construct()
+    {
+        $this->supplements = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -29,6 +42,33 @@ class Benefit
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Supplement>
+     */
+    public function getSupplements(): Collection
+    {
+        return $this->supplements;
+    }
+
+    public function addSupplement(Supplement $supplement): static
+    {
+        if (!$this->supplements->contains($supplement)) {
+            $this->supplements->add($supplement);
+            $supplement->addSupplementbenefit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSupplement(Supplement $supplement): static
+    {
+        if ($this->supplements->removeElement($supplement)) {
+            $supplement->removeSupplementbenefit($this);
+        }
 
         return $this;
     }

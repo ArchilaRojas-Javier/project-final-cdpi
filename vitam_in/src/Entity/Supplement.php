@@ -46,10 +46,21 @@ class Supplement
     #[ORM\OneToMany(targetEntity: UserSupplement::class, mappedBy: 'supplement', orphanRemoval: true)]
     private Collection $usersupplement;
 
+    /**
+     * @var Collection<int, Benefit>
+     */
+    #[ORM\ManyToMany(targetEntity: Benefit::class, inversedBy: 'supplements')]
+    private Collection $supplementbenefit;
+
+    #[ORM\ManyToOne(inversedBy: 'supplements')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?SupplementType $supplementtype = null;
+
     public function __construct()
     {
         $this->comment = new ArrayCollection();
         $this->usersupplement = new ArrayCollection();
+        $this->supplementbenefit = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -185,6 +196,42 @@ class Supplement
                 $usersupplement->setSupplement(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Benefit>
+     */
+    public function getSupplementbenefit(): Collection
+    {
+        return $this->supplementbenefit;
+    }
+
+    public function addSupplementbenefit(Benefit $supplementbenefit): static
+    {
+        if (!$this->supplementbenefit->contains($supplementbenefit)) {
+            $this->supplementbenefit->add($supplementbenefit);
+        }
+
+        return $this;
+    }
+
+    public function removeSupplementbenefit(Benefit $supplementbenefit): static
+    {
+        $this->supplementbenefit->removeElement($supplementbenefit);
+
+        return $this;
+    }
+
+    public function getSupplementtype(): ?SupplementType
+    {
+        return $this->supplementtype;
+    }
+
+    public function setSupplementtype(?SupplementType $supplementtype): static
+    {
+        $this->supplementtype = $supplementtype;
 
         return $this;
     }
