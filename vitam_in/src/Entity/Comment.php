@@ -39,9 +39,16 @@ class Comment
     #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'comment', orphanRemoval: true)]
     private Collection $likes;
 
+    /**
+     * @var Collection<int, Response>
+     */
+    #[ORM\OneToMany(targetEntity: Response::class, mappedBy: 'comment', orphanRemoval: true)]
+    private Collection $response;
+
     public function __construct()
     {
         $this->likes = new ArrayCollection();
+        $this->response = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -133,6 +140,36 @@ class Comment
             // set the owning side to null (unless already changed)
             if ($like->getComment() === $this) {
                 $like->setComment(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Response>
+     */
+    public function getResponse(): Collection
+    {
+        return $this->response;
+    }
+
+    public function addResponse(Response $response): static
+    {
+        if (!$this->response->contains($response)) {
+            $this->response->add($response);
+            $response->setComment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeResponse(Response $response): static
+    {
+        if ($this->response->removeElement($response)) {
+            // set the owning side to null (unless already changed)
+            if ($response->getComment() === $this) {
+                $response->setComment(null);
             }
         }
 

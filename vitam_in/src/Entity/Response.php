@@ -32,9 +32,20 @@ class Response
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\ManyToOne(inversedBy: 'response')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Comment $comment = null;
+
+    /**
+     * @var Collection<int, Report>
+     */
+    #[ORM\OneToMany(targetEntity: Report::class, mappedBy: 'response', orphanRemoval: true)]
+    private Collection $report;
+
     public function __construct()
     {
         $this->likes = new ArrayCollection();
+        $this->report = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -104,6 +115,48 @@ class Response
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getComment(): ?Comment
+    {
+        return $this->comment;
+    }
+
+    public function setComment(?Comment $comment): static
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReport(): Collection
+    {
+        return $this->report;
+    }
+
+    public function addReport(Report $report): static
+    {
+        if (!$this->report->contains($report)) {
+            $this->report->add($report);
+            $report->setResponse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(Report $report): static
+    {
+        if ($this->report->removeElement($report)) {
+            // set the owning side to null (unless already changed)
+            if ($report->getResponse() === $this) {
+                $report->setResponse(null);
+            }
+        }
 
         return $this;
     }

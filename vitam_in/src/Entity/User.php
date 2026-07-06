@@ -57,11 +57,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Response::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $respone;
 
+    /**
+     * @var Collection<int, Report>
+     */
+    #[ORM\OneToMany(targetEntity: Report::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $report;
+
     public function __construct()
     {
         $this->usersupplement = new ArrayCollection();
         $this->likes = new ArrayCollection();
         $this->respone = new ArrayCollection();
+        $this->report = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -253,6 +260,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($respone->getUser() === $this) {
                 $respone->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReport(): Collection
+    {
+        return $this->report;
+    }
+
+    public function addReport(Report $report): static
+    {
+        if (!$this->report->contains($report)) {
+            $this->report->add($report);
+            $report->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(Report $report): static
+    {
+        if ($this->report->removeElement($report)) {
+            // set the owning side to null (unless already changed)
+            if ($report->getUser() === $this) {
+                $report->setUser(null);
             }
         }
 
