@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserSupplementRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserSupplementRepository::class)]
@@ -32,6 +34,17 @@ class UserSupplement
     #[ORM\ManyToOne(inversedBy: 'usersupplement')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Supplement $supplement = null;
+
+    /**
+     * @var Collection<int, Note>
+     */
+    #[ORM\OneToMany(targetEntity: Note::class, mappedBy: 'userSupplement', orphanRemoval: true)]
+    private Collection $notes;
+
+    public function __construct()
+    {
+        $this->notes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -106,6 +119,36 @@ class UserSupplement
     public function setSupplement(?Supplement $supplement): static
     {
         $this->supplement = $supplement;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Note>
+     */
+    public function getNotes(): Collection
+    {
+        return $this->notes;
+    }
+
+    public function addNote(Note $note): static
+    {
+        if (!$this->notes->contains($note)) {
+            $this->notes->add($note);
+            $note->setUserSupplement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNote(Note $note): static
+    {
+        if ($this->notes->removeElement($note)) {
+            // set the owning side to null (unless already changed)
+            if ($note->getUserSupplement() === $this) {
+                $note->setUserSupplement(null);
+            }
+        }
 
         return $this;
     }
