@@ -51,10 +51,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $likes;
 
+    /**
+     * @var Collection<int, Response>
+     */
+    #[ORM\OneToMany(targetEntity: Response::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $respone;
+
     public function __construct()
     {
         $this->usersupplement = new ArrayCollection();
         $this->likes = new ArrayCollection();
+        $this->respone = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -216,6 +223,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($like->getUser() === $this) {
                 $like->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Response>
+     */
+    public function getRespone(): Collection
+    {
+        return $this->respone;
+    }
+
+    public function addRespone(Response $respone): static
+    {
+        if (!$this->respone->contains($respone)) {
+            $this->respone->add($respone);
+            $respone->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRespone(Response $respone): static
+    {
+        if ($this->respone->removeElement($respone)) {
+            // set the owning side to null (unless already changed)
+            if ($respone->getUser() === $this) {
+                $respone->setUser(null);
             }
         }
 
