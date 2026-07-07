@@ -32,7 +32,7 @@ class RegistrationFormType extends AbstractType
                 'mapped' => false,
                 'constraints' => [
                     new IsTrue(
-                        message: 'You should agree to our terms.',
+                        message: 'Vous devez accepter nos conditions.',
                     ),
                 ],
             ])
@@ -46,17 +46,16 @@ class RegistrationFormType extends AbstractType
                     'label' => 'mot de passe',
                     'constraints' => [
                         new NotBlank(
-                            message: 'Please enter a password',
+                            message: 'Veuillez entrer un mot de passe',
                         ),
                         new Length(
                             min: 8,
-                            minMessage: 'Your password should be at least {{ limit }} characters',
-                            // max length allowed by Symfony for security reasons
-                            max: 4096,
+                            minMessage: 'Votre mot de passe doit faire au moins {{ limit }} caractères',
+                            max: 255,
                         ),
                         new Regex(
                             pattern: '/^[A-Za-z\d]+$/',
-                            message: 'La contraseña debe contener al menos una letra y un número.',
+                            message: 'Le mot de passe doit contenir au moins une lettre et un chiffre..',
                         ),
                     ],
                 ],
