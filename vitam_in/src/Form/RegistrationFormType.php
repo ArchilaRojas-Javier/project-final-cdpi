@@ -23,12 +23,7 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('email', EmailType::class, [
                 'attr'=> ['placeholder' => 'mail@example.com'],
-                'constraints' => [
-                new Assert\NotBlank(),
-                new Assert\Email(
-                    message: "L'adresse email {{ value }} n'est pas valide.",
-                ),
-            ]])
+              ])
             
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
@@ -48,7 +43,7 @@ class RegistrationFormType extends AbstractType
                             max: 255,
                         ),
                         new Regex(
-                            pattern: '/^[A-Za-z\d]+$/',
+                            pattern: '/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/',
                             message: 'Le mot de passe doit contenir au moins une lettre et un chiffre..',
                         ),
                     ],
