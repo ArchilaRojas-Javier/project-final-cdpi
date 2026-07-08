@@ -36,6 +36,8 @@ class RegistrationController extends AbstractController
             // encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
+            $user->setRoles(['ROLE_USER']);
+
             $entityManager->persist($user);
             $entityManager->flush();
 
@@ -44,13 +46,15 @@ class RegistrationController extends AbstractController
                 (new TemplatedEmail())
                     ->from(new Address('mailer@vitamin.com', 'Vitamin mail'))
                     ->to((string) $user->getEmail())
-                    ->subject('Please Confirm your Email')
+                    ->subject('Veuillez confirmer votre adresse e-mail')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
             // do anything else you need here, like send an email
 
-            return $this->redirectToRoute('_profiler_home');
+            $this->addFlash('success', 'Inscription réussie. Consultez votre boîte mail pour confirmer votre compte.');
+
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('registration/register.html.twig', [
@@ -75,8 +79,8 @@ class RegistrationController extends AbstractController
         }
 
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
-        $this->addFlash('success', 'Your email address has been verified.');
+        $this->addFlash('success', 'Votre adresse e-mail a été vérifiée. Vous pouvez maintenant vous connecter.');
 
-        return $this->redirectToRoute('app_register');
+        return $this->redirectToRoute('app_login');
     }
 }
