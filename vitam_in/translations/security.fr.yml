@@ -1,0 +1,4 @@
+# translations/security.fr.yaml
+"Bad credentials.": "Identifiants invalides."
+
+# añade cualquier otra clave que aparezca en error.messageKey

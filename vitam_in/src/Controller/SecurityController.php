@@ -14,6 +14,7 @@ class SecurityController extends AbstractController
     {
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
+        $eror = dump($error);
 
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
@@ -21,6 +22,7 @@ class SecurityController extends AbstractController
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
+            'eror' => $eror,
         ]);
     }
 
