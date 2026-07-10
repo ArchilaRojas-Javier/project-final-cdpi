@@ -16,5 +16,14 @@
         <li>Your controller at <code>/home/user/project-final-cdpi/vitam_in/src/Controller/DashboardController.php</code></li>
         <li>Your template at <code>/home/user/project-final-cdpi/vitam_in/templates/dashboard/index.html.twig</code></li>
     </ul>
+
+
+				{% if app.user %}
+                        <div class="mb-3">
+                            You are logged in as
+                            {{ app.user.userIdentifier }},
+                            <a href="{{ logout_path() }}">Logout</a>
+                        </div>
+                    {% endif %}
 </div>
 {% endblock %}

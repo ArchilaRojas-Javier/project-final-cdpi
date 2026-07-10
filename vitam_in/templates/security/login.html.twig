@@ -12,13 +12,6 @@
 		<h1 class="text-[#308AFF] text-[4rem]">Vitam-In</h1>
 		<h2 class="text-black text-[2rem]">Se connecter</h2>
 
-				{% if app.user %}
-                        <div class="mb-3">
-                            You are logged in as
-                            {{ app.user.userIdentifier }},
-                            <a href="{{ logout_path() }}">Logout</a>
-                        </div>
-                    {% endif %}
 
 		<div class="container-form p-6 border rounded-[0.5rem] border-[#D9D9D9] shadow-md">
 			<form method="post">
