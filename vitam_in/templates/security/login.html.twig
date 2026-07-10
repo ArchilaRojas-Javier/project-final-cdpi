@@ -28,9 +28,8 @@
                         <input type="password" name="_password" id="password" class="form-control border rounded-[0.5rem] p-1" autocomplete="current-password" required>
                     </div>
 				    {# <div class="flex flex-col mb-6">
-                        {{ form_label(registrationForm.plainPassword.second)}}
-                        {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'border rounded-[0.5rem] p-1'}})}}
-                        {{ form_errors(registrationForm.plainPassword.second)}}
+
+                    
 					</div> #}
 				    <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
 
@@ -38,6 +37,15 @@
 				    <button class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-full" type="submit">
 					    Se connecter
 				    </button>
+					<button class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-full" type="submit">
+					    <a href="{{ path('connect_google_start') }}" class="text-white">Se connecter avec Google</a>
+				    </button>
+					<div class="flex flex-col mt-6">
+						<a href="{{ path('app_register') }}" class="text-[#308AFF] text-center">Pas encore de compte ? Inscrivez-vous</a>
+					</div>
+					{# <div class="flex flex-col mt-6">
+						<a href="{{ path('app_forgot_password_request') }}" class="text-[#308AFF] text-center">Mot de passe oublié ?</a>
+					</div> #}
 			</form>
 
 
