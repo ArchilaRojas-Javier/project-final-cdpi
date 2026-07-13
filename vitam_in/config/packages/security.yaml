@@ -19,12 +19,17 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            entry_point: 'form_login'
             form_login:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
+            user_checker: App\Security\UserChecker
+            custom_authenticator: App\Security\GoogleAuthenticator
             logout:
                 path: app_logout
+                # where to redirect after logout
+                # target: app_any_route
                 # where to redirect after logout
                 # target: app_any_route
 
