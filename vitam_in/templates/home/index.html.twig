@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!
+{% endblock %}
+
+{% block body %}
+	<section class="flex flex-col items-center p-7 min-h-screen w-screen gap-10 ">
+
+		<h1 class="text-[#308AFF] text-[4rem]">Vitam-In</h1>
+
+        <h2 class="text-black text-[2rem] text-center mb-6">La guide pratique de suppléments</h2>
+
+        <div class="flex flex-col items-center justify-center gap-6 mb-6">
+            <a href="{{ path('app_register') }}" class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-[300px] p-2 text-center">Inscription</a>
+            {# <a href="{{ path('app_login') }}" class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-[300px] p-2 text-center">Se connecter</a> #}
+        </div>
+
+		<div class="main-container p-6 text-left text-size-[16px] ">
+
+            <h2 class="text-black text-[2rem] mb-6 text-center">Compléments alimentaires</h2>
+			<p class="mb-6">
+				Les compléments alimentaires sont une sous-catégorie d’ingrédients pharmaceutiques actifs 
+				qui jouent un rôle crucial dans le soutien de la santé et du bien-être 
+				en general. Ces suppléments sont formulés pour fournir des nutriments essentiels, des vitamines, 
+				des minéraux et d'autres composés bioactifs qui peuvent manquer dans l'alimentation habituelle 
+				d'un individu.
+				
+				Ces suppléments contiennent souvent des ingrédients clés tels que des vitamines (par exemple, 
+                la vitamine C, la vitamine D), des minéraux (par exemple, le calcium, le fer), des antioxydants,
+                des extraits de plantes, des probiotiques et des acides gras. Chaque ingrédient est 
+                soigneusement sélectionné pour ses bienfaits spécifiques pour la santé et ses effets 
+                thérapeutiques.
+            </p>
+
+            <h2 class="text-black text-[2rem] text-center mb-6">Pourquoi les utiliser ?</h2>
+            <p class="mb-6">
+
+				Les compléments alimentaires sont conçus pour combler les carences nutritionnelles et promouvoir 
+                une santé optimale en améliorant diverses fonctions corporelles. Ils se présentent sous diverses
+                formes, notamment des comprimés, des gélules, des poudres et des liquides, et sont généralement 
+                disponibles en vente libre.
+				
+				
+				Lorsqu'ils sont pris selon les instructions, les compléments alimentaires peuvent soutenir la 
+                fonction immunitaire, augmenter les niveaux d'énergie, favoriser une digestion saine, soutenir
+                la santé cardiovasculaire et offrir de nombreux autres avantages. Il est toutefois important de 
+                noter que ces compléments n’ont pas pour but de remplacer une alimentation équilibrée mais plutôt
+                de la compléter.
+				
+				Avant d'incorporer des compléments alimentaires à votre routine, il est recommandé de consulter un 
+                professionnel de la santé pour vous assurer qu'ils conviennent aux besoins individuels et pour 
+                éviter toute interaction potentielle avec des médicaments ou des problèmes de santé existants.
+				
+				
+			</p>
+		</div>
+
+	</section>
+{% endblock %}
