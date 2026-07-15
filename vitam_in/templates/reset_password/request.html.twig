@@ -20,6 +20,10 @@
 				{{ form_widget(requestForm.email, {'attr': {'class': 'border rounded-[0.5rem] p-1'}})}}
 				{{ form_errors(requestForm.email)}}
 			</div>
+
+            <div class="flex flex-col mb-6">
+				<a href="{{ path('app_register') }}" class="text-[#308AFF] text-center">Pas encore de compte ? Inscrivez-vous</a>
+			</div>
             
             <button class="btn btn-primary bg-[#2C2C2C] text-white border rounded-[0.5rem] w-full p-2">Envoyer</button>
             {{ form_end(requestForm) }}

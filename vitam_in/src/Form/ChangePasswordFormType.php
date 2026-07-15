@@ -43,8 +43,8 @@ class ChangePasswordFormType extends AbstractType
                             pattern: '/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/',
                             message: 'Le mot de passe doit contenir au moins une lettre et un chiffre..',
                         ),
-                        new PasswordStrength(),
-                        new NotCompromisedPassword(),
+                        // new PasswordStrength(),
+                        // new NotCompromisedPassword(),
                     ],
                 ],
                 'second_options' => [
