@@ -1,12 +1,34 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Reset your password{% endblock %}
+{% block title %}Réinitialisez votre mot de passe
+{% endblock %}
 
 {% block body %}
-    <h1>Reset your password</h1>
+	<section class="flex flex-col items-center justify-center min-h-screen w-full gap-10 ">
 
-    {{ form_start(resetForm) }}
-        {{ form_row(resetForm.plainPassword) }}
-        <button class="btn btn-primary">Reset password</button>
-    {{ form_end(resetForm) }}
+		<h1 class="text-[#308AFF] text-[4rem]">Vitam-In</h1>
+		<h2 class="text-black text-[2rem]">Réinitialisez votre mot de passe</h2>
+
+		<div class="container-form p-6 border rounded-[0.5rem] border-[#D9D9D9] shadow-md">
+
+			{{ form_start(resetForm) }}
+
+			<div class="flex flex-col mb-6">
+				{{ form_label(resetForm.plainPassword.first) }}
+				{{ form_widget(resetForm.plainPassword.first, {'attr': {'class': 'border rounded-[0.5rem] p-1'}})}}
+				{{ form_errors(resetForm.plainPassword.first)}}
+			</div>
+			<div class="flex flex-col mb-6">
+				{{ form_label(resetForm.plainPassword.second) }}
+				{{ form_widget(resetForm.plainPassword.second, {'attr': {'class': 'border rounded-[0.5rem] p-1'}})}}
+				{{ form_errors(resetForm.plainPassword.second)}}
+			</div>
+
+			<button class="btn btn-primary bg-[#2C2C2C] text-white border rounded-[0.5rem] w-full p-2">Envoyer</button>
+			{{ form_end(resetForm) }}
+		</div>
+	</section>
+	
+	<button class="btn btn-primary">Réinitialiser le mot de passe</button>
+	{{ form_end(resetForm) }}
 {% endblock %}

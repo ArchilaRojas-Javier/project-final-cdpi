@@ -11,6 +11,8 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
 use Symfony\Component\Validator\Constraints\PasswordStrength;
+use Symfony\Component\Validator\Constraints\Regex;
+
 
 class ChangePasswordFormType extends AbstractType
 {
@@ -22,28 +24,34 @@ class ChangePasswordFormType extends AbstractType
                 'options' => [
                     'attr' => [
                         'autocomplete' => 'new-password',
+                        'placeholder' => '**********'
                     ],
                 ],
+                'required' => true,
                 'first_options' => [
+                    'label' => 'Mot de passe',
                     'constraints' => [
                         new NotBlank(
-                            message: 'Please enter a password',
+                            message: 'Veuillez entrer un mot de passe',
                         ),
                         new Length(
-                            min: 12,
-                            minMessage: 'Your password should be at least {{ limit }} characters',
-                            // max length allowed by Symfony for security reasons
-                            max: 4096,
+                            min: 8,
+                            minMessage: 'Votre mot de passe doit faire au moins {{ limit }} caractères',
+                            max: 255,
+                        ),
+                         new Regex(
+                            pattern: '/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/',
+                            message: 'Le mot de passe doit contenir au moins une lettre et un chiffre..',
                         ),
                         new PasswordStrength(),
                         new NotCompromisedPassword(),
                     ],
-                    'label' => 'New password',
                 ],
                 'second_options' => [
-                    'label' => 'Repeat Password',
+                    'label' => 'Confirmer le mot de passe',
+                    'attr' => ['placeholder' => '**********'],
                 ],
-                'invalid_message' => 'The password fields must match.',
+                'invalid_message' => 'Les champs de mot de passe doivent correspondre.',
                 // Instead of being set onto the object directly,
                 // this is read and encoded in the controller
                 'mapped' => false,
