@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SearchBarreType extends AbstractType
+class SearchBarType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -16,8 +16,8 @@ class SearchBarreType extends AbstractType
             ->add('query', SearchType::class, [
                 'label' => false,
                 'attr' => [
-                    'placeholder' => 'Rechercher un complément alimentaire',
-                    'class' => 'form-control',
+                    'placeholder' => 'Ex: Vitamine C, énergie, someil..',
+                    
                 ],
             ]);
            
@@ -27,6 +27,7 @@ class SearchBarreType extends AbstractType
     {
         $resolver->setDefaults([
             'method' => 'GET',
+            'csrf_protection' => false,
         ]);
     }
 }

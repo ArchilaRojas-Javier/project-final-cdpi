@@ -1,0 +1,37 @@
+{% block body %}
+	<div class="flex flex-col items-strech gap-2 container p-6">
+
+
+		<h3 class="text-center">Trouvez le supplement ou le bien-être qui correpond à vos besoins.
+		</h3>
+
+
+		{{ form_start(form) }}
+		<div class=" w-full p-2">
+
+			{{ form_widget(form.query, {'attr': {'class': 'w-full p-1  border rounded-[1rem] p-1'}})}}
+
+
+			{# <button class="btn btn-primary" type="submit">
+						            <i class="fas fa-search"></i> Buscar
+						        </button> #}
+			{{ form_end(form) }}
+		</div>
+
+
+		{% if results is not empty %}
+			<h3>Resultados ({{ results|length }})</h3>
+			<ul class="list-group">
+				{% for product in results %}
+					<li class="list-group-item d-flex justify-content-between align-items-center">
+						{{ product.name }}
+						<span class="badge bg-primary rounded-pill">{{ product.price|number_format(2) }}
+							€</span>
+					</li>
+				{% endfor %}
+			</ul>
+		{% elseif results is empty %}
+			<div class="alert alert-warning text-center">No se encontraron productos.</div>
+		{% endif %}
+	</div>
+{% endblock %}
