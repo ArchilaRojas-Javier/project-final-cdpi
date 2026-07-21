@@ -15,6 +15,19 @@ class SupplementRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Supplement::class);
     }
+    public function searchByName(string $query): array
+    {
+        if (empty($query)) {
+            return [];
+        }
+    
+        return $this->createQueryBuilder('p')
+            ->andWhere('LOWER(p.name) LIKE :query')
+            ->setParameter('query', '%' . mb_strtolower($query) . '%')
+            ->orderBy('p.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
 //    /**
 //     * @return Supplement[] Returns an array of Supplement objects
@@ -40,17 +53,4 @@ class SupplementRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-    public function searchByName(string $query): array
-    {
-        if (empty($query)) {
-            return [];
-        }
-
-        return $this->createQueryBuilder('p')
-            ->andWhere('LOWER(p.name) LIKE :query')
-            ->setParameter('query', '%' . mb_strtolower($query) . '%')
-            ->orderBy('p.name', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
 }

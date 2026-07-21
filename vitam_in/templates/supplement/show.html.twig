@@ -1,45 +1,131 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ supplement.name }}{% endblock %}
+{% block title %}
+	{{ supplement.name }}
+{% endblock %}
 
 {% block body %}
-<div class="container mx-auto p-6">
-    <a href="{{ path('app_home') }}" class="inline-flex items-center text-[#308AFF] hover:underline mb-6">
-        ← Retour aux résultats
-    </a>
+	<div class="container mx-auto p-6">
+		<turbo-frame id="supplement-detail">
+			<a href="{{ path('app_home') }}" data-turbo="false" class="inline-flex items-center text-[#308AFF] hover:underline mb-6">
+                ← Retour
+            </a>
+            
+			<div class="bg-white rounded-2xl shadow-lg overflow-hidden max-w-3xl mx-auto">
+				{% if supplement.image is defined and supplement.image %}
+					<img src="{{ asset(supplement.image) }}" alt="{{ supplement.name }}" class="w-full h-64 object-cover">
+				{% else %}
+					<img src="https://picsum.photos/800/400?random={{ supplement.id }}" alt="{{ supplement.name }}" class="w-full h-64 object-cover">
+				{% endif %}
 
-    <div class="bg-white rounded-2xl shadow-lg overflow-hidden max-w-3xl mx-auto">
-        {% if supplement.image is defined and supplement.image %}
-            <img src="{{ asset(supplement.image) }}" alt="{{ supplement.name }}" class="w-full h-64 object-cover">
-        {% else %}
-            <img src="https://picsum.photos/800/400?random={{ supplement.id }}" alt="{{ supplement.name }}" class="w-full h-64 object-cover">
-        {% endif %}
+				<div class="p-6 md:p-8">
+					<h1 class="text-3xl font-bold text-gray-900 mb-3">{{ supplement.name }}</h1>
 
-        <div class="p-6 md:p-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-3">{{ supplement.name }}</h1>
+					<div class="prose max-w-none text-gray-700 mb-6">
+						{% if supplement.description is defined and supplement.description %}
+							<p>{{ supplement.description }}</p>
+						{% else %}
+							<p class="italic text-gray-500">Aucune description disponible.</p>
+						{% endif %}
+					</div>
 
+					{% if supplement.dosageSchedule is defined and supplement.dosageSchedule is not empty %}
+						<div class="mb-6">
+							<h2 class="text-xl font-semibold mb-4">Posologies</h2>
+							{% if supplement.dosageSchedule.general is defined %}
+								<div class="mb-4">
+									<h3 class="text-lg font-medium text-gray-800">Général</h3>
+									<p class="text-gray-700">{{ supplement.dosageSchedule.general.dose }}
+										{{ supplement.dosageSchedule.general.unit }}</p>
+									<ul class="list-disc list-inside text-gray-600">
+										{% for moment, quantity in supplement.dosageSchedule.general.moments %}
+											<li>{{ moment }}
+												:
+												{{ quantity }}
+												prise(s)</li>
+										{% endfor %}
+									</ul>
+								</div>
+							{% endif %}
+							{% if supplement.dosageSchedule.male is defined %}
+								<div class="mb-4">
+									<h3 class="text-lg font-medium text-gray-800">Homme</h3>
+									<p class="text-gray-700">{{ supplement.dosageSchedule.male.dose }}
+										{{ supplement.dosageSchedule.male.unit }}</p>
+									<ul class="list-disc list-inside text-gray-600">
+										{% for moment, quantity in supplement.dosageSchedule.male.moments %}
+											<li>{{ moment }}
+												:
+												{{ quantity }}
+												prise(s)</li>
+										{% endfor %}
+									</ul>
+								</div>
+							{% endif %}
+							{% if supplement.dosageSchedule.female is defined %}
+								<div class="mb-4">
+									<h3 class="text-lg font-medium text-gray-800">Femme</h3>
+									<p class="text-gray-700">{{ supplement.dosageSchedule.female.dose }}
+										{{ supplement.dosageSchedule.female.unit }}</p>
+									<ul class="list-disc list-inside text-gray-600">
+										{% for moment, quantity in supplement.dosageSchedule.female.moments %}
+											<li>{{ moment }}
+												:
+												{{ quantity }}
+												prise(s)</li>
+										{% endfor %}
+									</ul>
+								</div>
+							{% endif %}
+						</div>
+					{% endif %}
 
-            <div class="prose max-w-none text-gray-700">
-                {% if supplement.description is defined and supplement.description %}
-                    <p>{{ supplement.description }}</p>
-                {% else %}
-                    <p class="italic text-gray-500">Aucune description disponible.</p>
-                {% endif %}
-            </div>
-            {% if supplement.on_duration_days is defined %}
-                <p class="text-2xl text-[#308AFF] font-semibold mb-4">{{ supplement.on_duration_days|number_format(2) }} jours</p>
-            {% endif %}
-            {% if supplement.off_duration_days is defined %}
-                <p class="text-2xl text-[#308AFF] font-semibold mb-4">{{ supplement.off_duration_days|number_format(2) }} jours</p>
-            {% endif %}
+					{% if supplement.on_duration_days is defined %}
+						<p class="text-2xl text-[#308AFF] font-semibold mb-2">{{ supplement.on_duration_days }}
+							jours de prise</p>
+					{% endif %}
+					{% if supplement.off_duration_days is defined %}
+						<p class="text-2xl text-[#308AFF] font-semibold mb-4">{{ supplement.off_duration_days }}
+							jours de pause</p>
+					{% endif %}
 
-            {% if supplement.precautions is defined %}
-                <div class="mt-6">
-                    <h2 class="text-xl font-semibold mb-2">Utilisation conseillée</h2>
-                    <p>{{ supplement.precautions }}</p>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-</div>
+					{% if supplement.precautions is defined %}
+						<div class="mt-6">
+							<h2 class="text-xl font-semibold mb-2">Précautions</h2>
+							<p class="text-gray-700">{{ supplement.precautions }}</p>
+						</div>
+					{% endif %}
+				</div>
+			</div>
+		</turbo-frame>
+	</div>
 {% endblock %}
+{# <h1 class="text-3xl font-bold text-gray-900 mb-3">{{ supplement.name }}</h1>
+<p class="text-sm text-gray-500 mb-4">{{ supplement.supplementtype.name }}</p>
+
+<div class="prose max-w-none text-gray-700 mb-6">
+    {{ supplement.description }}
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+        <h2 class="font-semibold mb-1">Durée de prise</h2>
+        <p>{{ supplement.onDurationDays }} jours</p>
+    </div>
+    <div>
+        <h2 class="font-semibold mb-1">Pause recommandée</h2>
+        <p>{{ supplement.offDurationDays }} jours</p>
+    </div>
+    <div>
+        <h2 class="font-semibold mb-1">Posologie</h2>
+        <ul>
+            {% for moment, dose in supplement.dosageSchedule %}
+                <li>{{ moment }} : {{ dose }} prise(s)</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        <h2 class="font-semibold mb-1">Précautions</h2>
+        <p>{{ supplement.precautions }}</p>
+    </div>
+</div> #}

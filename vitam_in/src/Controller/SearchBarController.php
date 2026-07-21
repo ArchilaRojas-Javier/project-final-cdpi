@@ -25,14 +25,17 @@ final class SearchBarController extends AbstractController
             $query = $form->get('query')->getData();
             
             $results = $supplementRepository->searchByName($query);
+            
+            return $this->render('search_bar/result.html.twig', [
+                'form' => $form->createView(),
+                'results' => $results,
+    
+            ]);
         }
-
-        
 
         return $this->render('search_bar/index.html.twig', [
             'form' => $form->createView(),
-            'results' => $results,
-
         ]);
+
     }
 }
