@@ -1,37 +1,50 @@
 {% block body %}
-	<div class="flex flex-col items-strech gap-2 container p-6">
+<div class="flex flex-col items-strech gap-2 container p-6">
 
+    {# Envolvemos todo lo que queremos actualizar dinámicamente #}
+    <turbo-frame id="search-results">
+        <h3 class="text-center">
+            Trouvez le supplement ou le bien-être qui correpond à vos besoins.
+        </h3>
 
-		<h3 class="text-center">Trouvez le supplement ou le bien-être qui correpond à vos besoins.
-		</h3>
+        <div class="w-full p-2">
+            {# Añadimos 'data-turbo-frame' para indicar qué frame se actualizará #}
+            {{ form_start(form, {'attr': {       
+                'data-turbo-frame': 'search-results',
+                'action': path('app_search_bar')}}) }}
+            {{ form_widget(form.query, {'attr': {'class': 'w-full p-1 border rounded-[1rem] p-1'}}) }}
+            {{ form_end(form) }}
+        </div>
 
+        {% if results is not empty %}
+            <h2 class="text-2xl font-semibold text-gray-800 mt-8">
+                {{ results|length }} résultat(s) trouvé(s)
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                {% for supplement in results %}
+                    <a href="{{ path('app_supplement_show', {'id': supplement.id}) }}"
+                       class="block bg-white rounded-2xl shadow hover:shadow-lg transition-shadow overflow-hidden">
+                        <img src="https://picsum.photos/400/200?random={{ loop.index }}"
+                             alt="{{ supplement.name }}"
+                             class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold text-gray-900 mb-1">{{ supplement.name }}</h3>
+                            {% if supplement.price is defined %}
+                                <p class="text-[#308AFF] font-semibold">{{ supplement.price|number_format(2) }} €</p>
+                            {% endif %}
+                            {% if supplement.description is defined %}
+                                <p class="text-sm text-gray-600 mt-1 line-clamp-2">{{ supplement.description }}</p>
+                            {% endif %}
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% elseif form.vars.submitted %}
+            <div class="text-center bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-xl p-4 mt-8 w-full max-w-md">
+                Aucun supplément trouvé pour cette recherche. Essayez un autre terme.
+            </div>
+        {% endif %}
+    </turbo-frame>
 
-		{{ form_start(form) }}
-		<div class=" w-full p-2">
-
-			{{ form_widget(form.query, {'attr': {'class': 'w-full p-1  border rounded-[1rem] p-1'}})}}
-
-
-			{# <button class="btn btn-primary" type="submit">
-						            <i class="fas fa-search"></i> Buscar
-						        </button> #}
-			{{ form_end(form) }}
-		</div>
-
-
-		{% if results is not empty %}
-			<h3>Resultados ({{ results|length }})</h3>
-			<ul class="list-group">
-				{% for product in results %}
-					<li class="list-group-item d-flex justify-content-between align-items-center">
-						{{ product.name }}
-						<span class="badge bg-primary rounded-pill">{{ product.price|number_format(2) }}
-							€</span>
-					</li>
-				{% endfor %}
-			</ul>
-		{% elseif results is empty %}
-			<div class="alert alert-warning text-center">No se encontraron productos.</div>
-		{% endif %}
-	</div>
+</div>
 {% endblock %}

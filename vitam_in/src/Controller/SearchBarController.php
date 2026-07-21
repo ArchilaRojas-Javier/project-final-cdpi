@@ -11,7 +11,7 @@ use App\Repository\SupplementRepository;
 
 final class SearchBarController extends AbstractController
 {
-    #[Route('/search/barre', name: 'app_search_barre')]
+    #[Route('/search/bar', name: 'app_search_bar')]
     public function index(Request $request, SupplementRepository $supplementRepository): Response
     {
         $form = $this->createForm(SearchBarType::class);
