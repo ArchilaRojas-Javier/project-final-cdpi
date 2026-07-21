@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!
+{% block title %}Home
 {% endblock %}
 
 {% block body %}
@@ -8,19 +8,28 @@
 
 		<h1 class="text-[#308AFF] text-[4rem]">Vitam-In</h1>
 
-        <h2 class="text-black text-[2rem] text-center">La guide pratique de suppléments</h2>
-
-        {{ render(controller('App\\Controller\\SearchBarController::index')) }}
+        <h2 class="text-black text-[2rem] text-center">La guide ultime des suppléments</h2>
 
         <div class="flex items-center justify-center">
             <a href="{{ path('app_register') }}" class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-[300px] p-2 text-center">Inscription</a>
         </div>
 
-        <div>
+        {{ render(controller('App\\Controller\\SearchBarController::index')) }}
+
+        <div class="flex flex-col gap-6">
             <p class= "text-center">Inscrivez-vous gratuitement et prenez le contrôle :
               suivez votre consommation, notez vos ressentis et recevez des alarmes 
                personnalisées pour ne plus jamais oublier une prise.
             </p>
+            <img 
+                src="https://picsum.photos/800/600" 
+                alt="Illustration du tableau de bord" 
+                class="mx-auto rounded shadow-md"
+            >
+        </div>
+
+        <div class="flex items-center justify-center">
+            <a href="{{ path('app_register') }}" class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-[300px] p-2 text-center">Demarrer mon suivi</a>
         </div>
 
 		<div class="main-container flex flex-col p-6 text-left text-base ">
@@ -63,7 +72,8 @@
 			</p>
 		</div>
         <div class="flex items-center justify-center">
-            <a href="{{ path('app_register') }}" class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-[300px] p-2 text-center">Inscription</a>
+            <a href="{{ path('app_register') }}" class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-[300px] p-2 text-center">
+            Je m'inscris gratuitement</a>
         </div>
 
 	</section>
