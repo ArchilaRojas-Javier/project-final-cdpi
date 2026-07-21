@@ -18,9 +18,6 @@
         <div class="p-6 md:p-8">
             <h1 class="text-3xl font-bold text-gray-900 mb-3">{{ supplement.name }}</h1>
 
-            {% if supplement.price is defined %}
-                <p class="text-2xl text-[#308AFF] font-semibold mb-4">{{ supplement.price|number_format(2) }} €</p>
-            {% endif %}
 
             <div class="prose max-w-none text-gray-700">
                 {% if supplement.description is defined and supplement.description %}
@@ -29,11 +26,17 @@
                     <p class="italic text-gray-500">Aucune description disponible.</p>
                 {% endif %}
             </div>
+            {% if supplement.on_duration_days is defined %}
+                <p class="text-2xl text-[#308AFF] font-semibold mb-4">{{ supplement.on_duration_days|number_format(2) }} jours</p>
+            {% endif %}
+            {% if supplement.off_duration_days is defined %}
+                <p class="text-2xl text-[#308AFF] font-semibold mb-4">{{ supplement.off_duration_days|number_format(2) }} jours</p>
+            {% endif %}
 
-            {% if supplement.usage is defined %}
+            {% if supplement.precautions is defined %}
                 <div class="mt-6">
                     <h2 class="text-xl font-semibold mb-2">Utilisation conseillée</h2>
-                    <p>{{ supplement.usage }}</p>
+                    <p>{{ supplement.precautions }}</p>
                 </div>
             {% endif %}
         </div>
