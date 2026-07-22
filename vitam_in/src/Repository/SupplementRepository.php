@@ -29,28 +29,23 @@ class SupplementRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-//    /**
-//     * @return Supplement[] Returns an array of Supplement objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('s.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findExactByName(string $name): ?Supplement
+    {
+        return $this->createQueryBuilder('s')
+            ->where('LOWER(s.name) = LOWER(:name)')
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
-//    public function findOneBySomeField($value): ?Supplement
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findByBenefit(string $benefitQuery): array
+    {
+        return $this->createQueryBuilder('s')
+            ->innerJoin('s.supplementbenefit', 'b')   
+            ->where('LOWER(b.name) LIKE :query')
+            ->setParameter('query', '%' . mb_strtolower($benefitQuery) . '%')
+            ->orderBy('s.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

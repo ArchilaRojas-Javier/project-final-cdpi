@@ -23,8 +23,19 @@ final class SearchBarController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             
             $query = $form->get('query')->getData();
+
+            // Recherche par nom exact 
+            $exactSupplement = $supplementRepository->findExactByName($query);
+            if ($exactSupplement) {
+                return $this->redirectToRoute('app_supplement_show', ['id' => $exactSupplement->getId()]);
+            }
             
-            $results = $supplementRepository->searchByName($query);
+            // Recherche par bienfait 
+            $results = $supplementRepository->findByBenefit($query);
+            if (empty($results)) {
+                // Recherche par nom partiel 
+                $results = $supplementRepository->searchByName($query);
+            }
             
             return $this->render('search_bar/result.html.twig', [
                 'form' => $form->createView(),
@@ -38,4 +49,13 @@ final class SearchBarController extends AbstractController
         ]);
 
     }
+
 }
+
+    
+
+           
+
+                
+
+                
