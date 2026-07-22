@@ -15,41 +15,36 @@ class SupplementRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Supplement::class);
     }
-
-//    /**
-//     * @return Supplement[] Returns an array of Supplement objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('s.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Supplement
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
     public function searchByName(string $query): array
     {
         if (empty($query)) {
             return [];
         }
-
+    
         return $this->createQueryBuilder('p')
             ->andWhere('LOWER(p.name) LIKE :query')
             ->setParameter('query', '%' . mb_strtolower($query) . '%')
             ->orderBy('p.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findExactByName(string $name): ?Supplement
+    {
+        return $this->createQueryBuilder('s')
+            ->where('LOWER(s.name) = LOWER(:name)')
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findByBenefit(string $benefitQuery): array
+    {
+        return $this->createQueryBuilder('s')
+            ->innerJoin('s.supplementbenefit', 'b')   
+            ->where('LOWER(b.name) LIKE :query')
+            ->setParameter('query', '%' . mb_strtolower($benefitQuery) . '%')
+            ->orderBy('s.name', 'ASC')
             ->getQuery()
             ->getResult();
     }

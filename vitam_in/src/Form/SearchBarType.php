@@ -7,6 +7,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class SearchBarType extends AbstractType
 {
@@ -17,11 +19,20 @@ class SearchBarType extends AbstractType
                 'label' => false,
                 'attr' => [
                     'placeholder' => 'Ex: Vitamine C, énergie, someil..',
-                    
                 ],
+                'constraints' => [
+                    new NotBlank(
+                        message: 'Veuillez saisir un terme de recherche.'
+                    ),
+                    // new Regex(
+                    //     pattern: '/^[a-zA-Z0-9\s\-éèêëàâôûçœæ]+$/u'
+                    // )
+                ]
             ]);
            
     }
+
+   
 
     public function configureOptions(OptionsResolver $resolver): void
     {
