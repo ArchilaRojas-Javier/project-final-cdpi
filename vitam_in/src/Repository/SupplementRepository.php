@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Supplement;
+use App\Entity\SupplementType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -15,37 +16,52 @@ class SupplementRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Supplement::class);
     }
-    public function searchByName(string $query): array
+    public function searchByName(string $query, ?SupplementType $type = null): array
     {
         if (empty($query)) {
             return [];
         }
     
-        return $this->createQueryBuilder('p')
-            ->andWhere('LOWER(p.name) LIKE :query')
-            ->setParameter('query', '%' . mb_strtolower($query) . '%')
-            ->orderBy('p.name', 'ASC')
-            ->getQuery()
-            ->getResult();
+        $qb = $this->createQueryBuilder('p')
+        ->andWhere('LOWER(p.name) LIKE :query')
+        ->setParameter('query', '%' . mb_strtolower($query) . '%')
+        ->orderBy('p.name', 'ASC');
+
+        if ($type) {
+            $qb->andWhere('p.supplementtype = :type')
+           ->setParameter('type', $type);
+        }
+
+    return $qb->getQuery()->getResult();
     }
 
-    public function findExactByName(string $name): ?Supplement
+    public function findExactByName(string $name, ?SupplementType $type = null): ?Supplement
     {
-        return $this->createQueryBuilder('s')
-            ->where('LOWER(s.name) = LOWER(:name)')
-            ->setParameter('name', $name)
-            ->getQuery()
-            ->getOneOrNullResult();
+        $qb = $this->createQueryBuilder('s')
+        ->where('LOWER(s.name) = LOWER(:name)')
+        ->setParameter('name', $name);
+
+        if ($type) {
+            $qb->andWhere('s.supplementtype = :type')
+            ->setParameter('type', $type);
+        }
+
+        return $qb->getQuery()->getOneOrNullResult();
     }
 
-    public function findByBenefit(string $benefitQuery): array
+    public function findByBenefit(string $benefitQuery, ?SupplementType $type = null ): array
     {
-        return $this->createQueryBuilder('s')
-            ->innerJoin('s.supplementbenefit', 'b')   
-            ->where('LOWER(b.name) LIKE :query')
-            ->setParameter('query', '%' . mb_strtolower($benefitQuery) . '%')
-            ->orderBy('s.name', 'ASC')
-            ->getQuery()
-            ->getResult();
+        $qb = $this->createQueryBuilder('s')
+        ->innerJoin('s.supplementbenefit', 'b')
+        ->where('LOWER(b.name) LIKE :query')
+        ->setParameter('query', '%' . mb_strtolower($benefitQuery) . '%')
+        ->orderBy('s.name', 'ASC');
+
+        if ($type) {
+            $qb->andWhere('s.supplementtype = :type')
+            ->setParameter('type', $type);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

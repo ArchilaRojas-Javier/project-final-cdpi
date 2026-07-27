@@ -28,12 +28,12 @@ class SearchBarType extends AbstractType
                     ),
                 ]
             ])
-            ->add('tipo', EntityType::class, [
+            ->add('type', EntityType::class, [
                 'class' => SupplementType::class,
                 'choice_label' => 'name', 
-                'placeholder' => 'filtre par type ',
+                'placeholder' => 'Type',
                 'required' => false,
-                'label' => 'Tipo',
+                'label' => 'Filtrer par  ',
             ]);
            
     }

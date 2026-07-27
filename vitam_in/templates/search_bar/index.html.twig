@@ -11,6 +11,7 @@
 				
 				{{ form_start(form, {'attr': {'action': path('app_search_bar')}}) }}
 				{{ form_widget(form.query, {'attr': {'class': 'w-full p-1 border rounded-[1rem] p-1'}}) }}
+				{{ form_widget(form.type, {'attr': {'class': ' mt-2 p-1 border rounded-[1rem]'}}) }}
 				{{ form_end(form) }}
 			</div>
 
