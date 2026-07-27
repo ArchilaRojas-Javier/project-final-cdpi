@@ -3,12 +3,14 @@
 namespace App\Form;
 
 
+use App\Entity\SupplementType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
 
 class SearchBarType extends AbstractType
 {
@@ -24,10 +26,14 @@ class SearchBarType extends AbstractType
                     new NotBlank(
                         message: 'Veuillez saisir un terme de recherche.'
                     ),
-                    // new Regex(
-                    //     pattern: '/^[a-zA-Z0-9\s\-éèêëàâôûçœæ]+$/u'
-                    // )
                 ]
+            ])
+            ->add('tipo', EntityType::class, [
+                'class' => SupplementType::class,
+                'choice_label' => 'name', 
+                'placeholder' => 'filtre par type ',
+                'required' => false,
+                'label' => 'Tipo',
             ]);
            
     }
