@@ -32,7 +32,7 @@
 					{% if supplement.dosageSchedule is defined and supplement.dosageSchedule is not empty %}
 						<div class="mb-6">
 							<h2 class="text-xl font-semibold mb-4">Posologies</h2>
-							{% if supplement.dosageSchedule.general is defined %}
+							{# {% if supplement.dosageSchedule.general is defined and not null %}
 								<div class="mb-4">
 									<h3 class="text-lg font-medium text-gray-800">Général</h3>
 									<p class="text-gray-700">{{ supplement.dosageSchedule.general.dose }}
@@ -46,8 +46,8 @@
 										{% endfor %}
 									</ul>
 								</div>
-							{% endif %}
-							{% if supplement.dosageSchedule.male is defined %}
+							{% endif %} #}
+							{% if supplement.dosageSchedule.male is defined and not null %}
 								<div class="mb-4">
 									<h3 class="text-lg font-medium text-gray-800">Homme</h3>
 									<p class="text-gray-700">{{ supplement.dosageSchedule.male.dose }}
@@ -62,7 +62,7 @@
 									</ul>
 								</div>
 							{% endif %}
-							{% if supplement.dosageSchedule.female is defined %}
+							{% if supplement.dosageSchedule.female is defined and not null %}
 								<div class="mb-4">
 									<h3 class="text-lg font-medium text-gray-800">Femme</h3>
 									<p class="text-gray-700">{{ supplement.dosageSchedule.female.dose }}
@@ -80,52 +80,42 @@
 						</div>
 					{% endif %}
 
-					{% if supplement.on_duration_days is defined %}
-						<p class="text-2xl text-[#308AFF] font-semibold mb-2">{{ supplement.on_duration_days }}
-							jours de prise</p>
-					{% endif %}
-					{% if supplement.off_duration_days is defined %}
-						<p class="text-2xl text-[#308AFF] font-semibold mb-4">{{ supplement.off_duration_days }}
-							jours de pause</p>
-					{% endif %}
+					<div class="flex items-center justify-center mb-6">
+            			<a href="{{ path('app_register') }}" data-turbo="false" class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-[300px] p-2 text-center">Demarrer mon suivi</a>
+        			</div>
 
-					{% if supplement.precautions is defined %}
-						<div class="mt-6">
+					<h3 class="text-lg font-medium text-gray-800">Dureé de la cure </h3>
+					
+					<div>
+						{% if supplement.onDurationDays is not null %}
+							<p class="text-base text-gray-700 mb-2">{{ supplement.onDurationDays }}
+								jours de prise recommandée</p>
+						
+						{% endif %}
+					</div>
+					
+					<div>
+						{% if supplement.offDurationDays is not null %}
+							<p class="text-base text-gray-700 mb-2">{{ supplement.offDurationDays }}
+								jours de pause recommandée</p>
+						{% endif %}
+					</div>
+
+
+					{% if supplement.precautions is defined and not null %}
+						<div class="mt-6 mb-6 ">
 							<h2 class="text-xl font-semibold mb-2">Précautions</h2>
 							<p class="text-gray-700">{{ supplement.precautions }}</p>
 						</div>
 					{% endif %}
+
+					<div class="flex items-center justify-center">
+            			<a href="{{ path('app_register') }}" data-turbo="false" class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-[300px] p-2 text-center">
+            			Je m'inscris gratuitement</a>
+        			</div>
 				</div>
 			</div>
 		</turbo-frame>
 	</div>
 {% endblock %}
-{# <h1 class="text-3xl font-bold text-gray-900 mb-3">{{ supplement.name }}</h1>
-<p class="text-sm text-gray-500 mb-4">{{ supplement.supplementtype.name }}</p>
 
-<div class="prose max-w-none text-gray-700 mb-6">
-    {{ supplement.description }}
-</div>
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div>
-        <h2 class="font-semibold mb-1">Durée de prise</h2>
-        <p>{{ supplement.onDurationDays }} jours</p>
-    </div>
-    <div>
-        <h2 class="font-semibold mb-1">Pause recommandée</h2>
-        <p>{{ supplement.offDurationDays }} jours</p>
-    </div>
-    <div>
-        <h2 class="font-semibold mb-1">Posologie</h2>
-        <ul>
-            {% for moment, dose in supplement.dosageSchedule %}
-                <li>{{ moment }} : {{ dose }} prise(s)</li>
-            {% endfor %}
-        </ul>
-    </div>
-    <div>
-        <h2 class="font-semibold mb-1">Précautions</h2>
-        <p>{{ supplement.precautions }}</p>
-    </div>
-</div> #}
