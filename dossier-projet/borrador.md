@@ -219,24 +219,44 @@ J’ai opté pour une architecture **MVC** classique avec **Symfony** 6/7 pour l
 
 ### Arborescence
 vitam-in/
-├── docker/
-│ ├── docker-compose.yml
-│ └── .env
-├── src/
-│ ├── Controller/
-│ ├── Entity/
-│ ├── Repository/
-│ ├── Service/
-│ └── Form/
-├── templates/
-│ ├── base.html.twig
-│ ├── home/
-│ ├── supplement/
-│ ├── dashboard/
-│ └── admin/
-├── public/
+├── assets/
+│   ├── app.js
+│   └── styles/
+│       └── app.css
+├── bin/
+│   └── console
 ├── config/
+│   ├── packages/
+│   │   ├── doctrine.yaml
+│   │   ├── ...
+│   ├── routes/
+│   │   └── annotations.yaml (or attributes.yaml)
+│   ├── bundles.php
+│   ├── routes.yaml
+│   └── services.yaml
+├── migrations/
+├── public/
+│   └── index.php
+├── src/
+│   ├── Controller/
+│   ├── Entity/
+│   ├── Repository/
+│   ├── Kernel.php
+│   └── ...
+├── templates/
+│   └── base.html.twig
+├── tests/
+├── translations/
+├── var/
+│   ├── cache/
+│   ├── log/
+│   └── sessions/
+├── vendor/
+├── .env
 ├── .env.local
+├── composer.json
+├── composer.lock
+├── symfony.lock
 └── README.md
 
 
