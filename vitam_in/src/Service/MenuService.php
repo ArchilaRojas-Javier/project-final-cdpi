@@ -16,38 +16,29 @@ class MenuService
      */
     public function getMenuItems(): array
     {
-        $items = [
-            [
-                'label' => 'Accueil',
-                'route' => 'app_home',
-                'icon'  => 'home',   // identificador para el icono
-            ],
-            [
-                'label' => 'Se connecter',
-                'route' => 'app_login',
-                'icon'  => 'shopping-bag',
-            ],
-            [
-                'label' => "S'inscrire",
-                'route' => 'app_register',
-                'icon'  => 'mail',
-            ],
-        ];
-
-        // Opciones adicionales según autenticación
         if ($this->security->getUser()) {
-            $items[] = [
-                'label' => 'Dashboard',
-                'route' => 'app_dashboard',
-                'icon'  => 'chart-bar',
-            ];
-            $items[] = [
-                'label' => 'Perfil',
-                'route' => 'app_perfil',
-                'icon'  => 'user',
-            ];
-        }
+        // Usuario CONECTADO: solo estos enlaces
+        return [
+            ['label' => 'Dashboard',  'route' => 'app_dashboard', 'icon' => 'chart-bar'],
+            // ['label' => 'Mi Perfil',  'route' => 'app_perfil',    'icon' => 'user'],
+            ['label' => 'Cerrar sesión', 'route' => 'app_logout', 'icon' => 'logout'],
+        ];
+            
+    }elseif ($this->security->isGranted('ROLE_ADMIN')) {
 
-        return $items;
+    //Usuario conectado con roll admin
+        return [
+            ['label' => 'Admin', 'route' => 'admin', 'icon' => 'shield'],
+        ];
+    }else{
+        // Usuario NO CONECTADO: enlaces públicos
+        return [
+            ['label' => 'Accueil',    'route' => 'app_home',     'icon' => 'home'],
+            ['label' => 'Se connecter', 'route' => 'app_login', 'icon' => 'login'],
+            ['label' => "S'inscrire", 'route' => 'app_register', 'icon' => 'login'],
+
+        ];
+        }
+        
     }
 }
