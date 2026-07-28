@@ -1,0 +1,29 @@
+<nav class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-40 md:hidden">
+    <div class="flex justify-around items-center h-16">
+        {% for item in this.menuItems %}
+            <a href="{{ path(item.route) }}" 
+               class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-blue-600 
+                      {% if app.request.attributes.get('_route') == item.route %}text-blue-600 font-semibold{% endif %}">
+                
+                {# Icono según el campo 'icon' #}
+                <span class="w-6 h-6 mb-1">
+                    {% if item.icon == 'home' %}
+                        <svg ...> <!-- SVG casa --> </svg>
+                    {# {% elseif item.icon == 'shopping-bag' %}
+                        <svg ...> <!-- SVG bolsa --> </svg>
+                    {% elseif item.icon == 'mail' %}
+                        <svg ...> <!-- SVG sobre --> </svg>
+                    {% elseif item.icon == 'chart-bar' %}
+                        <svg ...> <!-- SVG gráfico --> </svg>
+                    {% elseif item.icon == 'user' %}
+                        <svg ...> <!-- SVG usuario --> </svg> #}
+                    {% else %}
+                        <svg ...> <!-- icono genérico --> </svg>
+                    {% endif %}
+                </span>
+                
+                <span class="text-xs">{{ item.label }}</span>
+            </a>
+        {% endfor %}
+    </div>
+</nav>

@@ -2,14 +2,16 @@
 
 namespace App\Twig\Components;
 
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
+use App\Service\MenuService;
+use Symfony\Bundle\SecurityBundle\Security;
 
-#[AsTwigComponent('Header')]
-final class Header
+#[AsTwigComponent]
+final class HeaderMobile
 {
     public function __construct(
         private Security $security,
+        private MenuService $menuService
         // Podrías inyectar un repositorio si quisieras cargar categorías, etc.
     ) {
     }
@@ -34,21 +36,7 @@ final class Header
      */
     public function getMenuItems(): array
     {
-        $items = [
-            ['label' => 'Inicio', 'route' => 'app_home']
-        ];
-
-        
-
-        // Si el usuario está autenticado, añadimos más opciones de rutas
-        if ($this->security->getUser()) {
-            $items[] = ['label' => 'Mi Perfil', 'route' => 'app_perfil'];
-            $items[] = ['label' => 'Cerrar sesión', 'route' => 'app_logout'];
-        } else {
-            $items[] = ['label' => 'Iniciar sesión', 'route' => 'app_login'];
-        }
-
-        return $items;
+        return $this->menuService->getMenuItems();
     }
 
     /**
