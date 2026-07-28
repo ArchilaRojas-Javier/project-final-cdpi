@@ -18,20 +18,20 @@ class MenuService
     {
         $items = [
             [
-                'label' => 'Inicio',
+                'label' => 'Accueil',
                 'route' => 'app_home',
                 'icon'  => 'home',   // identificador para el icono
             ],
             [
-                'label' => 'login',
+                'label' => 'Se connecter',
                 'route' => 'app_login',
                 'icon'  => 'shopping-bag',
             ],
-            // [
-            //     'label' => 'Contacto',
-            //     'route' => 'app_contacto',
-            //     'icon'  => 'mail',
-            // ],
+            [
+                'label' => "S'inscrire",
+                'route' => 'app_register',
+                'icon'  => 'mail',
+            ],
         ];
 
         // Opciones adicionales según autenticación

@@ -12,13 +12,13 @@ final class HeaderMobile
     public function __construct(
         private Security $security,
         private MenuService $menuService
-        // Podrías inyectar un repositorio si quisieras cargar categorías, etc.
+        
     ) {
     }
 
         /**
      * Devuelve true si se debe mostrar el título de la app.
-     * Condiciones: usuario autenticado O estamos en rutas de dashboard.
+     * Condiciones: usuario autenticado 
      */
     public function getShowTitle(): bool
     {
