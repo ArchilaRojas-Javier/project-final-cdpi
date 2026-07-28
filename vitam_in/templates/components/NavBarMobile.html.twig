@@ -8,8 +8,8 @@
                 
                 {# Icono según el campo 'icon' #}
                 <span class="w-6 h-6 mb-1">
-                    {% if item.icon == 'home' %}
-                        <svg ...> <!-- SVG casa --> </svg>
+                    {% if item.icon %}
+                        {{ ux_icon(item.icon) }}
                     {# {% elseif item.icon == 'shopping-bag' %}
                         <svg ...> <!-- SVG bolsa --> </svg>
                     {% elseif item.icon == 'mail' %}

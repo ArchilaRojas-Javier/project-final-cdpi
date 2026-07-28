@@ -19,9 +19,9 @@ class MenuService
         if ($this->security->getUser()) {
         // Usuario CONECTADO: solo estos enlaces
         return [
-            ['label' => 'Dashboard',  'route' => 'app_dashboard', 'icon' => 'chart-bar'],
+            ['label' => 'Dashboard',  'route' => 'app_dashboard', 'icon' => 'lucide:home'],
             // ['label' => 'Mi Perfil',  'route' => 'app_perfil',    'icon' => 'user'],
-            ['label' => 'Cerrar sesión', 'route' => 'app_logout', 'icon' => 'logout'],
+            ['label' => 'Cerrar sesión', 'route' => 'app_logout', 'icon' => 'lucide:log-out'],
         ];
             
     }elseif ($this->security->isGranted('ROLE_ADMIN')) {
