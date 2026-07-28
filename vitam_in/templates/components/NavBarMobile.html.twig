@@ -1,3 +1,4 @@
+{% if this.showNavBar %}
 <nav class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-40 md:hidden">
     <div class="flex justify-around items-center h-16">
         {% for item in this.menuItems %}
@@ -27,3 +28,4 @@
         {% endfor %}
     </div>
 </nav>
+{% endif %}
