@@ -3,18 +3,16 @@
 {% block title %}{{ controller_name }}{% endblock %}
 
 {% block body %}
+   	<twig:UserCard/>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <section class="container mx-auto">
 
-    <twig:UserCard/>
-
-				{% if app.user %}
-                        <div class="mb-3">
-                            You are logged in as
-                            {{ app.user.userIdentifier }},
-                            <a href="{{ logout_path() }}">Logout</a>
-                        </div>
-                    {% endif %}
-</div>
+        {% if app.user %}
+                <div class="flex items-center justify-between bg-[#fffff] m-6 p-4"">
+                    You are logged in as
+                    {{ app.user.userIdentifier }},
+                    {# <a href="{{ logout_path() }}">Logout</a> #}
+                </div>
+            {% endif %}
+    </section>
 {% endblock %}
