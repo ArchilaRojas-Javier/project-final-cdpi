@@ -1,0 +1,21 @@
+<div{{ attributes }}>
+    <!-- component HTML -->
+    {% if this.userName %}
+        <div class="bg-gray-100 border-b border-gray-200">
+            <div class="container mx-auto flex items-center justify-between px-4 py-2">
+                {# Lado izquierdo: avatar y nombre #}
+                <div class="flex items-center space-x-3">
+                    {% if this.avatarUrl %}
+                        <img src="{{ this.avatarUrl }}" alt="Avatar" class="w-8 h-8 rounded-full object-cover">
+                    {% else %}
+                        <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold text-sm">
+                            {{ this.userName|first|upper }}
+                        </div>
+                    {% endif %}
+                    <span class="text-sm font-medium text-gray-700">{{ this.userName }}</span>
+                </div>
+                
+            </div>
+        </div>
+    {% endif %}
+</div>
