@@ -2,11 +2,26 @@
     <table class="table table-bordered mx-auto">
         <thead>
             <tr>
-                <th>{{ ux_icon('lucide:pill') }}</th>
-                <th>{{ ux_icon('lucide:calendar-1') }}</th>
-                <th>{{ ux_icon('lucide:scale') }}</th>
-                <th>{{ ux_icon('lucide:notebook-pen') }}</th>
-                <th>{{ ux_icon('lucide:more-horizontal') }}</th>
+                <th scope="col" class="text-center">
+                    <span class="sr-only">Supplement</span>
+                    {{ ux_icon('lucide:pill',{ 'aria-hidden': 'true' }) }}
+                </th>
+                <th scope="col" class="text-center">
+                    <span class="sr-only">Jours restants</span>
+                    {{ ux_icon('lucide:calendar-1',{ 'aria-hidden': 'true' }) }}
+                </th>
+                <th scope="col" class="text-center">
+                    <span class="sr-only">Dosage</span>
+                    {{ ux_icon('lucide:scale',{ 'aria-hidden': 'true' }) }}
+                </th>
+                <th scope="col" class="text-center">
+                    <span class="sr-only">Notes</span>
+                    {{ ux_icon('lucide:notebook-pen',{ 'aria-hidden': 'true' }) }}
+                </th>
+                <th scope="col" class="text-center">
+                    <span class="sr-only">Options</span>
+                    {{ ux_icon('lucide:more-horizontal',{ 'aria-hidden': 'true' }) }}
+                </th>
             </tr>
         </thead>
         <tbody>

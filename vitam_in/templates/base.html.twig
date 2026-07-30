@@ -1,9 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 	<head>
-		<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta charset="UTF-8"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		{% block meta %}
+        	<meta name="description" content="Vitam-In, le guide ultime des compléments alimentaires.
+			 Suivez votre consommation, notez vos sensations et recevez des rappels.">
+        	<meta name="robots" content="index, follow">
+    	{% endblock %}
 		<title>
-			{% block title %}Welcome!
+			{% block title %}Vitam-In - Guide des compléments alimentaires 
 			{% endblock %}
 		</title>
 		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
@@ -35,22 +41,27 @@
 		{% endif %}
 	</head>
 	<body>
-		<twig:HeaderMobile />
+		<header>
+			<twig:HeaderMobile />
+		</header>
    		{# <twig:UserCard/> #}
-
-		{% for type, messages in app.flashes %}
-			{% for message in messages %}
-				<div class="alert px-4 py-3 mb-4 border rounded
-                    {% if type == 'success' %} bg-green-50 border-green-300 text-green-800 transition-opacity duration-500 opacity-100
-                    {% elseif type == 'error' %} bg-red-50 border-red-300 text-red-800 transition-opacity duration-500 opacity-100
-                    {% else %} bg-blue-50 border-blue-300 text-blue-800 transition-opacity duration-500 opacity-100
-                    {% endif %}">
-					{{ message }}
-				</div>
+		<main>
+			{% for type, messages in app.flashes %}
+				{% for message in messages %}
+					<div class="alert px-4 py-3 mb-4 border rounded
+						{% if type == 'success' %} bg-green-50 border-green-300 text-green-800 transition-opacity duration-500 opacity-100
+						{% elseif type == 'error' %} bg-red-50 border-red-300 text-red-800 transition-opacity duration-500 opacity-100
+						{% else %} bg-blue-50 border-blue-300 text-blue-800 transition-opacity duration-500 opacity-100
+						{% endif %}">
+						{{ message }}
+					</div>
+				{% endfor %}
 			{% endfor %}
-		{% endfor %}
-		{% block body %}
-		{% endblock %}
-		<twig:NavBarMobile />
+			{% block body %}
+			{% endblock %}
+		</main>
+		<footer>
+			<twig:NavBarMobile />
+		</footer>
 	</body>
 </html>

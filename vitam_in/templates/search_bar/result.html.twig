@@ -1,24 +1,24 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Result
+	Résultats de recherche - Vitam-In
 {% endblock %}
 
 {% block body %}
-	<section class="flex flex-col items-center p-6 min-h-screen w-screen gap-6 ">
+	<section class="flex flex-col items-center p-6 min-h-screen w-screen gap-6 mb-12">
 
 		<h1 class="text-[#308AFF] text-[4rem]">Vitam-In</h1>
 
 		<h2 class="text-black text-[2rem] text-center">La guide ultime des suppléments</h2>
 		<div class="flex flex-col items-strech gap-2 container p-6">
 
-			<h3 class="text-center">
+			<h2 class="text-center">
 				Trouvez le supplement ou le bien-être qui correpond à vos besoins.
-			</h3>
+			</h2>
 
 			<div class="w-full p-2">
 
-				{{ form_start(form, {'attr': {'action': path('app_search_bar')}}) }}
+				{{ form_start(form, {'attr': {'role': 'search','action': path('app_search_bar')}}) }}
 				{{ form_widget(form.query, {'attr': {'class': 'w-full p-1 border rounded-[1rem] p-1'}}) }}
 				{{ form_label(form.type)}}
 				{{ form_widget(form.type, {'attr': {'class': ' mt-2 p-1 border rounded-[1rem]'}}) }}

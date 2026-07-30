@@ -1,17 +1,18 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	{{ supplement.name }}
+	{{ supplement.name }} - Vitam-in
 {% endblock %}
 
+
 {% block body %}
-	<div class="container mx-auto p-6">
+	<div class="container mx-auto p-6 mb-12">
 		<turbo-frame id="supplement-detail">
-			<a href="{{ path('app_home') }}" data-turbo="false" class="inline-flex items-center text-[#308AFF] hover:underline mb-6">
-                ← Retour
+			<a href="{{ path('app_home') }}" data-turbo="false" class="inline-flex items-center text-[#308AFF] hover:underline mb-6" >
+                ← Retour à l'accueil
             </a>
             
-			<div class="bg-white rounded-2xl shadow-lg overflow-hidden max-w-3xl mx-auto">
+			<article class="bg-white rounded-2xl shadow-lg overflow-hidden max-w-3xl mx-auto">
 				{% if supplement.image is defined and supplement.image %}
 					<img src="{{ asset(supplement.image) }}" alt="{{ supplement.name }}" class="w-full h-64 object-cover">
 				{% else %}
@@ -30,54 +31,38 @@
 					</div>
 
 					{% if supplement.dosageSchedule is defined and supplement.dosageSchedule is not empty %}
-						<div class="mb-6">
+						<section class="mb-6" aria-labelledby="posologies-title">
 							<h2 class="text-xl font-semibold mb-4">Posologies</h2>
-							{# {% if supplement.dosageSchedule.general is defined and not null %}
-								<div class="mb-4">
-									<h3 class="text-lg font-medium text-gray-800">Général</h3>
-									<p class="text-gray-700">{{ supplement.dosageSchedule.general.dose }}
-										{{ supplement.dosageSchedule.general.unit }}</p>
-									<ul class="list-disc list-inside text-gray-600">
-										{% for moment, quantity in supplement.dosageSchedule.general.moments %}
-											<li>{{ moment }}
-												:
-												{{ quantity }}
-												prise(s)</li>
-										{% endfor %}
-									</ul>
-								</div>
-							{% endif %} #}
-							{% if supplement.dosageSchedule.male is defined and not null %}
-								<div class="mb-4">
-									<h3 class="text-lg font-medium text-gray-800">Homme</h3>
-									<p class="text-gray-700">{{ supplement.dosageSchedule.male.dose }}
-										{{ supplement.dosageSchedule.male.unit }}</p>
-									<ul class="list-disc list-inside text-gray-600">
-										{% for moment, quantity in supplement.dosageSchedule.male.moments %}
-											<li>{{ moment }}
-												:
-												{{ quantity }}
-												prise(s)</li>
-										{% endfor %}
-									</ul>
-								</div>
-							{% endif %}
-							{% if supplement.dosageSchedule.female is defined and not null %}
-								<div class="mb-4">
-									<h3 class="text-lg font-medium text-gray-800">Femme</h3>
-									<p class="text-gray-700">{{ supplement.dosageSchedule.female.dose }}
-										{{ supplement.dosageSchedule.female.unit }}</p>
-									<ul class="list-disc list-inside text-gray-600">
-										{% for moment, quantity in supplement.dosageSchedule.female.moments %}
-											<li>{{ moment }}
-												:
-												{{ quantity }}
-												prise(s)</li>
-										{% endfor %}
-									</ul>
-								</div>
-							{% endif %}
-						</div>
+							
+							<dl class="space-y-4">
+                            {% if supplement.dosageSchedule.male is defined and not null %}
+                                <div>
+                                    <dt class="text-lg font-medium text-gray-800">Homme</dt>
+                                    <dd class="text-gray-700">
+                                        {{ supplement.dosageSchedule.male.dose }} {{ supplement.dosageSchedule.male.unit }}
+                                        <ul class="list-disc list-inside text-gray-600">
+                                            {% for moment, quantity in supplement.dosageSchedule.male.moments %}
+                                                <li>{{ moment }} : {{ quantity }} prise(s)</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            {% endif %}
+							<dl class="space-y-4">
+                            {% if supplement.dosageSchedule.female is defined and not null %}
+                                <div>
+                                    <dt class="text-lg font-medium text-gray-800">Femme</dt>
+                                    <dd class="text-gray-700">
+                                        {{ supplement.dosageSchedule.female.dose }} {{ supplement.dosageSchedule.female.unit }}
+                                        <ul class="list-disc list-inside text-gray-600">
+                                            {% for moment, quantity in supplement.dosageSchedule.female.moments %}
+                                                <li>{{ moment }} : {{ quantity }} prise(s)</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            {% endif %}
+						</section>
 					{% endif %}
 
 					<div class="flex items-center justify-center mb-6">
@@ -114,7 +99,7 @@
             			Je m'inscris gratuitement</a>
         			</div>
 				</div>
-			</div>
+			</article>
 		</turbo-frame>
 	</div>
 {% endblock %}
