@@ -71,6 +71,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $googleId = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $AvatarUrl = null;
+
     public function __construct()
     {
         $this->usersupplement = new ArrayCollection();
@@ -324,6 +327,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setGoogleId(?string $googleId): static
     {
         $this->googleId = $googleId;
+
+        return $this;
+    }
+
+    public function getAvatarUrl(): ?string
+    {
+        return $this->AvatarUrl;
+    }
+
+    public function setAvatarUrl(?string $AvatarUrl): static
+    {
+        $this->AvatarUrl = $AvatarUrl;
 
         return $this;
     }

@@ -35,6 +35,9 @@
 		{% endif %}
 	</head>
 	<body>
+		<twig:HeaderMobile />
+   		{# <twig:UserCard/> #}
+
 		{% for type, messages in app.flashes %}
 			{% for message in messages %}
 				<div class="alert px-4 py-3 mb-4 border rounded
@@ -46,6 +49,8 @@
 				</div>
 			{% endfor %}
 		{% endfor %}
-		{% block body %}{% endblock %}
+		{% block body %}
+		{% endblock %}
+		<twig:NavBarMobile />
 	</body>
 </html>

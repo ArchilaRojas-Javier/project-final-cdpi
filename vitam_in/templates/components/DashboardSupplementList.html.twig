@@ -1,0 +1,65 @@
+<div {{ attributes }}>
+    <table class="table table-bordered mx-auto">
+        <thead>
+            <tr>
+                <th>{{ ux_icon('lucide:pill') }}</th>
+                <th>{{ ux_icon('lucide:calendar-1') }}</th>
+                <th>{{ ux_icon('lucide:scale') }}</th>
+                <th>{{ ux_icon('lucide:notebook-pen') }}</th>
+                <th>{{ ux_icon('lucide:more-horizontal') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for userSupplement in this.userSupplements %}
+                <tr>
+                    {% if this.editingId == userSupplement.id %}
+                        {# Modo edición: mostramos el formulario ocupando toda la fila #}
+                        <td colspan="5">
+                            {{ form_start(this.form, {
+                                action: '#',
+                                attr: { 'data-live-action': 'saveEdit' }
+                            }) }}
+                                {{ form_errors(this.form) }}
+                                
+                                {# Mostramos el nombre de solo lectura (porque no se edita aquí) #}
+                                <div class="mb-2">
+                                    <strong>Suplemento:</strong> {{ this.getSupplementName(userSupplement) }}
+                                </div>
+                                
+                                {{ form_row(this.form.dosis) }}
+                                {{ form_row(this.form.startDate) }}
+                                {{ form_row(this.form.endDate) }}
+                                
+                                <div class="mt-2">
+                                    <button type="submit" class="btn btn-primary btn-sm">Guardar</button>
+                                    <button type="button" class="btn btn-secondary btn-sm" data-live-action="cancelEdit">Cancelar</button>
+                                </div>
+                            {{ form_end(this.form) }}
+                        </td>
+                    {% else %}
+                        {# Vista normal #}
+                        <td>{{ this.getSupplementName(userSupplement) }}</td>
+                        <td>{{ this.getDaysRemaining(userSupplement) }}</td>
+                        <td>{{ userSupplement.dosis }}</td>
+                        <td>{{ this.getNoteCount(userSupplement) }}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm"
+                                    data-live-action="startEdit"
+                                    data-live-id="{{ userSupplement.id }}">
+                                ✏️ Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm"
+                                    data-live-action="delete"
+                                    data-live-id="{{ userSupplement.id }}"
+                                    onclick="return confirm('¿Eliminar este suplemento?')">
+                                🗑️ Borrar
+                            </button>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% else %}
+                <tr><td colspan="5">No tienes suplementos registrados.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
