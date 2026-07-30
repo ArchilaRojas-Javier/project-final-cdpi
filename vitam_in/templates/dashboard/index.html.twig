@@ -3,16 +3,12 @@
 {% block title %}{{ controller_name }}{% endblock %}
 
 {% block body %}
-   	<twig:UserCard/>
 
     <section class="container mx-auto">
+   	    <twig:UserCard/>
 
-        {% if app.user %}
-                <div class="flex items-center justify-between bg-[#fffff] m-6 p-4"">
-                    You are logged in as
-                    {{ app.user.userIdentifier }},
-                    {# <a href="{{ logout_path() }}">Logout</a> #}
-                </div>
-            {% endif %}
+        <twig:DashboardSupplementList/>
+
+        
     </section>
 {% endblock %}

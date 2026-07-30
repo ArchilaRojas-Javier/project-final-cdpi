@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\UserSupplement;
+use app\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,17 @@ class UserSupplementRepository extends ServiceEntityRepository
         parent::__construct($registry, UserSupplement::class);
     }
 
-    //    /**
-    //     * @return UserSupplement[] Returns an array of UserSupplement objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+       /**
+        * @return UserSupplement[] Returns an array of UserSupplement objects 
+        */
+       public function findByUser(User $user): array
+    {
+        return $this->createQueryBuilder('us')
+            ->andWhere('us.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('us.start_date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
-    //    public function findOneBySomeField($value): ?UserSupplement
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }
