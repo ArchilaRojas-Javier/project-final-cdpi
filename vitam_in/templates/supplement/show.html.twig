@@ -32,7 +32,7 @@
 
 					{% if supplement.dosageSchedule is defined and supplement.dosageSchedule is not empty %}
 						<section class="mb-6" aria-labelledby="posologies-title">
-							<h2 class="text-xl font-semibold mb-4">Posologies</h2>
+							<h2 id="posologies-title" class="text-xl font-semibold mb-4">Posologies</h2>
 							
 							<dl class="space-y-4">
                             {% if supplement.dosageSchedule.male is defined and not null %}
