@@ -6,12 +6,12 @@
 		{% block meta %}
         	<meta name="description" content="Vitam-In, le guide ultime des compléments alimentaires.
 			 Suivez votre consommation, notez vos sensations et recevez des rappels.">
-        	<meta name="robots" content="index, follow">
     	{% endblock %}
 		<title>
 			{% block title %}Vitam-In - Guide des compléments alimentaires 
 			{% endblock %}
 		</title>
+		
 		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
 		{% block stylesheets %}
 			<link rel="stylesheet" href="{{ asset('styles/app.css') }}">
@@ -24,7 +24,7 @@
                         setTimeout(() => {
                             alert.classList.add('opacity-0');
                             setTimeout(() => alert.remove(), 500);
-                        }, 5000);
+                        }, 15000);
                     });
                 });
 			</script>
@@ -44,11 +44,10 @@
 		<header>
 			<twig:HeaderMobile />
 		</header>
-   		{# <twig:UserCard/> #}
 		<main>
 			{% for type, messages in app.flashes %}
 				{% for message in messages %}
-					<div class="alert px-4 py-3 mb-4 border rounded
+					<div class="alert px-4 py-3 mb-4 mt-6 border rounded
 						{% if type == 'success' %} bg-green-50 border-green-300 text-green-800 transition-opacity duration-500 opacity-100
 						{% elseif type == 'error' %} bg-red-50 border-red-300 text-red-800 transition-opacity duration-500 opacity-100
 						{% else %} bg-blue-50 border-blue-300 text-blue-800 transition-opacity duration-500 opacity-100

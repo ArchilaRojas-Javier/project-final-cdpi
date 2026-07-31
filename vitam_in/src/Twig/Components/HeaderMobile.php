@@ -22,29 +22,20 @@ final class HeaderMobile
      */
     public function getShowTitle(): bool
     {
-        // Mostrar título si el usuario está autenticado
+        // Pour afficher le titre si l'utilisateur est authentifié
         if ($this->security->getUser()) {
             return true;
         }
-        
-        // En cualquier otro caso (ej: inicio) no mostrar título
+        // Dans tous les autres cas, ne pas afficher le titre.
         return false;
     }
 
     /**
-     * Devuelve los items del menú que se mostrarán en el header.
+     * Renvoie les éléments de menu qui seront affichés dans le header.
      */
     public function getMenuItems(): array
     {
         return $this->menuService->getMenuItems();
     }
 
-    /**
-     * Nombre del usuario actual o null.
-     */
-    public function getUserName(): ?string
-    {
-        $user = $this->security->getUser();
-        return $user ? $user->getUserIdentifier() : null;
-    }
 }
