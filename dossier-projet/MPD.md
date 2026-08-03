@@ -1,6 +1,6 @@
 # Vitam-in
 
-## MPD
+## MPD (Modèle Physique de Données)
 
 ```mermaid
 erDiagram

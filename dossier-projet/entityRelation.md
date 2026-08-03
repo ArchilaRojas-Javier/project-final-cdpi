@@ -1,6 +1,6 @@
 # Vitam-in
 
-## Entity Relation 
+## Entity Relation (Diagramme ER)
 
 
 ```mermaid

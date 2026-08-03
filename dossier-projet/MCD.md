@@ -1,6 +1,6 @@
 # Vitam-in
 
-## MCD
+## MCD (Modèle Conceptuel de Données)
 
 ```mermaid
 erDiagram
