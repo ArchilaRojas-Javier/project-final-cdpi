@@ -72,7 +72,7 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     
     - **C.A 1 :** Étant donné que le visiteur est sur le formulaire d’inscription,
     quand il saisit une adresse email valide non utilisée et un mot de passe d’au moins 8 caractères alphanumériques, puis valide,
-    alors le système chiffre le mot de passe avec bcrypt, crée le compte, connecte automatiquement l’utilisateur et le redirige vers le tableau de bord avec un message de confirmation de création de compte.
+    alors le système hache le mot de passe avec bcrypt, crée le compte, connecte automatiquement l’utilisateur en démarrant une session PHP et le redirige vers le tableau de bord avec un message de confirmation de création de compte.
     
     - **C.A 2 :** Étant donné que le visiteur saisit une adresse email déjà associée à un compte existant,
     quand il soumet le formulaire,
@@ -103,8 +103,7 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     
     - **C.A 1 :** Étant donné que l’utilisateur est sur la page de connexion,
     quand il saisit son email et son mot de passe valides,
-    alors le système vérifie l’email, compare le mot de passe haché, génère un token JWT et redirige vers le tableau de bord.
-    
+    alors le système vérifie l’email, compare le mot de passe haché, authentifie l’utilisateur via le système de sécurité de Symfony (session PHP) et le redirige vers le tableau de bord.    
     - **C.A 2 :** Étant donné que l’email saisi n’existe pas en base,
     quand l’utilisateur tente de se connecter,
     alors un message d’erreur indiquant que les identifiants sont incorrects s’affiche.
@@ -160,6 +159,7 @@ Dans le cadre de l’application, un supplément désigne un produit disponible 
     alors l'application ferme sa session locale sans révoquer l'accès à Google Calendar, ce qui permet aux rappels existants de continuer à fonctionner normalement.
 
 **NOTE:** Tous les mots de passe utilisateur sont hachés avec l'algorithme bcrypt côté serveur avant d'être stockés dans la base de données. Lors de la connexion, le système compare le mot de passe saisi au hash enregistré.
+L'authentification standard (email/mot de passe) repose sur le composant Security de Symfony avec des sessions PHP côté serveur. Les cookies de session sont sécurisés (HttpOnly, Secure, SameSite).
 L’authentification utilise OAuth 2.0. Les scopes demandés sont email, profile et https://www.googleapis.com/auth/calendar.events. Les tokens sont stockés de manière sécurisée côté serveur et ne sont jamais exposés au client.
 La révocation des tokens OAuth n'est effectuée que si l'utilisateur choisit explicitement de dissocier son compte Google, une fonctionnalité qui peut être ajoutée dans une version ultérieure.
 
