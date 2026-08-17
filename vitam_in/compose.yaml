@@ -7,9 +7,9 @@ services:
       MYSQL_USER: ${MYSQL_USER:-app}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-!ChangeMe!}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}   # Obligatorio, cámbialo en producción
-      # Opcional: si quieres que el root tenga una contraseña aleatoria, usa MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+      
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root}"]
       timeout: 5s
       retries: 5
       start_period: 60s

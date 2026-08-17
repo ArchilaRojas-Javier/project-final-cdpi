@@ -16,3 +16,42 @@ services:
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
 ###< symfony/mailer ###
+
+### NUEVO: Servicio de la aplicación (PHP-FPM) ###
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      # Pasamos la URL de la BDD por variable de entorno (sobreescribe al .env)
+      DATABASE_URL: "mysql://${MYSQL_USER:-app}:${MYSQL_PASSWORD:-!ChangeMe!}@database:3306/${MYSQL_DATABASE:-app}?serverVersion=8.0.32&charset=utf8mb4"
+    volumes:
+      - .:/var/www/symfony   # Monta tu código para que los cambios se vean en caliente
+    depends_on:
+      database:
+        condition: service_healthy
+      mailer:
+        condition: service_started
+
+### NUEVO: Servidor Web Nginx ###
+  webserver:
+    image: nginx:alpine
+    ports:
+      - "8080:80"   # Accederás a tu app en http://localhost:8080 (el 80 está ocupado a veces)
+    volumes:
+      - .:/var/www/symfony
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d  # Monta la configuración que creaste
+    depends_on:
+      - app
+
+### NUEVO: phpMyAdmin ###
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8081:80"   # Accede en http://localhost:8081
+    environment:
+      PMA_HOST: database   # Nombre del servicio de MySQL
+      PMA_USER: ${MYSQL_USER:-app} 
+      PMA_PASSWORD: ${MYSQL_PASSWORD:-!ChangeMe!}
+    depends_on:
+      - database
