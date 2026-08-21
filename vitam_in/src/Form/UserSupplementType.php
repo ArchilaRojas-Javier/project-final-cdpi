@@ -15,19 +15,19 @@ class UserSupplementType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('dosage_schedule')
-            ->add('start_date', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('duration_days')
-            ->add('precautions')
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-            ])
+            // ->add('dosage_schedule')
+            // ->add('start_date', null, [
+            //     'widget' => 'single_text',
+            // ])
+            // ->add('duration_days')
+            // ->add('precautions')
+            // ->add('user', EntityType::class, [
+            //     'class' => User::class,
+            //     'choice_label' => 'id',
+            // ])
             ->add('supplement', EntityType::class, [
                 'class' => Supplement::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
             ])
         ;
     }
