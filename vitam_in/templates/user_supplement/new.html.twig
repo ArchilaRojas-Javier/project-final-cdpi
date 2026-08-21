@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New UserSupplement{% endblock %}
+
+{% block body %}
+    <h1>Create new UserSupplement</h1>
+
+    {{ include('user_supplement/_form.html.twig') }}
+
+    <a href="{{ path('app_user_supplement_index') }}">back to list</a>
+{% endblock %}

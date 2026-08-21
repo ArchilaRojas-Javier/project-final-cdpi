@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UserSupplement{% endblock %}
+
+{% block body %}
+    <h1>UserSupplement</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ user_supplement.id }}</td>
+            </tr>
+            <tr>
+                <th>Dosage_schedule</th>
+                <td>{{ user_supplement.dosageSchedule ? user_supplement.dosageSchedule|json_encode : '' }}</td>
+            </tr>
+            <tr>
+                <th>Start_date</th>
+                <td>{{ user_supplement.startDate ? user_supplement.startDate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Duration_days</th>
+                <td>{{ user_supplement.durationDays }}</td>
+            </tr>
+            <tr>
+                <th>Precautions</th>
+                <td>{{ user_supplement.precautions }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_user_supplement_index') }}">back to list</a>
+
+    <a href="{{ path('app_user_supplement_edit', {'id': user_supplement.id}) }}">edit</a>
+
+    {{ include('user_supplement/_delete_form.html.twig') }}
+{% endblock %}
