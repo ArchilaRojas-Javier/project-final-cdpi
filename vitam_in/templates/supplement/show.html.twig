@@ -66,7 +66,12 @@
 					{% endif %}
 
 					<div class="flex items-center justify-center mb-6">
-            			<a href="{{ path('app_register') }}" data-turbo="false" class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-[300px] p-2 text-center">Demarrer mon suivi</a>
+						{% if app.user %}
+    						{% set target_url = path('app_user_supplement_new', {supplementId: supplement.id}) %}
+						{% else %}
+    						{% set target_url = path('app_login') %}
+						{% endif %}
+            			<a href="{{ target_url }}" data-turbo="false" class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-[300px] p-2 text-center">Demarrer mon suivi</a>
         			</div>
 
 					<h3 class="text-lg font-medium text-gray-800">Dureé de la cure </h3>
@@ -95,8 +100,10 @@
 					{% endif %}
 
 					<div class="flex items-center justify-center">
-            			<a href="{{ path('app_register') }}" data-turbo="false" class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-[300px] p-2 text-center">
-            			Je m'inscris gratuitement</a>
+            			{% if not app.user %}
+    						<a href="{{ path('app_register') }}" data-turbo="false" class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-[300px] p-2 text-center">
+            					Je m'inscris gratuitement</a>
+						{% endif %}
         			</div>
 				</div>
 			</article>
