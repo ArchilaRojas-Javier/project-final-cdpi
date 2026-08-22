@@ -30,6 +30,7 @@ final class DashboardSupplementList
     public ?int $editingId = null;
 
     #[LiveProp]
+    // #[LiveProp(useSerializerForHydration: true)]
     public array $userSupplements = [];
 
     private Security $security;
@@ -54,17 +55,56 @@ final class DashboardSupplementList
         
     }
 
-    // Se ejecuta al montar el componente
+    /**
+     * Ceci s'exécute lorsque le composant est monté
+     */
     public function mount(): void
-    {
-        $user = $this->security->getUser();
-
-        if(!$user){
-            throw new AccessDeniedException('Debes iniciar sesión.');
-        }
-        
-        $this->userSupplements = $this->userSupplementRepository->findByUser($user);
+{
+    $user = $this->security->getUser();
+    if (!$user) {
+        throw new AccessDeniedException('Vous devez vous connecter.');
     }
+
+    /** 
+     * récupère toutes les données à utiliser dans le template dans un tableau
+     * @var UserSupplement[] $userSupplementData
+     *  */
+    $userSupplementData = $this->userSupplementRepository->findByUser($user);
+
+    $this->userSupplements = array_map(function (UserSupplement $us) {
+        
+        $supplementName = $us->getSupplement()->getName();
+        $startDate = $us->getStartDate();
+        $duration = $us->getDurationDays();
+        $daysRemaining = 0;
+        if ($startDate && $duration) {
+            $end = (clone $startDate)->modify("+{$duration} days");
+            $today = new \DateTimeImmutable();
+            if ($end >= $today) {
+                $daysRemaining = $today->diff($end)->days;
+            }
+        }
+
+        $schedule = $us->getDosageSchedule();
+            if (is_array($schedule) && isset($schedule['dose'], $schedule['unit'])) {
+                $dose = $schedule['dose'];
+                $unit = $schedule['unit'];
+                $dosageSummary = $dose . ' ' . $unit;
+            } else {
+                $dosageSummary = '0'; // Valeur par défaut si aucune information sur la dose n'est disponible
+            }
+        
+        return [
+            'id'               => $us->getId(),
+            'supplementName'   => $supplementName,
+            'startDate'        => $startDate->format('Y-m-d'),
+            'durationDays'     => $duration,
+            'daysRemaining'    => $daysRemaining,
+            'dosageSummary'    => $dosageSummary,
+            'notesCount'       => $us->getNotes()->count(),
+        ];
+    }, $userSupplementData);
+}
 
     // Construye el formulario de edición (usado solo cuando editingId no es null)
     protected function instantiateForm(): FormInterface
@@ -72,7 +112,7 @@ final class DashboardSupplementList
         $userSupplement = null;
         
         if ($this->editingId) {
-            $userSupplement = $this->userSupplementRepository->find($this->editingId);
+            $userSupplement = $this->userSupplementRepository->findById($this->editingId);
             // Seguridad: verificar que el dueño sea el usuario logueado
             if (!$userSupplement || $userSupplement->getUser() !== $this->security->getUser()) {
                throw new AccessDeniedException('No tienes permiso para editar esto.');

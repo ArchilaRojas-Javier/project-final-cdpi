@@ -38,11 +38,10 @@ final class UserSupplementController extends AbstractController
 
         $form = $this->createForm(UserSupplementType::class, $userSupplement);
         $form->handleRequest($request);
-
+ 
         if ($form->isSubmitted() && $form->isValid()) {
-            $userSupplement->setDosageSchedule($form->get('dosageScheduleDose')->getData());
-
-            $userSupplementService->persistWithUser($userSupplement, $user);
+            
+        $userSupplementService->persistWithUser($userSupplement, $user);
 
             $this->addFlash('success', 'Supplément enregistré avec succès.');
             return $this->redirectToRoute('app_dashboard', [], Response::HTTP_SEE_OTHER);

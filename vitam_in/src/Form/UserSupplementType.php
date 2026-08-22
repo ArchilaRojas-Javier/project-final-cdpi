@@ -2,17 +2,11 @@
 
 namespace App\Form;
 
-use App\Entity\Supplement;
-use App\Entity\User;
 use App\Entity\UserSupplement;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Validator\Constraints as Assert;
-
-
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -27,12 +21,7 @@ class UserSupplementType extends AbstractType
                 'attr' => [
                    'min' => 0,       
                 ],
-                'constraints' => [
-                    new Assert\GreaterThan([
-                        'value' => 0,
-                        'message' => 'Le dosage ne peut pas être négatif.'
-                    ]),
-                ],
+               
             ])
            ->add('start_date', DateType::class, [
                 'widget' => 'single_text',
@@ -43,12 +32,6 @@ class UserSupplementType extends AbstractType
                 'attr' => [
                     'min' => 1,
                     'step' => 1,
-                ],
-                'constraints' => [
-                   new Assert\GreaterThan([
-                        'value' => 0,
-                        'message' => 'La durée doit être un nombre positif.'
-                    ]),
                 ],
             ]);
     }
