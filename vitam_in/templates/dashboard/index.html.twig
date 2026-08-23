@@ -4,13 +4,14 @@
 
 {% block body %}
 
-    <section class="container mx-auto">
+	<section class="flex flex-col items-center p-6 min-h-screen w-screen gap-6 mb-12 ">
    	
         <twig:UserCard/>
+        
+        <h2 class="text-[#6E6F6F] text-[2rem]">Suivi en cours</h2>
 
         <twig:DashboardSupplementList/>
 
-            	<button type="button" class="btn bg-[#6E6F6F] text-white border rounded-[0.5rem] w-full p-2"><a href="{{ path('app_home') }}">Commencer</a></button>
 
 
     </section>

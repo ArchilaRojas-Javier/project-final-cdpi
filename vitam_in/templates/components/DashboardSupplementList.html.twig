@@ -1,160 +1,120 @@
-{# <div {{ attributes }}>
-    <table class="table table-bordered mx-auto">
-        <thead>
-            <tr>
-                <th scope="col" class="text-center">
-                    <span class="sr-only">Supplément</span>
-                    {{ ux_icon('lucide:pill',{ 'aria-hidden': 'true' }) }}
-                </th>
-                <th scope="col" class="text-center">
-                    <span class="sr-only">Jours restants</span>
-                    {{ ux_icon('lucide:calendar-1',{ 'aria-hidden': 'true' }) }}
-                </th>
-                <th scope="col" class="text-center">
-                    <span class="sr-only">Dosage</span>
-                    {{ ux_icon('lucide:scale',{ 'aria-hidden': 'true' }) }}
-                </th>
-                <th scope="col" class="text-center">
-                    <span class="sr-only">Notes</span>
-                    {{ ux_icon('lucide:notebook-pen',{ 'aria-hidden': 'true' }) }}
-                </th>
-                <th scope="col" class="text-center">
-                    <span class="sr-only">Options</span>
-                    {{ ux_icon('lucide:more-horizontal',{ 'aria-hidden': 'true' }) }}
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for userSupplement in this.userSupplements %}
-                <tr>
-                    {% if this.editingId == userSupplement.id %}
-                         Modo edición: mostramos el formulario ocupando toda la fila 
-                        <td colspan="5">
-                            {{ form_start(this.form, {
-                                action: '#',
-                                attr: { 'data-live-action': 'saveEdit' }
-                            }) }}
-                                {{ form_errors(this.form) }}
-                                
-                                 Mostramos el nombre de solo lectura (porque no se edita aquí) 
-                                <div class="mb-2">
-                                    <strong>Suplemento:</strong> {{ this.getSupplementName(userSupplement) }}
-                                </div>
-                                
-                                {{ form_row(this.form.dosis) }}
-                                {{ form_row(this.form.startDate) }}
-                                {{ form_row(this.form.endDate) }}
-                                
-                                <div class="mt-2">
-                                    <button type="submit" class="btn btn-primary btn-sm">Guardar</button>
-                                    <button type="button" class="btn btn-secondary btn-sm" data-live-action="cancelEdit">Cancelar</button>
-                                </div>
-                            {{ form_end(this.form) }}
-                        </td>
-                    {% else %}
-                         Vista normal 
-                        <td>{{ this.getSupplementName(userSupplement) }}</td>
-                        <td>{{ this.getDaysRemaining(userSupplement) }}</td>
-                        <td>{{ userSupplement.dosis }}</td>
-                        <td>{{ this.getNoteCount(userSupplement) }}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm"
-                                    data-live-action="startEdit"
-                                    data-live-id="{{ userSupplement.id }}">
-                                ✏️ Editar
-                            </button>
-                            <button class="btn btn-danger btn-sm"
-                                    data-live-action="delete"
-                                    data-live-id="{{ userSupplement.id }}"
-                                    onclick="return confirm('¿Eliminar este suplemento?')">
-                                🗑️ Borrar
-                            </button>
-                        </td>
-                    {% endif %}
-                </tr>
-            {% else %}
-                <tr><td colspan="5">Ajoutez votre premier supplément pour suivre vos progrès.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div> #}
-<div {{ attributes }}>
-    <table class="table table-bordered mx-auto">
-        <thead>
-            <tr>
-                <th scope="col" class="text-center">
-                    <span class="sr-only">Supplément</span>
-                    {{ ux_icon('lucide:pill',{ 'aria-hidden': 'true' }) }}
-                </th>
-                <th scope="col" class="text-center">
-                    <span class="sr-only">Jours restants</span>
-                    {{ ux_icon('lucide:calendar-1',{ 'aria-hidden': 'true' }) }}
-                </th>
-                <th scope="col" class="text-center">
-                    <span class="sr-only">Dosage</span>
-                    {{ ux_icon('lucide:scale',{ 'aria-hidden': 'true' }) }}
-                </th>
-                <th scope="col" class="text-center">
-                    <span class="sr-only">Notes</span>
-                    {{ ux_icon('lucide:notebook-pen',{ 'aria-hidden': 'true' }) }}
-                </th>
-                <th scope="col" class="text-center">
-                    <span class="sr-only">Options</span>
-                    {{ ux_icon('lucide:more-horizontal',{ 'aria-hidden': 'true' }) }}
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for userSupplement in this.userSupplements %}
-                <tr>
-                    {% if this.editingId == userSupplement.id %}
-                        {# Modo edición: mostramos el formulario ocupando toda la fila #}
-                        <td colspan="5">
-                            {{ form_start(this.form, {
-                                action: '#',
-                                attr: { 'data-live-action': 'saveEdit' }
-                            }) }}
-                                {{ form_errors(this.form) }}
-                                
-                                {# Mostramos el nombre de solo lectura (usando los datos planos) #}
-                                <div class="mb-2">
-                                    <strong>Suplemento:</strong> {{ userSupplement.supplementName }}
-                                </div>
-                                
-                                {{ form_row(this.form.dosis) }}
-                                {{ form_row(this.form.startDate) }}
-                                {{ form_row(this.form.endDate) }}
-                                
-                                <div class="mt-2">
-                                    <button type="submit" class="btn btn-primary btn-sm">Guardar</button>
-                                    <button type="button" class="btn btn-secondary btn-sm" data-live-action="cancelEdit">Cancelar</button>
-                                </div>
-                            {{ form_end(this.form) }}
-                        </td>
-                    {% else %}
-                        {# Vista normal: usamos los datos planos #}
-                        <td>{{ userSupplement.supplementName }}</td>
-                        <td>{{ userSupplement.daysRemaining }}</td>
-                        <td>{{ userSupplement.dosageSummary }}</td>
-                        <td>{{ userSupplement.notesCount }}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm"
-                                    data-live-action="startEdit"
-                                    data-live-id="{{ userSupplement.id }}">
-                                ✏️ Editar
-                            </button>
-                            <button class="btn btn-danger btn-sm"
-                                    data-live-action="delete"
-                                    data-live-id="{{ userSupplement.id }}"
-                                    onclick="return confirm('¿Eliminar este suplemento?')">
-                                🗑️ Borrar
-                            </button>
-                        </td>
-                    {% endif %}
-                </tr>
-            {% else %}
-                <tr><td colspan="5">Ajoutez votre premier supplément pour suivre vos progrès.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div {{ attributes }} class="dashboard-supplement-list">
+	<div class="border rounded-xl border-[#C6C6C8] shadow-md overflow-hidden">
+		<div class="max-h-60 overflow-y-auto md:max-h-none md:overflow-visible">
+			<table class="table w-full table-fixed">
+				<colgroup>
+					<col class="w-4/12">
+					<col class="w-2/12">
+					<col class="w-2/12">
+					<col class="w-2/12">
+					<col class="w-2/12">
+				</colgroup>
+
+				<thead class="sticky top-0 bg-white z-10 border-b border-[#C6C6C8]">
+					<tr>
+						<th scope="col" class="px-2 py-3">
+							<span class="sr-only">Supplément</span>
+							<div class="flex justify-center items-center">
+								{{ ux_icon('lucide:pill', { 'aria-hidden': 'true', class: 'w-5 h-5' }) }}
+							</div>
+						</th>
+						<th scope="col" class="px-2 py-3">
+							<span class="sr-only">Jours restants</span>
+							<div class="flex justify-center items-center">
+								{{ ux_icon('lucide:calendar-1', { 'aria-hidden': 'true', class: 'w-5 h-5' }) }}
+							</div>
+						</th>
+						<th scope="col" class="px-2 py-3">
+							<span class="sr-only">Dosage</span>
+							<div class="flex justify-center items-center">
+								{{ ux_icon('lucide:scale', { 'aria-hidden': 'true', class: 'w-5 h-5' }) }}
+							</div>
+						</th>
+						<th scope="col" class="px-2 py-3">
+							<span class="sr-only">Notes</span>
+							<div class="flex justify-center items-center">
+								{{ ux_icon('lucide:notebook-pen', { 'aria-hidden': 'true', class: 'w-5 h-5' }) }}
+							</div>
+						</th>
+						<th scope="col" class="px-2 py-3">
+							<span class="sr-only">Options</span>
+							<div class="flex justify-center items-center">
+								{{ ux_icon('lucide:more-horizontal', { 'aria-hidden': 'true', class: 'w-5 h-5' }) }}
+							</div>
+						</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					{% for userSupplement in this.userSupplements %}
+						<tr class="justify-center items-center ">
+							{% if this.editingId == userSupplement.id %}
+								{# Modo edición: ocupa toda la fila #}
+								<td colspan="5" class="p-4">
+									{{ form_start(this.form, {
+                                    action: '#',
+                                    attr: { 'data-live-action': 'saveEdit' }
+                                }) }}
+									{{ form_errors(this.form) }}
+									<div class="mb-1">
+										<strong>Supplement:</strong>
+										{{ userSupplement.supplementName }}
+									</div>
+									{{ form_row(this.form.dosis) }}
+									{{ form_row(this.form.startDate) }}
+									{{ form_row(this.form.endDate) }}
+									<div class="mt-2">
+										<button type="submit" class="btn btn-primary btn-sm">Guardar</button>
+										<button type="button" class="btn btn-secondary btn-sm" data-live-action="cancelEdit">Cancelar</button>
+									</div>
+									{{ form_end(this.form) }}
+								</td>
+							{% else %}
+								{# Mode d'affichage #}
+								<td class="text-center px-1 py-1">
+									<a href="{{ path('app_supplement_show', { id: userSupplement.id }) }}" class="block hover:underline text-inherit">
+										{{ userSupplement.supplementName }}
+									</a>
+								</td>
+								<td class="text-center px-2 py-2">{{ userSupplement.daysRemaining }}</td>
+								<td class="text-center px-2 py-2">{{ userSupplement.dosageSummary }}</td>
+								<td class="text-center px-2 py-2">{{ userSupplement.notesCount }}</td>
+								<td
+									class="text-center px-2 py-2">
+									{# Menu déroulant avec les trois points #}
+									<details class="relative inline-block">
+										<summary class="list-none cursor-pointer p-1 hover:bg-gray-100 rounded focus:outline-none">
+											{{ ux_icon('lucide:more-horizontal', { 
+                                            'aria-hidden': 'true', 
+                                            class: 'w-5 h-5' 
+                                        }) }}
+										</summary>
+										<div class="absolute right-0 mt-1 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+											<button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100" data-live-action="startEdit" data-live-id="{{ userSupplement.id }}">
+												✏️ Modifier
+											</button>
+											<button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600" data-live-action="delete" data-live-id="{{ userSupplement.id }}" onclick="return confirm('¿Eliminar este suplemento?')">
+												🗑️ Supprimer
+											</button>
+											<!-- Ajouter un bouton pour syncronicer avecc google calendar -->
+										</div>
+									</details>
+								</td>
+							{% endif %}
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="5" class="text-center px-2 py-4">
+								Ajoutez votre premier supplément pour suivre vos progrès.
+								<button type="button" class="btn bg-[#6E6F6F] text-white border rounded-[0.5rem] p-2">
+									<a href="{{ path('app_home') }}">Commencer</a>
+								</button>
+
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>
