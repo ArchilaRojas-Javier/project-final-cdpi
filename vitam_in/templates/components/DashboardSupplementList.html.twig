@@ -47,83 +47,57 @@
 
 				<tbody>
 					{% for userSupplement in this.userSupplements %}
-						<tr class="justify-center items-center ">
-							{% if this.editingId == userSupplement.id %}
-								{# Modo edición: ocupa toda la fila #}
-								<td colspan="5" class="p-4">
-									{{ form_start(this.form, {
-                                    action: '#',
-                                    attr: { 'data-live-action': 'saveEdit' }
-                                }) }}
-									{{ form_errors(this.form) }}
-									<div class="mb-1">
-										<strong>Supplement:</strong>
-										{{ userSupplement.supplementName }}
-									</div>
-									{{ form_row(this.form.dosageScheduleDose) }}
-									{{ form_row(this.form.start_date) }}
-									{{ form_row(this.form.duration_days) }}
-									<div class="mt-2">
-										<button type="submit" class="btn btn-primary btn-sm">Guardar</button>
-										<button type="button" class="btn btn-secondary btn-sm" data-live-action="cancelEdit">Cancelar</button>
-									</div>
-									{{ form_end(this.form) }}
-								</td>
-							{% else %}
-								{# Mode d'affichage #}
-								<td class="text-center px-1 py-1">
-									<a href="{{ path('app_supplement_show', { id: userSupplement.supplementId }) }}" class="block hover:underline text-inherit">
-										{{ userSupplement.supplementName }}
-									</a>
-								</td>
-								<td class="text-center px-2 py-2">{{ userSupplement.daysRemaining }}</td>
-								<td class="text-center px-2 py-2">{{ userSupplement.dosageSummary }}</td>
-								<td class="text-center px-2 py-2">{{ userSupplement.notesCount }}</td>
-								<td
-									class="text-center px-2 py-2">
-									{# Menu déroulant avec les trois points #}
-									<details class="relative inline-block">
-										<summary class="list-none cursor-pointer p-1 hover:bg-gray-100 rounded focus:outline-none">
-											{{ ux_icon('lucide:more-horizontal', { 
-                                            'aria-hidden': 'true', 
-                                            class: 'w-5 h-5' 
-                                        }) }}
-										</summary>
-										<div class="absolute right-0 mt-1 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-											
-											<button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-												data-live-action="startEdit"
-												data-live-action-params="{{ { id: userSupplement.id }|json_encode }}"
-											>
-												✏️ Modifier
-											</button>
-											
-											<button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600" 
-												data-live-action="delete"
-												data-live-action-params="{{ { id: userSupplement.id }|json_encode }}">
+						<tr>
+							<td class="text-center px-1 py-1">
+								<a href="{{ path('app_supplement_show', { id: userSupplement.supplementId }) }}" class="block hover:underline text-inherit">
+									{{ userSupplement.supplementName }}
+								</a>
+							</td>
+							<td class="text-center px-2 py-2">{{ userSupplement.daysRemaining }}</td>
+							<td class="text-center px-2 py-2">{{ userSupplement.dosageSummary }}</td>
+							<td class="text-center px-2 py-2">{{ userSupplement.notesCount }}</td>
+							<td class="text-center px-2 py-2">
+								{# Menu déroulant avec les trois points #}
+								<details class="relative inline-block">
+									<summary class="list-none cursor-pointer p-1 hover:bg-gray-100 rounded focus:outline-none">
+										{{ ux_icon('lucide:more-horizontal', { 'aria-hidden': 'true', class: 'w-5 h-5' }) }}
+									</summary>
+									<div class="absolute right-0 mt-1 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+										{# Lien vers la page d'édition classique #}
+										<a href="{{ path('app_user_supplement_edit', { id: userSupplement.id }) }}"
+										   class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+											✏️ Modifier
+										</a>
+										{# Formulaire de suppression (POST avec CSRF) #}
+										<form method="post"
+											  action="{{ path('app_user_supplement_delete', { id: userSupplement.id }) }}"
+											  style="display: inline-block; width: 100%;">
+											<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ userSupplement.id) }}">
+											<button type="submit"
+													class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600">
 												🗑️ Supprimer
 											</button>
-											<!-- Ajouter un bouton pour syncronicer avecc google calendar -->
-										</div>
-									</details>
-								</td>
-								<td><button data-live-action="test">Test</button>
-											</td>
-							{% endif %}
+										</form>
+									</div>
+								</details>
+							</td>
 						</tr>
 					{% else %}
 						<tr>
 							<td colspan="5" class="text-center px-2 py-4">
 								Ajoutez votre premier supplément pour suivre vos progrès.
-								<button type="button" class="btn bg-[#6E6F6F] text-white border rounded-[0.5rem] p-2">
-									<a href="{{ path('app_home') }}">Commencer</a>
-								</button>
-
 							</td>
 						</tr>
 					{% endfor %}
 				</tbody>
 			</table>
 		</div>
+	</div>
+	<div class="mt-4 flex justify-center">
+		{% if this.userSupplements is empty %}
+			<button type="button" class="btn bg-[#308AFF] text-white border rounded-[0.5rem] p-2">
+				<a href="{{ path('app_home') }}">Commencer</a>
+			</button>
+		{% endif %}
 	</div>
 </div>
