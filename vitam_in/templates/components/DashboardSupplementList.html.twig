@@ -1,4 +1,4 @@
-<div {{ attributes }} class="dashboard-supplement-list">
+<div {{ attributes }}>
 	<div class="border rounded-xl border-[#C6C6C8] shadow-md overflow-hidden">
 		<div class="max-h-60 overflow-y-auto md:max-h-none md:overflow-visible">
 			<table class="table w-full table-fixed">
@@ -60,9 +60,9 @@
 										<strong>Supplement:</strong>
 										{{ userSupplement.supplementName }}
 									</div>
-									{{ form_row(this.form.dosis) }}
-									{{ form_row(this.form.startDate) }}
-									{{ form_row(this.form.endDate) }}
+									{{ form_row(this.form.dosageScheduleDose) }}
+									{{ form_row(this.form.start_date) }}
+									{{ form_row(this.form.duration_days) }}
 									<div class="mt-2">
 										<button type="submit" class="btn btn-primary btn-sm">Guardar</button>
 										<button type="button" class="btn btn-secondary btn-sm" data-live-action="cancelEdit">Cancelar</button>
@@ -72,7 +72,7 @@
 							{% else %}
 								{# Mode d'affichage #}
 								<td class="text-center px-1 py-1">
-									<a href="{{ path('app_supplement_show', { id: userSupplement.id }) }}" class="block hover:underline text-inherit">
+									<a href="{{ path('app_supplement_show', { id: userSupplement.supplementId }) }}" class="block hover:underline text-inherit">
 										{{ userSupplement.supplementName }}
 									</a>
 								</td>
@@ -90,16 +90,25 @@
                                         }) }}
 										</summary>
 										<div class="absolute right-0 mt-1 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-											<button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100" data-live-action="startEdit" data-live-id="{{ userSupplement.id }}">
+											
+											<button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+												data-live-action="startEdit"
+												data-live-action-params="{{ { id: userSupplement.id }|json_encode }}"
+											>
 												✏️ Modifier
 											</button>
-											<button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600" data-live-action="delete" data-live-id="{{ userSupplement.id }}" onclick="return confirm('¿Eliminar este suplemento?')">
+											
+											<button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600" 
+												data-live-action="delete"
+												data-live-action-params="{{ { id: userSupplement.id }|json_encode }}">
 												🗑️ Supprimer
 											</button>
 											<!-- Ajouter un bouton pour syncronicer avecc google calendar -->
 										</div>
 									</details>
 								</td>
+								<td><button data-live-action="test">Test</button>
+											</td>
 							{% endif %}
 						</tr>
 					{% else %}

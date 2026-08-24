@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 
 // [AsLiveComponent('dashboard_supplement_list')]
-// class DashboardSupplementList
+
 #[AsLiveComponent]
 final class DashboardSupplementList
 {
@@ -30,7 +30,6 @@ final class DashboardSupplementList
     public ?int $editingId = null;
 
     #[LiveProp]
-    // #[LiveProp(useSerializerForHydration: true)]
     public array $userSupplements = [];
 
     private Security $security;
@@ -72,7 +71,7 @@ final class DashboardSupplementList
     $userSupplementData = $this->userSupplementRepository->findByUser($user);
 
     $this->userSupplements = array_map(function (UserSupplement $us) {
-        
+        $supplementId = $us->getSupplement()->getId();
         $supplementName = $us->getSupplement()->getName();
         $startDate = $us->getStartDate();
         $duration = $us->getDurationDays();
@@ -95,40 +94,39 @@ final class DashboardSupplementList
             }
         
         return [
-            'id'               => $us->getId(),
+            'id'               => $us->getId(),//id de userSuplement
             'supplementName'   => $supplementName,
             'startDate'        => $startDate->format('Y-m-d'),
             'durationDays'     => $duration,
             'daysRemaining'    => $daysRemaining,
             'dosageSummary'    => $dosageSummary,
             'notesCount'       => $us->getNotes()->count(),
+            'supplementId'     => $supplementId, // id de Supplement
         ];
     }, $userSupplementData);
 }
 
     // Construye el formulario de edición (usado solo cuando editingId no es null)
     protected function instantiateForm(): FormInterface
-    {
-        $userSupplement = null;
-        
-        if ($this->editingId) {
-            $userSupplement = $this->userSupplementRepository->findById($this->editingId);
-            // Seguridad: verificar que el dueño sea el usuario logueado
-            if (!$userSupplement || $userSupplement->getUser() !== $this->security->getUser()) {
-               throw new AccessDeniedException('No tienes permiso para editar esto.');
-            }
-        } else {
-            // Si no hay ID, creamos uno nuevo (aunque no uses creación aquí, es buena práctica)
-            $userSupplement = new UserSupplement();
-            $userSupplement->setUser($this->security->getUser());
+{
+    $userSupplement = null;
+    if ($this->editingId) {
+        $userSupplement = $this->userSupplementRepository->find($this->editingId);
+        if (!$userSupplement || $userSupplement->getUser() !== $this->security->getUser()) {
+            throw new AccessDeniedException();
         }
-
-        return $this->formFactory->create(UserSupplementType::class, $userSupplement);
+    } else {
+        // Para el estado inicial, creamos un objeto vacío (no se usará)
+        $userSupplement = new UserSupplement();
+        $userSupplement->setUser($this->security->getUser());
     }
+    return $this->formFactory->create(UserSupplementType::class, $userSupplement);
+}
     // Acción al hacer clic en "Editar"
     #[LiveAction]
     public function startEdit(int $id): void
     {
+        dump('startEdit called with id: ' . $id);
         $this->editingId = $id;
     }
 
@@ -193,6 +191,13 @@ final class DashboardSupplementList
         $this->mount();
     }
 
+    #[LiveAction]
+public function test(): void
+{
+    dump('Test action triggered');
+    $this->editingId = 999;
+}
+
     // Métodos auxiliares para el template
         public function getDaysRemaining(UserSupplement $userSupplement): int
     {
@@ -209,27 +214,27 @@ final class DashboardSupplementList
         return $today->diff($end)->days;
     }
 
-    public function getNoteCount(UserSupplement $userSupplement): int
-    {
-        return $userSupplement->getNotes()->count(); // Asumiendo que tienes OneToMany
-    }
+    // public function getNoteCount(UserSupplement $userSupplement): int
+    // {
+    //     return $userSupplement->getNotes()->count(); // Asumiendo que tienes OneToMany
+    // }
 
-    public function getDosageSummary(UserSupplement $userSupplement): string
-    {
-        $schedule = $userSupplement->getDosageSchedule();
-        if (empty($schedule)) {
-            return 'No definida';
-        }
-        if (is_array($schedule)) {
-            // Si es un array, lo mostramos como lista separada por comas
-            return implode(', ', $schedule);
-        }
-        return (string) $schedule;
-    }
+    // public function getDosageSummary(UserSupplement $userSupplement): string
+    // {
+    //     $schedule = $userSupplement->getDosageSchedule();
+    //     if (empty($schedule)) {
+    //         return 'No definida';
+    //     }
+    //     if (is_array($schedule)) {
+    //         // Si es un array, lo mostramos como lista separada por comas
+    //         return implode(', ', $schedule);
+    //     }
+    //     return (string) $schedule;
+    // }
 
-    // Método para obtener el nombre desde la entidad relacionada Supplement
-    public function getSupplementName(UserSupplement $userSupplement): string
-    {
-        return $userSupplement->getSupplement() ? $userSupplement->getSupplement()->getName() : 'Sin nombre';
-    }
+    // // Método para obtener el nombre desde la entidad relacionada Supplement
+    // public function getSupplementName(UserSupplement $userSupplement): string
+    // {
+    //     return $userSupplement->getSupplement() ? $userSupplement->getSupplement()->getName() : 'Sin nombre';
+    // }
 }
