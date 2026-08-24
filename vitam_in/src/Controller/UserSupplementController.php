@@ -89,7 +89,7 @@ final class UserSupplementController extends AbstractController
             $entityManager->flush();
             $this->addFlash('success', 'Supplément supprimé avec succès.');
         } else {
-            $this->addFlash('error', 'Token CSRF invalide.');
+            $this->addFlash('error', 'Token invalide.');
         }
 
         return $this->redirectToRoute('app_dashboard', [], Response::HTTP_SEE_OTHER);

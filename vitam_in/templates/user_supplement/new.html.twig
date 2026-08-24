@@ -1,10 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New UserSupplement{% endblock %}
+{% block title %}New {% endblock %}
 
 {% block body %}
-    
-    <section class="flex flex-col items-center justify-center min-h-screen w-screen gap-10 ">
+    <section class="flex flex-col items-center p-6 min-h-screen w-screen gap-6 mb-12 ">
 		{% for flash_error in app.flashes('verify_email_error') %}
 			<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
 		{% endfor %}
@@ -14,8 +13,5 @@
              
             {{ include('user_supplement/_form.html.twig') }}
 
-		
-
-		
 	</section>
 {% endblock %}
