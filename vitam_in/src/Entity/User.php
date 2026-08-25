@@ -74,6 +74,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $AvatarUrl = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?array $googleAccessToken = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $googleRefreshToken = null;
+
     public function __construct()
     {
         $this->usersupplement = new ArrayCollection();
@@ -339,6 +345,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAvatarUrl(?string $AvatarUrl): static
     {
         $this->AvatarUrl = $AvatarUrl;
+
+        return $this;
+    }
+
+    public function getGoogleAccessToken(): ?array
+    {
+        return $this->googleAccessToken;
+    }
+
+    public function setGoogleAccessToken(?array $googleAccessToken): static
+    {
+        $this->googleAccessToken = $googleAccessToken;
+
+        return $this;
+    }
+
+    public function getGoogleRefreshToken(): ?string
+    {
+        return $this->googleRefreshToken;
+    }
+
+    public function setGoogleRefreshToken(?string $googleRefreshToken): static
+    {
+        $this->googleRefreshToken = $googleRefreshToken;
 
         return $this;
     }

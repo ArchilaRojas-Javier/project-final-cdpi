@@ -29,8 +29,7 @@
 
 	{# CHECKBOX GOOGLE CALENDAR #}
 	<div class="flex items-center mb-6">
-		<input type="checkbox" id="google_calendar" name="google_calendar" value="1" class="mr-2 h-5 w-5 text-[#308AFF] border-gray-300 rounded focus:ring-[#308AFF]">
-		<label for="google_calendar" class="text-sm text-gray-700">Ajouter automatiquement cette prise à mon agenda Google</label>
+		{{ form_row(form.google_calendar, {'attr': {'class': 'ml-2 h-4 w-4 text-[#308AFF] border-gray-300 rounded focus:ring-[#308AFF]'}}) }}
 	</div>
 
 	<div class="flex mb-6">

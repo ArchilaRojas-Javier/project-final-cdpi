@@ -12,14 +12,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+// use App\Service\GoogleCalendarService;
 
 #[Route('/user/supplement')]
 #[IsGranted('ROLE_USER')]
 final class UserSupplementController extends AbstractController
 {
     #[Route('/new/{supplementId}', name: 'app_user_supplement_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, UserSupplementService $userSupplementService, int $supplementId): Response
+    public function new(Request $request, UserSupplementService $userSupplementService,  int $supplementId): Response
     {
+        //GoogleCalendarService $googleCalendarService,//
         $user = $this->getUser();
         if (!$user) {
             throw new AccessDeniedException('Vous devez être connecté pour effectuer cette action.');
@@ -42,6 +44,35 @@ final class UserSupplementController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+                    // Verificar si el usuario quiere crear el evento
+        // if ($request->request->get('google_calendar') === '1') {
+        //     $user = $this->getUser();
+            
+        //     // Verificar si el usuario tiene token de acceso
+        //     if ($this->getUser()->getGoogleAccessToken()) {
+        //         $event = $googleCalendarService->createEvent(
+        //             $user,
+        //             'Suivi: ' . $userSupplement->getSupplement()->getName(),
+        //             'Dosage: ' . $userSupplement->getDosageSchedule()['dose'] . ' ' . ($userSupplement->getDosageSchedule()['unit'] ?? 'mg') . "\n" .
+        //             'Précautions: ' . ($userSupplement->getPrecautions() ?: 'Aucune'),
+        //             $userSupplement->getStartDate(),
+        //             $userSupplement->getDurationDays()
+        //         );
+                
+        //         if ($event) {
+        //             $this->addFlash('success', 'Événement créé dans Google Calendar.');
+        //         } else {
+        //             $this->addFlash('warning', 'Impossible de créer l\'événement. Vérifie que tu as bien autorisé l\'accès au calendrier.');
+        //         }
+        //     } else {
+        //         $this->addFlash('warning', 'Tu n\'es pas connecté avec Google. Connecte-toi avec Google pour utiliser cette option.');
+        //     }
+        // }
+        
+      
+  
+
             $userSupplementService->persistWithUser($userSupplement, $user);
             $this->addFlash('success', 'Supplément enregistré avec succès.');
             return $this->redirectToRoute('app_dashboard', [], Response::HTTP_SEE_OTHER);

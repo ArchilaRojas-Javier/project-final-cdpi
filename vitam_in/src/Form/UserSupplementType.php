@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -33,6 +34,11 @@ class UserSupplementType extends AbstractType
                     'min' => 1,
                     'step' => 1,
                 ],
+            ])
+            ->add('google_calendar', CheckboxType::class, [
+                'label' => 'Ajouter automatiquement cette prise à mon agenda Google',
+                'mapped' => false,   
+                'required' => false,  
             ]);
     }
 
