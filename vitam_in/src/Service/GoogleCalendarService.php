@@ -2,204 +2,223 @@
 
 namespace App\Service;
 
-use Google\Client;
+use App\Entity\User;
+use App\Entity\UserSupplement;
+use Doctrine\ORM\EntityManagerInterface;
+use Google\Client as GoogleClient;
 use Google\Service\Calendar;
 use Google\Service\Calendar\Event;
 use Google\Service\Calendar\EventDateTime;
-use App\Entity\User;
-use App\Entity\UserSupplement;
+// use Psr\Log\LoggerInterface;
 
-class GoogleCalendarService{}
-// {
-//     private Client $client;
+class GoogleCalendarService
+{
+    private GoogleClient $client;
+    private EntityManagerInterface $entityManagerInterface;
+    // private LoggerInterface $logger;
+    private string $defaultTimeZone;
 
-//     public function __construct(string $googleClientId, string $googleClientSecret, string $googleRedirectUri)
-//     {
-//         $this->client = new Client();
-//         $this->client->setClientId($googleClientId);
-//         $this->client->setClientSecret($googleClientSecret);
-//         $this->client->setRedirectUri($googleRedirectUri);
-//         $this->client->setScopes([
-//             Calendar::CALENDAR_EVENTS,
-//             // Si quieres solo eventos, usa Calendar::CALENDAR_EVENTS
-//         ]);
-//         $this->client->setAccessType('offline');
-//         $this->client->setPrompt('select_account consent');
-//     }
+    public function __construct(
+        array $googleCalendarConfig,
+        EntityManagerInterface $em,
+        // LoggerInterface $logger,
+        string $defaultTimeZone = 'UTC'
+    ) {
+        $this->entityManagerInterface = $em;
+        // $this->logger = $logger;
+        $this->defaultTimeZone = $defaultTimeZone;
 
-//     /**
-//      * Crea un evento en el calendario principal del usuario.
-//      *
-//      * @param User $user El usuario que autoriza la creación (debe tener un access token válido)
-//      * @param UserSupplement $userSupplement El suplemento que se va a añadir
-//      * @return string|null El ID del evento creado, o null si falla
-//      */
-//     public function createSupplementEvent(User $user, UserSupplement $userSupplement): ?string
-//     {
-//         // Verificar que el usuario tenga un token de acceso
-//         $accessToken = $user->getGoogleAccessToken();
-//         if (!$accessToken) {
-//             throw new \Exception('El usuario no tiene token de acceso a Google');
-//         }
+        $this->client = new GoogleClient();
+        $this->client->setClientId($googleCalendarConfig['client_id']);
+        $this->client->setClientSecret($googleCalendarConfig['client_secret']);
+        // $this->client->setRedirectUri($googleCalendarConfig['redirect_uri']);
+        $this->client->addScope(Calendar::CALENDAR_EVENTS);
+        $this->client->setAccessType('offline');
+        $this->client->setPrompt('consent');
+    }
 
-//         // Configurar el cliente con el token del usuario
-//         $this->client->setAccessToken($accessToken);
+    /**
+     * Crea un evento en el calendario principal del usuario a partir de un suplemento.
+     * @param User $user El usuario que autoriza la creación (debe tener un access token válido)
+     * @param UserSupplement $userSupplement El suplemento que se va a añadir
+     * @return string|null El ID del evento creado, o null si falla (o lanza excepción)
+     * @throws \Exception
+     */
+    public function createUserSupplementEvent(User $user, UserSupplement $userSupplement): ?string
+    {
+        //ver pasar los datos directos para no pasar el objeto completo, solo los datos necesarios para crear el evento
+        $summary = 'Suivi: ' . $userSupplement->getSupplement()->getName();// nombre de suplemento
+        $dosage = $userSupplement->getDosageSchedule();
+        $doseText = $dosage['dose'] ?? 'N/A';
+        $unitText = $dosage['unit'] ?? '';
+        $durationDays = $userSupplement->getDurationDays();
+        $startDate = $userSupplement->getStartDate();
+        $description = sprintf(
+            "Dosage: %s %s\nDurée: %d jours",
+            $doseText,
+            $unitText,
+            $durationDays
+        );
+        //calcular cuantos dias le quedan al suplemento y ponerlo en la descripcion
 
-//         // Si el token ha expirado, intentar refrescarlo (si tenemos refresh token)
-//         if ($this->client->isAccessTokenExpired()) {
-//             $refreshToken = $user->getGoogleRefreshToken();
-//             if ($refreshToken) {
-//                 $this->client->fetchAccessTokenWithRefreshToken($refreshToken);
-//                 // Guardar el nuevo token en la base de datos
-//                 $newAccessToken = $this->client->getAccessToken();
-//                 $user->setGoogleAccessToken($newAccessToken);
-//                 // Persistir el usuario (esto debe hacerse fuera del servicio o inyectar EntityManager)
-//                 // Lo mejor es que el servicio reciba EntityManager para actualizar el token.
-//             } else {
-//                 throw new \Exception('El token ha expirado y no hay refresh token. El usuario debe volver a autenticarse.');
-//             }
-//         }
+        return $this->createEvent($user, $summary, $description, $startDate, $durationDays);
+    }
 
-//         $calendarService = new Calendar($this->client);
+    /**
+     * Método genérico para crear un evento (día completo).
+     *
+     * @throws \Exception
+     */
+    public function createEvent(User $user, string $summary, string $description, \DateTimeInterface $startDate, int $durationDays): string
+    {
+        // 1. Asegurar token válido
+        $this->ensureValidAccessToken($user);
 
-//         // Construir el evento
-//         $event = new Event();
-//         $event->setSummary('Suivi: ' . $userSupplement->getSupplement()->getName());
-//         $event->setDescription('Dosage: ' . $userSupplement->getDosageSchedule()['dose'] . ' ' . $userSupplement->getDosageSchedule()['unit'] . "\n" .
-//                                'Durée: ' . $userSupplement->getDurationDays() . ' jours');
+        // 2. Crear servicio de Calendar
+        $service = new Calendar($this->client);
 
-//         // Fechas (asumimos evento de todo el día o con hora fija? 
-//         // Podemos poner a las 9:00 AM como inicio)
-//         $startDate = $userSupplement->getStartDate();
-//         $duration = $userSupplement->getDurationDays();
+        // 3. Preparar fechas (todo el día)
+           // Convertir a DateTimeImmutable para usar setTime()
+    $start = $startDate instanceof \DateTimeImmutable
+        ? $startDate
+        : \DateTimeImmutable::createFromMutable($startDate);
+    $start = $start->setTime(0, 0, 0);
+    $end = $start->modify("+{$durationDays} days");
 
-//         $startDateTime = (clone $startDate)->setTime(9, 0, 0);
-//         $endDateTime = (clone $startDateTime)->modify("+{$duration} days");
+        $event = new Event();
+        $event->setSummary($summary);
+        $event->setDescription($description);
 
-//         $event->setStart(new EventDateTime([
-//             'dateTime' => $startDateTime->format(\DateTime::RFC3339),
-//             'timeZone' => 'Europe/Paris', // O la zona horaria del usuario
-//         ]));
-//         $event->setEnd(new EventDateTime([
-//             'dateTime' => $endDateTime->format(\DateTime::RFC3339),
-//             'timeZone' => 'Europe/Paris',
-//         ]));
+        $startEventDateTime = new EventDateTime();
+        $startEventDateTime->setDate($start->format('Y-m-d'));
+        $startEventDateTime->setTimeZone($this->defaultTimeZone);
+        $event->setStart($startEventDateTime);
 
-//         // Insertar evento en el calendario principal ("primary")
-//         $createdEvent = $calendarService->events->insert('primary', $event);
+        $endEventDateTime = new EventDateTime();
+        $endEventDateTime->setDate($end->format('Y-m-d'));
+        $endEventDateTime->setTimeZone($this->defaultTimeZone);
+        $event->setEnd($endEventDateTime);
 
-//         return $createdEvent->getId();
-//     }
+        // 4. Insertar evento
+        try {
+            $createdEvent = $service->events->insert('primary', $event);
+            return $createdEvent->getId();
+        } catch (\Exception $e) {
+            // $this->logger->error('Error al crear evento en Google Calendar', [
+            //     'user_id' => $user->getId(),
+            //     'error' => $e->getMessage(),
+            // ]);
+            throw new \RuntimeException('No se pudo crear el evento en Google Calendar: ' . $e->getMessage());
+        }
+    }
 
-    // Método para actualizar un evento (si se edita el suplemento)
-    // Método para eliminar un evento (si se borra el suplemento)
-//     <?php
+    /**
+     * Actualiza un evento existente.
+     */
+    public function updateEvent(User $user, string $eventId, string $summary, string $description, \DateTimeInterface $startDate, int $durationDays): void
+    {
+        $this->ensureValidAccessToken($user);
+        $service = new Calendar($this->client);
 
-// namespace App\Service;
+        try {
+            $event = $service->events->get('primary', $eventId);
+            $event->setSummary($summary);
+            $event->setDescription($description);
 
-// use App\Entity\User;
-// use Google\Client as GoogleClient;
-// use Google\Service\Calendar;
-// use Google\Service\Calendar\Event;
-// use Google\Service\Calendar\EventDateTime;
-// use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+            $start = $startDate instanceof \DateTimeImmutable
+                ? $startDate
+                : \DateTimeImmutable::createFromMutable($startDate);
+            $start = $start->setTime(0, 0, 0);
+            $end = $start->modify("+{$durationDays} days");
 
-// class GoogleCalendarService
-// {
-//     private GoogleClient $client;
-//     private array $config;
+            $startEventDateTime = new EventDateTime();
+            $startEventDateTime->setDate($start->format('Y-m-d'));
+            $startEventDateTime->setTimeZone($this->defaultTimeZone);
+            $event->setStart($startEventDateTime);
 
-//     public function __construct(ParameterBagInterface $params)
-//     {
-//         $this->config = $params->get('google_calendar');
-        
-//         $this->client = new GoogleClient();
-//         $this->client->setClientId($this->config['client_id']);
-//         $this->client->setClientSecret($this->config['client_secret']);
-//         // $this->client->setRedirectUri($this->config['redirect_uri']);
-//         $this->client->addScope(Calendar::CALENDAR_EVENTS);
-//         $this->client->setAccessType('offline');
-//         $this->client->setPrompt('consent');
-//     }
+            $endEventDateTime = new EventDateTime();
+            $endEventDateTime->setDate($end->format('Y-m-d'));
+            $endEventDateTime->setTimeZone($this->defaultTimeZone);
+            $event->setEnd($endEventDateTime);
 
-//     /**
-//      * Crée un événement dans Google Calendar
-//      *
-//      * @param User $user L'utilisateur connecté (doit avoir un access_token)
-//      * @param string $summary Titre de l'événement
-//      * @param string $description Description
-//      * @param \DateTimeInterface $startDate Date de début
-//      * @param int $durationDays Durée en jours
-//      * @return Event|null L'événement créé ou null en cas d'erreur
-//      */
-//     public function createEvent(
-//         User $user,
-//         string $summary,
-//         string $description,
-//         \DateTime|\DateTimeImmutable $startDate,
-//         int $durationDays
-//     ): ?Event {
-//         try {
-//             // Récupérer le token de l'utilisateur
-//             $accessToken = $user->getGoogleAccessToken();
-//             if (!$accessToken) {
-//                 throw new \Exception('Token d\'accès Google manquant.');
-//             }
+            $service->events->update('primary', $eventId, $event);
+        } catch (\Exception $e) {
+            // $this->logger->error('Error al actualizar evento en Google Calendar', [
+            //     'user_id' => $user->getId(),
+            //     'event_id' => $eventId,
+            //     'error' => $e->getMessage(),
+            // ]);
+            throw new \RuntimeException('No se pudo actualizar el evento: ' . $e->getMessage());
+        }
+    }
 
-//             // Configurer le client avec le token
-//             $this->client->setAccessToken($accessToken);
-            
-//             // Vérifier si le token a expiré et le rafraîchir si nécessaire
-//             if ($this->client->isAccessTokenExpired()) {
-//                 $refreshToken = $user->getGoogleRefreshToken();
-//                 if ($refreshToken) {
-//                     $this->client->refreshToken($refreshToken);
-//                     // Mettre à jour le token dans la base de données
-//                     $newAccessToken = $this->client->getAccessToken();
-//                     $user->setGoogleAccessToken($newAccessToken['access_token']);
-//                     $user->setGoogleRefreshToken($newAccessToken['refresh_token'] ?? $refreshToken);
-//                     // Le persist/flush sera fait dans le contrôleur
-//                 } else {
-//                     throw new \Exception('Token d\'accès expiré et aucun refresh token disponible.');
-//                 }
-//             }
+    /**
+     * Elimina un evento.
+     */
+    public function deleteEvent(User $user, string $eventId): void
+    {
+        $this->ensureValidAccessToken($user);
+        $service = new Calendar($this->client);
 
-//             // Créer le service Calendar
-//             $service = new Calendar($this->client);
+        try {
+            $service->events->delete('primary', $eventId);
+        } catch (\Exception $e) {
+            // $this->logger->error('Error al eliminar evento en Google Calendar', [
+            //     'user_id' => $user->getId(),
+            //     'event_id' => $eventId,
+            //     'error' => $e->getMessage(),
+            // ]);
+            throw new \RuntimeException('No se pudo eliminar el evento: ' . $e->getMessage());
+        }
+    }
 
-//             // Calculer la date de fin
-//             $startDateTime = $startDate instanceof \DateTimeImmutable
-//                 ? $startDate
-//                 : \DateTimeImmutable::createFromMutable($startDate);
-//             $endDate = $startDateTime->modify("+{$durationDays} days");
+    // -------------------- MÉTODOS PRIVADOS --------------------
 
-//             // Créer l'événement
-//             $event = new Event();
-//             $event->setSummary($summary);
-//             $event->setDescription($description);
+    /**
+     * Verifica y renueva el token de acceso si es necesario.
+     * Actualiza la entidad User con el nuevo token.
+     *
+     * @throws \Exception
+     */
+    private function ensureValidAccessToken(User $user): void
+    {
+        $accessToken = $user->getGoogleAccessToken();
+        if (!$accessToken) {
+            throw new \RuntimeException('El usuario no tiene token de acceso a Google.');
+        }
 
-//             // Définir les dates (toute la journée)
-//             $start = new EventDateTime();
-//             $start->setDate($startDateTime->format('Y-m-d'));
-//             $start->setTimeZone('UTC');
-//             $event->setStart($start);
+        // Configurar el cliente con el token almacenado (puede ser un string o array)
+        $this->client->setAccessToken($accessToken);
 
-//             $end = new EventDateTime();
-//             $end->setDate($endDate->format('Y-m-d'));
-//             $end->setTimeZone('UTC');
-//             $event->setEnd($end);
+        // Si ha expirado, intentar refrescar
+        if ($this->client->isAccessTokenExpired()) {
+            $refreshToken = $user->getGoogleRefreshToken();
+            if (!$refreshToken) {
+                throw new \RuntimeException('El token expiró y no hay refresh token. El usuario debe autenticarse de nuevo.');
+            }
 
-//             // Ajouter l'événement au calendrier principal
-//             $calendarId = 'primary';
-//             $createdEvent = $service->events->insert($calendarId, $event);
+            try {
+                // Refrescar token
+                $this->client->refreshToken($refreshToken);
+                $newToken = $this->client->getAccessToken();
 
-//             return $createdEvent;
-//         } catch (\Exception $e) {
-//             // Log l'erreur et retourner null
-//             // Tu peux utiliser un logger ici
-//             // $this->logger->error('Erreur création événement Google Calendar: ' . $e->getMessage());
-//             return null;
-//         }
-//     }
-// }
-// }
+                // Actualizar el access_token en la entidad
+                $user->setGoogleAccessToken($newToken['access_token'] ?? null);
+                // Si Google devuelve un nuevo refresh_token (raro), actualizarlo
+                if (isset($newToken['refresh_token'])) {
+                    $user->setGoogleRefreshToken($newToken['refresh_token']);
+                }
+
+                // Persistir cambios en la base de datos
+                $this->entityManagerInterface->persist($user);
+                $this->entityManagerInterface->flush();
+            } catch (\Exception $e) {
+                // $this->logger->error('Error al refrescar token de Google', [
+                //     'user_id' => $user->getId(),
+                //     'error' => $e->getMessage(),
+                // ]);
+                throw new \RuntimeException('No se pudo renovar el token de acceso: ' . $e->getMessage());
+            }
+        }
+    }
+}
