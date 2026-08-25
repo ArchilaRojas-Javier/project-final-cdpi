@@ -41,9 +41,16 @@ class UserSupplement
     #[ORM\OneToMany(targetEntity: Note::class, mappedBy: 'userSupplement', orphanRemoval: true)]
     private Collection $notes;
 
+    /**
+     * @var Collection<int, Reminder>
+     */
+    #[ORM\OneToMany(targetEntity: Reminder::class, mappedBy: 'userSupplement', orphanRemoval: true)]
+    private Collection $reminders;
+
     public function __construct()
     {
         $this->notes = new ArrayCollection();
+        $this->reminders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -150,6 +157,32 @@ class UserSupplement
             }
         }
 
+        return $this;
+    }
+    /**
+     * @return Collection<int, Reminder>
+     */
+    public function getReminders(): Collection
+    {
+        return $this->reminders;
+    }
+
+    public function addReminder(Reminder $reminder): static
+    {
+        if (!$this->reminders->contains($reminder)) {
+            $this->reminders->add($reminder);
+            $reminder->setUserSupplement($this);
+        }
+        return $this;
+    }
+
+    public function removeReminder(Reminder $reminder): static
+    {
+        if ($this->reminders->removeElement($reminder)) {
+            if ($reminder->getUserSupplement() === $this) {
+                $reminder->setUserSupplement(null);
+            }
+        }
         return $this;
     }
 }

@@ -49,6 +49,8 @@ public function new(Request $request, UserSupplementService $userSupplementServi
 
     if ($form->isSubmitted() && $form->isValid()) {
         // Verificar si el usuario quiere crear el evento en Google Calendar
+        // Depuración temporal
+        dd($request->request->get('google_calendar'));
         $createGoogleEvent = $request->request->get('google_calendar') === '1';
         
         if ($createGoogleEvent) {
