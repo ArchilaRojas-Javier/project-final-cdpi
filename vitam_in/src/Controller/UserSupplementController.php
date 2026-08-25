@@ -45,21 +45,34 @@ public function new(Request $request, UserSupplementService $userSupplementServi
     }
 
     $form = $this->createForm(UserSupplementType::class, $userSupplement);
+    
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
+        
+        $userSupplementService->persistWithUser($userSupplement, $user);
+        $this->addFlash('success', 'Supplément enregistré avec succès.');
+        
         // Verificar si el usuario quiere crear el evento en Google Calendar
         // Depuración temporal
-        dd($request->request->get('google_calendar'));
-        $createGoogleEvent = $request->request->get('google_calendar') === '1';
+        $createGoogleEvent = $form->get('google_calendar')->getData();
+        // dd($createGoogleEvent);
         
         if ($createGoogleEvent) {
             // Verificar que el usuario tiene token de acceso
-            if ($user->getGoogleAccessToken()) {
+            // Depuración temporal
+            $accessToken = $user->getGoogleAccessToken();
+            if ($accessToken) {
+
                 try {
                     // Usar el método específico para suplementos
                     $eventId = $googleCalendarService->createUserSupplementEvent($user, $userSupplement);
-                    $this->addFlash('success', 'Événement créé dans Google Calendar (ID: ' . $eventId . ').');
+                     
+
+                        if ($eventId){
+
+                            $this->addFlash('success', 'Événement créé dans Google Calendar (ID: ' . $eventId . ').');
+                        }
                 } catch (\RuntimeException $e) {
                     // Error al crear el evento (token expirado, error de Google, etc.)
                     $this->addFlash('warning', 'Impossible de créer l\'événement Google Calendar : ' . $e->getMessage());
@@ -70,9 +83,6 @@ public function new(Request $request, UserSupplementService $userSupplementServi
             }
         }
 
-        // Persistir el suplemento siempre (incluso si falló la creación del evento)
-        $userSupplementService->persistWithUser($userSupplement, $user);
-        $this->addFlash('success', 'Supplément enregistré avec succès.');
 
         return $this->redirectToRoute('app_dashboard', [], Response::HTTP_SEE_OTHER);
     }

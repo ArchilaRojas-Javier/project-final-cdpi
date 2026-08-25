@@ -43,7 +43,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     {
         /** @var GoogleClient $client */
         $client = $this->clientRegistry->getClient('google');
-            
+
         $accessToken = $this->fetchAccessToken($client);
         
         return new SelfValidatingPassport(
@@ -128,9 +128,10 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
         'access_token' => $accessToken->getToken(),
         'expires_in' => $accessToken->getExpires(),
         'refresh_token' => $accessToken->getRefreshToken(), // puede ser null si no se dio 'offline'
-        // 'scope' => $accessToken->getScope(), no se si lo necesitamos, pero lo dejo comentado por si acaso
+        'scope' => $accessToken->getScope(), //no se si lo necesitamos, pero lo dejo comentado por si acaso
         ];
         $user->setGoogleAccessToken($tokenData);
+        
         if ($accessToken->getRefreshToken()) {
             $user->setGoogleRefreshToken($accessToken->getRefreshToken());
         }

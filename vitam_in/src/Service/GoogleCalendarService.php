@@ -9,23 +9,24 @@ use Google\Client as GoogleClient;
 use Google\Service\Calendar;
 use Google\Service\Calendar\Event;
 use Google\Service\Calendar\EventDateTime;
-// use Psr\Log\LoggerInterface;
+use App\Entity\Reminder;
+use Psr\Log\LoggerInterface;
 
 class GoogleCalendarService
 {
     private GoogleClient $client;
     private EntityManagerInterface $entityManagerInterface;
-    // private LoggerInterface $logger;
+    private LoggerInterface $logger;
     private string $defaultTimeZone;
 
     public function __construct(
         array $googleCalendarConfig,
-        EntityManagerInterface $em,
-        // LoggerInterface $logger,
+        EntityManagerInterface $entityManagerInterface,
+        LoggerInterface $logger,
         string $defaultTimeZone = 'UTC'
     ) {
-        $this->entityManagerInterface = $em;
-        // $this->logger = $logger;
+        $this->entityManagerInterface = $entityManagerInterface;
+        $this->logger = $logger;
         $this->defaultTimeZone = $defaultTimeZone;
 
         $this->client = new GoogleClient();
@@ -61,7 +62,21 @@ class GoogleCalendarService
         );
         //calcular cuantos dias le quedan al suplemento y ponerlo en la descripcion
 
-        return $this->createEvent($user, $summary, $description, $startDate, $durationDays);
+        
+        // 1. Crear evento en Google Calendar y obtener ID
+        $eventId = $this->createEvent($user, $summary, $description, $startDate, $durationDays);
+
+        // 2. Crear y persistir el Reminder
+        $reminder = new Reminder();
+        $reminder->setGoogleEventId($eventId);
+        $reminder->setIsActive(true);
+        $reminder->setCreatedAt(new \DateTimeImmutable());
+        $reminder->setUserSupplement($userSupplement); // importante: $supplement ya debe tener ID
+
+        $this->entityManagerInterface->persist($reminder);
+        $this->entityManagerInterface->flush();
+
+        return $eventId;
     }
 
     /**
@@ -104,10 +119,10 @@ class GoogleCalendarService
             $createdEvent = $service->events->insert('primary', $event);
             return $createdEvent->getId();
         } catch (\Exception $e) {
-            // $this->logger->error('Error al crear evento en Google Calendar', [
-            //     'user_id' => $user->getId(),
-            //     'error' => $e->getMessage(),
-            // ]);
+            $this->logger->error('Error al crear evento en Google Calendar', [
+                'user_id' => $user->getId(),
+                'error' => $e->getMessage(),
+            ]);
             throw new \RuntimeException('No se pudo crear el evento en Google Calendar: ' . $e->getMessage());
         }
     }
@@ -143,11 +158,11 @@ class GoogleCalendarService
 
             $service->events->update('primary', $eventId, $event);
         } catch (\Exception $e) {
-            // $this->logger->error('Error al actualizar evento en Google Calendar', [
-            //     'user_id' => $user->getId(),
-            //     'event_id' => $eventId,
-            //     'error' => $e->getMessage(),
-            // ]);
+            $this->logger->error('Error al actualizar evento en Google Calendar', [
+                'user_id' => $user->getId(),
+                'event_id' => $eventId,
+                'error' => $e->getMessage(),
+            ]);
             throw new \RuntimeException('No se pudo actualizar el evento: ' . $e->getMessage());
         }
     }
@@ -163,11 +178,11 @@ class GoogleCalendarService
         try {
             $service->events->delete('primary', $eventId);
         } catch (\Exception $e) {
-            // $this->logger->error('Error al eliminar evento en Google Calendar', [
-            //     'user_id' => $user->getId(),
-            //     'event_id' => $eventId,
-            //     'error' => $e->getMessage(),
-            // ]);
+            $this->logger->error('Error al eliminar evento en Google Calendar', [
+                'user_id' => $user->getId(),
+                'event_id' => $eventId,
+                'error' => $e->getMessage(),
+            ]);
             throw new \RuntimeException('No se pudo eliminar el evento: ' . $e->getMessage());
         }
     }
@@ -213,10 +228,10 @@ class GoogleCalendarService
                 $this->entityManagerInterface->persist($user);
                 $this->entityManagerInterface->flush();
             } catch (\Exception $e) {
-                // $this->logger->error('Error al refrescar token de Google', [
-                //     'user_id' => $user->getId(),
-                //     'error' => $e->getMessage(),
-                // ]);
+                $this->logger->error('Error al refrescar token de Google', [
+                    'user_id' => $user->getId(),
+                    'error' => $e->getMessage(),
+                ]);
                 throw new \RuntimeException('No se pudo renovar el token de acceso: ' . $e->getMessage());
             }
         }
