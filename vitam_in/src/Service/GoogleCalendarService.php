@@ -28,21 +28,18 @@ class GoogleCalendarService
         $this->entityManagerInterface = $entityManagerInterface;
         $this->logger = $logger;
         $this->defaultTimeZone = $defaultTimeZone;
-
         $this->client = new GoogleClient();
         $this->client->setClientId($googleCalendarConfig['client_id']);
         $this->client->setClientSecret($googleCalendarConfig['client_secret']);
-        // $this->client->setRedirectUri($googleCalendarConfig['redirect_uri']);
         $this->client->addScope(Calendar::CALENDAR_EVENTS);
-        $this->client->setAccessType('offline');
-        $this->client->setPrompt('consent');
+       
     }
 
     /**
-     * Crea un evento en el calendario principal del usuario a partir de un suplemento.
-     * @param User $user El usuario que autoriza la creación (debe tener un access token válido)
-     * @param UserSupplement $userSupplement El suplemento que se va a añadir
-     * @return string|null El ID del evento creado, o null si falla (o lanza excepción)
+     * Create an event on the user's primary calendar.
+     * @param User $user The user that authorizes the creation (must have a valid access token)
+     * @param UserSupplement $userSupplement The supplement to be added
+     * @return string|null The ID of the created event, or null if it fails (or throws an exception)
      * @throws \Exception
      */
     public function createUserSupplementEvent(User $user, UserSupplement $userSupplement): ?string
@@ -63,10 +60,10 @@ class GoogleCalendarService
         //calcular cuantos dias le quedan al suplemento y ponerlo en la descripcion
 
         
-        // 1. Crear evento en Google Calendar y obtener ID
+        //Create event in Google Calendar and get ID
         $eventId = $this->createEvent($user, $summary, $description, $startDate, $durationDays);
 
-        // 2. Crear y persistir el Reminder
+        //Add and persist Reminder
         $reminder = new Reminder();
         $reminder->setGoogleEventId($eventId);
         $reminder->setIsActive(true);
@@ -80,26 +77,26 @@ class GoogleCalendarService
     }
 
     /**
-     * Método genérico para crear un evento (día completo).
+     * Generic method to create an event (full day).
      *
      * @throws \Exception
      */
     public function createEvent(User $user, string $summary, string $description, \DateTimeInterface $startDate, int $durationDays): string
     {
-        // 1. Asegurar token válido
+        // Ensure valid token
         $this->ensureValidAccessToken($user);
 
-        // 2. Crear servicio de Calendar
+        // Create Calendar service
         $service = new Calendar($this->client);
 
-        // 3. Preparar fechas (todo el día)
-           // Convertir a DateTimeImmutable para usar setTime()
-    $start = $startDate instanceof \DateTimeImmutable
-        ? $startDate
-        : \DateTimeImmutable::createFromMutable($startDate);
-    $start = $start->setTime(0, 0, 0);
-    $end = $start->modify("+{$durationDays} days");
-
+        // Prepare event data
+        // Convert to DateTimeImmutable to use setTime()
+        $start = $startDate instanceof \DateTimeImmutable
+            ? $startDate
+            : \DateTimeImmutable::createFromMutable($startDate);
+        $start = $start->setTime(0, 0, 0);
+        $end = $start->modify("+{$durationDays} days");
+        // Create event object
         $event = new Event();
         $event->setSummary($summary);
         $event->setDescription($description);
@@ -114,16 +111,16 @@ class GoogleCalendarService
         $endEventDateTime->setTimeZone($this->defaultTimeZone);
         $event->setEnd($endEventDateTime);
 
-        // 4. Insertar evento
+        // Create the event in Google Calendar
         try {
             $createdEvent = $service->events->insert('primary', $event);
             return $createdEvent->getId();
         } catch (\Exception $e) {
-            $this->logger->error('Error al crear evento en Google Calendar', [
+            $this->logger->error("Erreur lors de la création de l'événement dans Google Calendar", [
                 'user_id' => $user->getId(),
                 'error' => $e->getMessage(),
             ]);
-            throw new \RuntimeException('No se pudo crear el evento en Google Calendar: ' . $e->getMessage());
+            throw new \RuntimeException("Le événement n'a pas pu être créé: " . $e->getMessage());
         }
     }
 
@@ -158,12 +155,12 @@ class GoogleCalendarService
 
             $service->events->update('primary', $eventId, $event);
         } catch (\Exception $e) {
-            $this->logger->error('Error al actualizar evento en Google Calendar', [
+            $this->logger->error("Erreur lors de la mise à jour de l'événement dans Google Calendar", [
                 'user_id' => $user->getId(),
                 'event_id' => $eventId,
                 'error' => $e->getMessage(),
             ]);
-            throw new \RuntimeException('No se pudo actualizar el evento: ' . $e->getMessage());
+            throw new \RuntimeException("Le événement n'a pas pu être mis à jour: " . $e->getMessage());
         }
     }
 
@@ -178,61 +175,57 @@ class GoogleCalendarService
         try {
             $service->events->delete('primary', $eventId);
         } catch (\Exception $e) {
-            $this->logger->error('Error al eliminar evento en Google Calendar', [
+            $this->logger->error("Erreur lors de la suppression de l'événement dans Google Calendar", [
                 'user_id' => $user->getId(),
                 'event_id' => $eventId,
                 'error' => $e->getMessage(),
             ]);
-            throw new \RuntimeException('No se pudo eliminar el evento: ' . $e->getMessage());
+            throw new \RuntimeException("Le événement n'a pas pu être supprimé: " . $e->getMessage());
         }
     }
 
-    // -------------------- MÉTODOS PRIVADOS --------------------
-
     /**
-     * Verifica y renueva el token de acceso si es necesario.
-     * Actualiza la entidad User con el nuevo token.
-     *
+     * Verify and renew the access token if necessary.
+     * Update the User entity with the new token.
      * @throws \Exception
      */
     private function ensureValidAccessToken(User $user): void
     {
         $accessToken = $user->getGoogleAccessToken();
         if (!$accessToken) {
-            throw new \RuntimeException('El usuario no tiene token de acceso a Google.');
+            throw new \RuntimeException("L'utilisateur ne possède pas de jeton d'accès Google.");
         }
 
-        // Configurar el cliente con el token almacenado (puede ser un string o array)
+        // Configurez le client avec le token stocké
         $this->client->setAccessToken($accessToken);
 
-        // Si ha expirado, intentar refrescar
+        // If it has expired, try refreshing.
         if ($this->client->isAccessTokenExpired()) {
             $refreshToken = $user->getGoogleRefreshToken();
             if (!$refreshToken) {
-                throw new \RuntimeException('El token expiró y no hay refresh token. El usuario debe autenticarse de nuevo.');
+                throw new \RuntimeException("Le token a expiré et il n y a pas de token de rafraîchissement. L utilisateur doit se reconnecter.");
             }
 
             try {
-                // Refrescar token
+                // Refresh token
                 $this->client->refreshToken($refreshToken);
                 $newToken = $this->client->getAccessToken();
 
-                // Actualizar el access_token en la entidad
+                // Update the access_token in the entity
                 $user->setGoogleAccessToken($newToken['access_token'] ?? null);
-                // Si Google devuelve un nuevo refresh_token (raro), actualizarlo
+                // If Google returns a new refresh_token
                 if (isset($newToken['refresh_token'])) {
                     $user->setGoogleRefreshToken($newToken['refresh_token']);
                 }
-
-                // Persistir cambios en la base de datos
+                // Persist changes
                 $this->entityManagerInterface->persist($user);
                 $this->entityManagerInterface->flush();
             } catch (\Exception $e) {
-                $this->logger->error('Error al refrescar token de Google', [
+                $this->logger->error("Erreur lors de l'actualisation du jeton Google", [
                     'user_id' => $user->getId(),
                     'error' => $e->getMessage(),
                 ]);
-                throw new \RuntimeException('No se pudo renovar el token de acceso: ' . $e->getMessage());
+                throw new \RuntimeException("Le jeton d'accès n'a pas pu être renouvelé.: " . $e->getMessage());
             }
         }
     }
