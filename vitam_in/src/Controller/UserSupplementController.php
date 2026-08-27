@@ -27,20 +27,17 @@ public function new(Request $request, UserSupplementService $userSupplementServi
     /** @var User $user */
     $user = $this->getUser();
     
-    if (!$user) {
-        throw new AccessDeniedException('Vous devez être connecté pour effectuer cette action.');
-    }
+    $existing = $userSupplementService->findExistingUserSupplement($user, $supplementId);
 
+    if ($existing) {
+        $this->addFlash('warning', 'Vous avez déjà ajouté ce supplément à votre liste.');
+        return $this->redirectToRoute('app_dashboard');
+    }
+    
     try {
         $userSupplement = $userSupplementService->createUserSupplementFromSupplementId($supplementId);
     } catch (\InvalidArgumentException $e) {
         $this->addFlash('error', $e->getMessage());
-        return $this->redirectToRoute('app_dashboard');
-    }
-
-    $existing = $userSupplementService->findExistingUserSupplement($user, $userSupplement->getSupplement());
-    if ($existing) {
-        $this->addFlash('warning', 'Vous avez déjà ajouté ce supplément à votre liste.');
         return $this->redirectToRoute('app_dashboard');
     }
 
@@ -49,42 +46,41 @@ public function new(Request $request, UserSupplementService $userSupplementServi
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-        
-        $userSupplementService->persistWithUser($userSupplement, $user);
-        $this->addFlash('success', 'Supplément enregistré avec succès.');
-        
-        // Verificar si el usuario quiere crear el evento en Google Calendar
-        // Depuración temporal
+        // Check if the user wants Google Calendar and has a token BEFORE saving.
         $createGoogleEvent = $form->get('google_calendar')->getData();
-        // dd($createGoogleEvent);
-        
+    
         if ($createGoogleEvent) {
-            // Verificar que el usuario tiene token de acceso
-            // Depuración temporal
             $accessToken = $user->getGoogleAccessToken();
-            if ($accessToken) {
-
-                try {
-                    // Usar el método específico para suplementos
-                    $eventId = $googleCalendarService->createUserSupplementEvent($user, $userSupplement);
-                     
-
-                        if ($eventId){
-
-                            $this->addFlash('success', 'Événement créé dans Google Calendar (ID: ' . $eventId . ').');
-                        }
-                } catch (\RuntimeException $e) {
-                    // Error al crear el evento (token expirado, error de Google, etc.)
-                    $this->addFlash('warning', 'Impossible de créer l\'événement Google Calendar : ' . $e->getMessage());
-                    // También podrías loguear el error con $this->logger->error(...)
-                }
-            } else {
-                $this->addFlash('warning', 'Tu n\'es pas connecté avec Google. Connecte-toi avec Google pour utiliser cette option.');
+            if (!$accessToken) {
+                $this->addFlash('warning', 'Vous devez être connecté à Google pour utiliser cette option..');
+                return $this->redirectToRoute('app_dashboard');
             }
         }
 
+        $userSupplementService->persistWithUser($userSupplement, $user);
+        $this->addFlash('success', 'Supplément ajouté avec succès.');
 
+        // If the user wants an event and has a token, create it.
+        if ($createGoogleEvent) {
+            try {
+                $eventId = $googleCalendarService->createUserSupplementEvent($user, $userSupplement);
+                if ($eventId) {
+                
+                    $this->addFlash('success', 'Événement créé dans Google Agenda.');
+                }
+            } catch (\Google\Service\Exception $e) {
+                $this->addFlash('warning', 'Erreur avec Google' );
+            } catch (\RuntimeException $e) {
+                
+                $this->addFlash('warning', "L'événement n'a pas pu être créé." );
+            } catch (\Exception $e) {
+                
+                $this->addFlash('error', "Une erreur inattendue s'est produite");
+                
+            }
+        }
         return $this->redirectToRoute('app_dashboard', [], Response::HTTP_SEE_OTHER);
+
     }
 
     return $this->render('user_supplement/new.html.twig', [

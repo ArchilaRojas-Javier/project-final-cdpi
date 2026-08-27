@@ -44,13 +44,13 @@ class UserSupplementService
     /**
      * Vérifiez si l'utilisateur possède déjà ce supplément.
      */
-    public function findExistingUserSupplement(UserInterface $user, Supplement $supplement): ?UserSupplement
+    public function findExistingUserSupplement(UserInterface $user, int $supplementId): ?UserSupplement
     {
         return $this->entityManager
             ->getRepository(UserSupplement::class)
             ->findOneBy([
                 'user' => $user,
-                'supplement' => $supplement
+                'supplement' => $supplementId
             ]);
     }
 

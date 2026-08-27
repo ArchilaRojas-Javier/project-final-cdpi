@@ -9,6 +9,8 @@ use Google\Client as GoogleClient;
 use Google\Service\Calendar;
 use Google\Service\Calendar\Event;
 use Google\Service\Calendar\EventDateTime;
+use Google\Service\Calendar\EventReminder;
+use Google\Service\Calendar\EventReminders;
 use App\Entity\Reminder;
 use Psr\Log\LoggerInterface;
 
@@ -23,7 +25,7 @@ class GoogleCalendarService
         array $googleCalendarConfig,
         EntityManagerInterface $entityManagerInterface,
         LoggerInterface $logger,
-        string $defaultTimeZone = 'UTC'
+        string $defaultTimeZone = 'Europe/Paris'// can change if we have the timezome of browser to be specific
     ) {
         $this->entityManagerInterface = $entityManagerInterface;
         $this->logger = $logger;
@@ -44,24 +46,24 @@ class GoogleCalendarService
      */
     public function createUserSupplementEvent(User $user, UserSupplement $userSupplement): ?string
     {
-        //ver pasar los datos directos para no pasar el objeto completo, solo los datos necesarios para crear el evento
-        $summary = 'Suivi: ' . $userSupplement->getSupplement()->getName();// nombre de suplemento
+        
+        $summary = 'Prise de: ' . $userSupplement->getSupplement()->getName();
         $dosage = $userSupplement->getDosageSchedule();
         $doseText = $dosage['dose'] ?? 'N/A';
         $unitText = $dosage['unit'] ?? '';
+        $timeText = $dosage['time'] ?? '';
         $durationDays = $userSupplement->getDurationDays();
         $startDate = $userSupplement->getStartDate();
         $description = sprintf(
             "Dosage: %s %s\nDurée: %d jours",
             $doseText,
             $unitText,
+            $timeText,
             $durationDays
         );
-        //calcular cuantos dias le quedan al suplemento y ponerlo en la descripcion
-
         
         //Create event in Google Calendar and get ID
-        $eventId = $this->createEvent($user, $summary, $description, $startDate, $durationDays);
+        $eventId = $this->createEvent($user, $summary, $description, $startDate, $durationDays, $timeText);
 
         //Add and persist Reminder
         $reminder = new Reminder();
@@ -81,7 +83,7 @@ class GoogleCalendarService
      *
      * @throws \Exception
      */
-    public function createEvent(User $user, string $summary, string $description, \DateTimeInterface $startDate, int $durationDays): string
+    public function createEvent(User $user, string $summary, string $description, \DateTimeInterface $startDate, int $durationDays, string $timeText): string
     {
         // Ensure valid token
         $this->ensureValidAccessToken($user);
@@ -91,27 +93,48 @@ class GoogleCalendarService
 
         // Prepare event data
         // Convert to DateTimeImmutable to use setTime()
+        $timeParts = explode(':', $timeText);
+        $hours = (int) ($timeParts[0] ?? 0);
+        $minutes = (int) ($timeParts[1] ?? 0);
+        $seconds = (int) ($timeParts[2] ?? 0);
+
         $start = $startDate instanceof \DateTimeImmutable
             ? $startDate
             : \DateTimeImmutable::createFromMutable($startDate);
-        $start = $start->setTime(0, 0, 0);
-        $end = $start->modify("+{$durationDays} days");
+        $start = $start->setTime($hours, $minutes, $seconds);
+        $end = $start->modify('+1 hour');
+        
         // Create event object
         $event = new Event();
         $event->setSummary($summary);
         $event->setDescription($description);
 
         $startEventDateTime = new EventDateTime();
-        $startEventDateTime->setDate($start->format('Y-m-d'));
+        $startEventDateTime->setDateTime($start->format(\DateTime::RFC3339));
         $startEventDateTime->setTimeZone($this->defaultTimeZone);
         $event->setStart($startEventDateTime);
 
         $endEventDateTime = new EventDateTime();
-        $endEventDateTime->setDate($end->format('Y-m-d'));
+        $endEventDateTime->setDateTime($end->format(\DateTime::RFC3339));
         $endEventDateTime->setTimeZone($this->defaultTimeZone);
         $event->setEnd($endEventDateTime);
+    
 
-        // Create the event in Google Calendar
+        $event->setRecurrence([
+            'RRULE:FREQ=DAILY;COUNT=' . $durationDays  // Se repite N días
+        ]);
+
+        $reminderOverrides = new EventReminder();
+        $reminderOverrides->setMethod('popup');
+        $reminderOverrides->setMinutes(10);
+
+        $eventReminders = new EventReminders();
+        $eventReminders->setUseDefault(false);
+        $eventReminders->setOverrides([$reminderOverrides]);
+
+        $event->setReminders($eventReminders);
+
+     // Create the event in Google Calendar
         try {
             $createdEvent = $service->events->insert('primary', $event);
             return $createdEvent->getId();
@@ -212,7 +235,7 @@ class GoogleCalendarService
                 $newToken = $this->client->getAccessToken();
 
                 // Update the access_token in the entity
-                $user->setGoogleAccessToken($newToken['access_token'] ?? null);
+                $user->setGoogleAccessToken($newToken);
                 // If Google returns a new refresh_token
                 if (isset($newToken['refresh_token'])) {
                     $user->setGoogleRefreshToken($newToken['refresh_token']);
