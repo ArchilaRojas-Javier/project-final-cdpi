@@ -23,10 +23,13 @@ final class NoteController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_note_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new/{userSupplement}', name: 'app_note_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, UserSupplement $userSupplement, EntityManagerInterface $entityManager): Response
     {
         $note = new Note();
+        $note->setUserSupplement($userSupplement);
+        $note->setCreatedAt(new \DateTimeImmutable()); 
+
         $form = $this->createForm(NoteType::class, $note);
         $form->handleRequest($request);
 
@@ -34,20 +37,12 @@ final class NoteController extends AbstractController
             $entityManager->persist($note);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_note_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_notes_by_supplement', ['id' => $userSupplement->getId()]);
         }
 
         return $this->render('note/new.html.twig', [
-            'note' => $note,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_note_show', methods: ['GET'])]
-    public function show(Note $note): Response
-    {
-        return $this->render('note/show.html.twig', [
-            'note' => $note,
+            'form' => $form->createView(),
+            'userSupplement' => $userSupplement,
         ]);
     }
 

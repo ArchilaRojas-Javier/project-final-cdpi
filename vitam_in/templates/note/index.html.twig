@@ -1,37 +1,57 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Note index{% endblock %}
+{% block title %}Notes{% endblock %}
 
 {% block body %}
-    <h1>Note index</h1>
+<section class="flex flex-col items-center p-6 min-h-screen w-screen gap-6 mb-12">
+    <twig:UserCard/>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Content</th>
-                <th>Created_at</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
+    <h2 class="text-[#6E6F6F] text-[2rem]">
+        Notes 
+    </h2>
+       
+        
+    
+    {# Contenedor de tarjetas #}
+    <div class="w-full max-w-4xl flex flex-col gap-4">
         {% for note in notes %}
-            <tr>
-                <td>{{ note.id }}</td>
-                <td>{{ note.content }}</td>
-                <td>{{ note.createdAt ? note.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_note_show', {'id': note.id}) }}">show</a>
-                    <a href="{{ path('app_note_edit', {'id': note.id}) }}">edit</a>
-                </td>
-            </tr>
+            <div class="bg-white shadow-lg rounded-lg p-5 border border-gray-200 hover:shadow-xl transition-shadow">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                    {# Contenido de la nota #}
+                    <div class="flex-1">
+                        <h3>{% if userSupplement is defined %}
+                                {{ userSupplement.supplement.name }} 
+                            {% endif %}
+                        </h3>
+                        <p class="text-gray-800 text-base leading-relaxed">{{ note.content }}</p>
+                        <p class="text-sm text-gray-400 mt-1">
+                            {{ note.createdAt ? note.createdAt|date('d/m/Y H:i') : '' }}
+                        </p>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                       <a href="{{ path('app_note_edit', {'id': note.id}) }}"
+                           class="text-yellow-600 hover:text-yellow-800 text-sm font-medium">Modifier</a>
+                        <a href="{{ path('app_note_delete', {'id': note.id}) }}"
+                           class="text-red-600 hover:text-red-800 text-sm font-medium"
+                           onclick="return confirm('¿Eliminar esta nota?')">Supprimer   </a>
+                    </div>
+                </div>
+            </div>
         {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
+            <div class="bg-white shadow-lg rounded-lg p-8 text-center text-gray-500 border border-gray-200">
+                <p class="text-lg">Il n'y a pas de notes pour ce supplément.</p>
+                <p class="text-sm mt-1">Ajoutez une nouvelle note en cliquant sur le bouton ci-dessous.</p>
+            </div>
         {% endfor %}
-        </tbody>
-    </table>
+    </div>
 
-    <a href="{{ path('app_note_new') }}">Create new</a>
+    {# Botón para crear nueva nota #}
+    <div class="mt-6">
+        <a href="{{ path('app_note_new', {'userSupplement': userSupplement.id}) }}"
+           class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors">
+            + Prenez des notes
+        </a>
+    </div>
+</section>
 {% endblock %}

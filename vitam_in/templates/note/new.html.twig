@@ -1,11 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Note{% endblock %}
+{% block title %}Nouvelle note
+{% endblock %}
 
 {% block body %}
-    <h1>Create new Note</h1>
 
-    {{ include('note/_form.html.twig') }}
 
-    <a href="{{ path('app_note_index') }}">back to list</a>
+	<section class="flex flex-col items-center p-6 min-h-screen w-screen gap-6 mb-12 ">
+		{% for flash_error in app.flashes('verify_email_error') %}
+			<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+		{% endfor %}
+
+		<h1 class="text-[#308AFF] text-[2rem]">Nouvelle note</h1>
+
+
+		{{ include('note/_form.html.twig') }}
+
+		<a href="{{ path('app_dashboard') }}">Retour</a>
+
+	</section>
 {% endblock %}
