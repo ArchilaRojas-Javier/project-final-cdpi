@@ -101,6 +101,7 @@ class GoogleCalendarService
         $start = $startDate instanceof \DateTimeImmutable
             ? $startDate
             : \DateTimeImmutable::createFromMutable($startDate);
+        $start = $start->setTimezone(new \DateTimeZone($this->defaultTimeZone));
         $start = $start->setTime($hours, $minutes, $seconds);
         $end = $start->modify('+1 hour');
         
@@ -110,12 +111,12 @@ class GoogleCalendarService
         $event->setDescription($description);
 
         $startEventDateTime = new EventDateTime();
-        $startEventDateTime->setDateTime($start->format(\DateTime::RFC3339));
+        $startEventDateTime->setDateTime($start->format('Y-m-d\TH:i:s'));
         $startEventDateTime->setTimeZone($this->defaultTimeZone);
         $event->setStart($startEventDateTime);
 
         $endEventDateTime = new EventDateTime();
-        $endEventDateTime->setDateTime($end->format(\DateTime::RFC3339));
+        $endEventDateTime->setDateTime($end->format('Y-m-d\TH:i:s'));
         $endEventDateTime->setTimeZone($this->defaultTimeZone);
         $event->setEnd($endEventDateTime);
     
