@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Reminder;
+use App\Entity\UserSupplement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,20 +17,17 @@ class ReminderRepository extends ServiceEntityRepository
         parent::__construct($registry, Reminder::class);
     }
 
-    //    /**
-    //     * @return Reminder[] Returns an array of Reminder objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('r')
-    //            ->andWhere('r.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('r.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findActiveByUserSupplement(UserSupplement $userSupplement): ?Reminder
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.userSupplement = :userSupplement')
+            ->andWhere('r.is_active = :active')
+            ->setParameter('userSupplement', $userSupplement)
+            ->setParameter('active', true)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
     //    public function findOneBySomeField($value): ?Reminder
     //    {

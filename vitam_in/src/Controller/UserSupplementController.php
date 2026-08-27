@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\UserSupplementType;
 use App\Service\UserSupplementService;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ReminderRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -113,21 +114,37 @@ public function new(Request $request, UserSupplementService $userSupplementServi
     }
 
     #[Route('/{id}', name: 'app_user_supplement_delete', methods: ['POST'])]
-    public function delete(Request $request, UserSupplement $userSupplement, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, UserSupplement $userSupplement, GoogleCalendarService $googleCalendarService, ReminderRepository $reminderRepository, EntityManagerInterface $entityManager): Response
     {
-        // Vérifier que l'utilisateur connecté est bien le propriétaire
+    
         if ($userSupplement->getUser() !== $this->getUser()) {
             throw new AccessDeniedException('Vous n\'avez pas le droit de supprimer ce supplément.');
         }
 
-        if ($this->isCsrfTokenValid('delete' . $userSupplement->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($userSupplement);
-            $entityManager->flush();
-            $this->addFlash('success', 'Supplément supprimé avec succès.');
-        } else {
+        $token = $request->getPayload()->getString('_token');
+        if (!$this->isCsrfTokenValid('delete' . $userSupplement->getId(), $token)) {
             $this->addFlash('error', 'Token invalide.');
+            return $this->redirectToRoute('app_dashboard', [], Response::HTTP_SEE_OTHER);
         }
 
+        $activeReminder = $reminderRepository->findActiveByUserSupplement($userSupplement);
+        if ($activeReminder && $activeReminder->getGoogleEventId()) {
+            try {
+                
+                $googleCalendarService->deleteEvent($userSupplement->getUser(),$activeReminder->getGoogleEventId());
+            
+            } catch (\RuntimeException $e) {
+                
+                $this->addFlash('error', 'L\'événement n\'a pas pu être supprimé du calendrier. Veuillez réessayer.');
+                return $this->redirectToRoute('app_dashboard', [], Response::HTTP_SEE_OTHER);
+            }
+        }
+       
+
+        $entityManager->remove($userSupplement);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Supplément supprimé avec succès.');
         return $this->redirectToRoute('app_dashboard', [], Response::HTTP_SEE_OTHER);
     }
 }
