@@ -16,7 +16,7 @@ final class HeaderMobile
     ) {
     }
 
-        /**
+    /**
      * Devuelve true si se debe mostrar el título de la app.
      * Condiciones: usuario autenticado 
      */

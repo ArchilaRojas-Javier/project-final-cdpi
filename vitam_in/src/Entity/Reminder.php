@@ -22,6 +22,10 @@ class Reminder
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
+    #[ORM\ManyToOne(inversedBy: 'reminders')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?UserSupplement $userSupplement = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +64,17 @@ class Reminder
     {
         $this->created_at = $created_at;
 
+        return $this;
+    }
+
+    public function getUserSupplement(): ?UserSupplement
+    {
+        return $this->userSupplement;
+    }
+
+    public function setUserSupplement(?UserSupplement $userSupplement): static
+    {
+        $this->userSupplement = $userSupplement;
         return $this;
     }
 }

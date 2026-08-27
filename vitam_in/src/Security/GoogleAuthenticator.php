@@ -2,7 +2,7 @@
 
 namespace App\Security;
 
-use App\Entity\User; // your user entity
+use App\Entity\User; 
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
@@ -43,14 +43,14 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     {
         /** @var GoogleClient $client */
         $client = $this->clientRegistry->getClient('google');
-            
+
         $accessToken = $this->fetchAccessToken($client);
         
         return new SelfValidatingPassport(
-        new UserBadge($accessToken->getToken(), function ($userIdentifier) use ($client, $accessToken) 
-        {
-            return $this->loadUserFromGoogle($client, $accessToken);
-        })
+            new UserBadge($accessToken->getToken(), function ($userIdentifier) use ($client, $accessToken) 
+            {
+                return $this->loadUserFromGoogle($client, $accessToken);
+            })
         );
     }
 
@@ -66,7 +66,6 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
       
-
         return new RedirectResponse($this->router->generate('app_login'),
             Response::HTTP_TEMPORARY_REDIRECT
             );
@@ -88,16 +87,15 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     private function loadUserFromGoogle(GoogleClient $client, $accessToken): User
     {
         
-        
-        // Obtener el usuario de Google a través de la API
+        // Get the Google user via the API
         /** @var \League\OAuth2\Client\Provider\GoogleUser $googleUser */
         $googleUser = $client->fetchUserFromToken($accessToken);
 
         if (!$googleUser) {
-            throw new AuthenticationException('No se pudo obtener la información de Google.');
+            throw new AuthenticationException("Impossible d'obtenir des informations auprès de Google..");
         }
 
-        // Verificar si ya existe un usuario con ese Google ID
+        // Verify if user exist with Google ID
         $existingUser = $this->entityManager->getRepository(User::class)
             ->findOneBy(['googleId' => $googleUser->getId()]);
 
@@ -105,16 +103,16 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
             return $existingUser;
         }
 
-        // Si no existe, buscar por email.
+        // If not exists, search by email.
         $email = $googleUser->getEmail();
         $user = $this->entityManager->getRepository(User::class)
             ->findOneBy(['email' => $email]);
 
         if ($user) {
-            // Vinculamos la cuenta de Google al usuario existente
+            // Link the Google account to the existing user
             $user->setGoogleId($googleUser->getId());
         } else {
-            // No existe ningún usuario: creamos uno nuevo
+            // No existing user found: create a new one
             $user = new User();
             $user->setEmail($email);
             $user->setGoogleId($googleUser->getId());
@@ -122,6 +120,18 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
             $user->setIsVerified(true);
             $user->setPassword(password_hash(bin2hex(random_bytes(20)), PASSWORD_DEFAULT));
             
+        }
+        // Get the access token and refresh token
+        $tokenData = [
+        'access_token' => $accessToken->getToken(),
+        'expires_in' => $accessToken->getExpires(),
+        'refresh_token' => $accessToken->getRefreshToken(), 
+        ];
+        // Store the access token and refresh token in the User entity
+        $user->setGoogleAccessToken($tokenData);
+
+        if ($accessToken->getRefreshToken()) {
+            $user->setGoogleRefreshToken($accessToken->getRefreshToken());
         }
 
         $this->entityManager->persist($user);

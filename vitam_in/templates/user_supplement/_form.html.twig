@@ -1,0 +1,48 @@
+<div class="container-form p-6 border rounded-[0.5rem] border-[#D9D9D9] shadow-md">
+	<h2 class="font-semibold text-center text-lg">{{ user_supplement.supplement.name }}</h2>
+	{{ form_errors(form) }}
+	{{ form_start(form) }}
+
+	<div class="flex flex-col mb-6">
+		{{ form_label(form.dosageScheduleDose)}}
+		    <div class="flex items-center gap-2 border rounded-[0.5rem] p-1">
+        		{{ form_widget(form.dosageScheduleDose, {'attr': {'class': 'w-full  '}}) }}
+        		<span class="text-gray-700 ">{{ user_supplement.dosageSchedule.unit|default('mg') }}</span>
+    		</div>
+		{{ form_errors(form.dosageScheduleDose)}}
+	</div>
+	<div class="flex flex-col mb-6">
+		{{ form_label(form.start_date)}}
+		{{ form_widget(form.start_date, {'attr': {'class': 'border rounded-[0.5rem] p-1'}})}}
+		{{ form_errors(form.start_date)}}
+	</div>
+	<div class="flex flex-col mb-6">
+		{{ form_label(form.duration_days)}}
+		{{ form_widget(form.duration_days, {'attr': {'class': 'border rounded-[0.5rem] p-1'}})}}
+		{{ form_errors(form.duration_days)}}
+	</div>
+	
+	<div class="flex flex-col mb-6">
+		{{ form_label(form.dosageScheduleTime)}}
+		{{ form_widget(form.dosageScheduleTime, {'attr': {'class': 'border rounded-[0.5rem] p-1'}})}}
+		{{ form_errors(form.dosageScheduleTime)}}
+	</div>
+
+	<div class="flex flex-col mb-6">
+		<label>Recommandations</label>
+    	<p class="text-gray-700">{{ user_supplement.precautions ?: 'À consommer avec modération.' }}</p>
+	</div>
+
+	{# CHECKBOX GOOGLE CALENDAR #}
+	<div class="flex items-center mb-6">
+		{{ form_row(form.google_calendar, {'attr': {'class': 'ml-2 h-4 w-4 text-[#308AFF] border-gray-300 rounded focus:ring-[#308AFF]'}}) }}
+	</div>
+
+	<div class="flex mb-6">
+		<button type="submit" class="btn bg-[#308AFF] text-white border rounded-[0.5rem] w-full p-2">Ajouter</button>
+    	<button type="button" class="btn bg-[#6E6F6F] text-white border rounded-[0.5rem] w-full p-2"><a href="{{ path('app_dashboard') }}">Annuler</a></button>
+
+	</div>
+	{{ form_end(form) }}
+
+</div>

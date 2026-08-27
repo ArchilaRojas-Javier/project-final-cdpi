@@ -4,11 +4,16 @@
 
 {% block body %}
 
-    <section class="container mx-auto">
-   	    <twig:UserCard/>
+	<section class="flex flex-col items-center p-6 min-h-screen w-screen gap-6 mb-12 ">
+   	
+        <twig:UserCard/>
+        
+        <h2 class="text-[#6E6F6F] text-[2rem]">Suivi en cours</h2>
 
         <twig:DashboardSupplementList/>
+        {# {{ component('DashboardSupplementList') }} #}
 
-        
+
+
     </section>
 {% endblock %}

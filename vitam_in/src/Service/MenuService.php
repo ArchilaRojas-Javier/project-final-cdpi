@@ -19,9 +19,9 @@ class MenuService
             // Utilisateur connecté : seuls ces liens sont affichés.
             return [
                 ['label' => 'Dashboard',  'route' => 'app_dashboard', 'icon' => 'lucide:home'],
-                ['label' => 'Mi Perfil',  'route' => 'app_perfil', 'icon' => 'lucide:user'],
-                ['label' => 'Notes',  'route' => 'app_notes', 'icon' => 'lucide:notepad'],
-                ['label' => 'Historique',  'route' => 'app_historique', 'icon' => 'lucide:notepad-pencil'],
+                // ['label' => 'Mi Perfil',  'route' => 'app_perfil', 'icon' => 'lucide:user'],
+                // ['label' => 'Notes',  'route' => 'app_notes', 'icon' => 'lucide:notepad'],
+                // ['label' => 'Historique',  'route' => 'app_historique', 'icon' => 'lucide:notepad-pencil'],
                 ['label' => 'Cerrar sesión', 'route' => 'app_logout', 'icon' => 'lucide:log-out'],
             ];
         }elseif ($this->security->isGranted('ROLE_ADMIN')) {
