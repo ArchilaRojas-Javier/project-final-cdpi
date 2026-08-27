@@ -148,43 +148,100 @@ class GoogleCalendarService
         }
     }
 
+   
+
+
     /**
-     * Actualiza un evento existente.
+     * Met à jour un événement Google Calendar existant pour un userSupplement donné.
+     * 
+     * @param UserSupplement $userSupplement L'entité contenant les nouvelles données
+     * @param string $eventId L'ID de l'événement à mettre à jour
+     * @throws \RuntimeException En cas d'échec de la mise à jour
      */
-    public function updateEvent(User $user, string $eventId, string $summary, string $description, \DateTimeInterface $startDate, int $durationDays): void
+    public function updateEvent(UserSupplement $userSupplement, string $eventId): void
     {
+        $user = $userSupplement->getUser();
         $this->ensureValidAccessToken($user);
+
+        $supplement = $userSupplement->getSupplement();
+        $dosage = $userSupplement->getDosageSchedule();
+        $durationDays = $userSupplement->getDurationDays();
+        $startDate = $userSupplement->getStartDate();
+        $dose = $dosage['dose'] ?? 'N/A';
+        $unit = $dosage['unit'] ?? '';
+        $time = $dosage['time'] ?? '00:00:00';
+
+        $summary = sprintf('Prise de: %s', $supplement->getName());
+
+        $description = sprintf(
+            "Dosage: %s %s\nHeure: %s\nDurée: %d jours",
+            $dose,
+            $unit,
+            $time,
+            $durationDays
+        );
+
+        // Traitement de l'heure
+        $timeParts = explode(':', $time);
+        $hours = (int) ($timeParts[0] ?? 0);
+        $minutes = (int) ($timeParts[1] ?? 0);
+        $seconds = (int) ($timeParts[2] ?? 0);
+
+        
+        $start = $startDate;
+
+        $timezone = new \DateTimeZone($this->defaultTimeZone);
+        $start = (clone $startDate)
+            ->setTimezone($timezone)
+            ->setTime($hours, $minutes, $seconds);
+
+        $end = (clone $start)->modify('+1 hour');
+
         $service = new Calendar($this->client);
 
         try {
+            // Récupération de l'événement existant
             $event = $service->events->get('primary', $eventId);
+
             $event->setSummary($summary);
             $event->setDescription($description);
 
-            $start = $startDate instanceof \DateTimeImmutable
-                ? $startDate
-                : \DateTimeImmutable::createFromMutable($startDate);
-            $start = $start->setTime(0, 0, 0);
-            $end = $start->modify("+{$durationDays} days");
-
             $startEventDateTime = new EventDateTime();
-            $startEventDateTime->setDate($start->format('Y-m-d'));
+            $startEventDateTime->setDateTime($start->format('Y-m-d\TH:i:s'));
             $startEventDateTime->setTimeZone($this->defaultTimeZone);
             $event->setStart($startEventDateTime);
 
             $endEventDateTime = new EventDateTime();
-            $endEventDateTime->setDate($end->format('Y-m-d'));
+            $endEventDateTime->setDateTime($end->format('Y-m-d\TH:i:s'));
             $endEventDateTime->setTimeZone($this->defaultTimeZone);
             $event->setEnd($endEventDateTime);
 
+            if ($durationDays > 1) {
+                
+                $event->setRecurrence([
+                    sprintf('RRULE:FREQ=DAILY;COUNT=%d', $durationDays)
+                ]);
+            } else {
+                
+                $event->setRecurrence(null);
+            }
+
+            $reminderOverride = new EventReminder();
+            $reminderOverride->setMethod('popup');
+            $reminderOverride->setMinutes(10);
+
+            $eventReminders = new EventReminders();
+            $eventReminders->setUseDefault(false);
+            $eventReminders->setOverrides([$reminderOverride]);
+            $event->setReminders($eventReminders);
+
             $service->events->update('primary', $eventId, $event);
+
+        } catch (\Google\Service\Exception $e) {
+            throw new \RuntimeException("Impossible de mettre à jour l'événement");
         } catch (\Exception $e) {
-            $this->logger->error("Erreur lors de la mise à jour de l'événement dans Google Calendar", [
-                'user_id' => $user->getId(),
-                'event_id' => $eventId,
-                'error' => $e->getMessage(),
-            ]);
-            throw new \RuntimeException("Le événement n'a pas pu être mis à jour: " . $e->getMessage());
+            
+            throw new \RuntimeException("Une erreur est survenue lors de la mise à jour de l'événement.");
         }
     }
 

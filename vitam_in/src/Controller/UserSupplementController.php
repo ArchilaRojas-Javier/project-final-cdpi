@@ -90,23 +90,81 @@ public function new(Request $request, UserSupplementService $userSupplementServi
     ]);
 }
 
-    #[Route('/{id}/edit', name: 'app_user_supplement_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, UserSupplement $userSupplement, EntityManagerInterface $entityManager): Response
-    {
-        // Vérifier que l'utilisateur connecté est bien le propriétaire
-        if ($userSupplement->getUser() !== $this->getUser()) {
+   #[Route('/{id}/edit', name: 'app_user_supplement_edit', methods: ['GET', 'POST'])]
+    public function edit(
+        Request $request,
+        UserSupplement $userSupplement,
+        GoogleCalendarService $googleCalendarService,
+        ReminderRepository $reminderRepository,
+        EntityManagerInterface $entityManager
+    ): Response {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if ($userSupplement->getUser() !== $user) {
             throw new AccessDeniedException('Vous n\'avez pas le droit de modifier ce supplément.');
         }
 
+        $activeReminder = $reminderRepository->findActiveByUserSupplement($userSupplement);
+
         $form = $this->createForm(UserSupplementType::class, $userSupplement);
+        $form->get('google_calendar')->setData($activeReminder !== null);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            
             $entityManager->flush();
-            $this->addFlash('success', 'Supplément modifié avec succès.');
+
+            $hasGoogleToken = (bool) $user->getGoogleAccessToken();
+            $createGoogleEvent = $form->get('google_calendar')->getData();
+
+            if (!$hasGoogleToken) {
+                
+                if ($createGoogleEvent) {
+                    $this->addFlash('warning', 'Vous devez lier votre compte Google pour utiliser le calendrier.');
+                }
+                $this->addFlash('success', 'Supplément modifié avec succès.');
+                return $this->redirectToRoute('app_dashboard', [], Response::HTTP_SEE_OTHER);
+            }
+
+            try {
+                if ($createGoogleEvent) {
+                    
+                    if ($activeReminder && $activeReminder->getGoogleEventId()) {
+                        
+                        $googleCalendarService->updateEvent($userSupplement, $activeReminder->getGoogleEventId());
+                        $this->addFlash('success', 'Événement Google Calendar mis à jour.');
+                    } else {
+                        
+                        $eventId = $googleCalendarService->createUserSupplementEvent($user, $userSupplement);
+                        if ($eventId) {
+                            $this->addFlash('success', 'Événement créé dans Google Agenda.');
+                        }
+                    }
+                } else {
+                    
+                    if ($activeReminder && $activeReminder->getGoogleEventId()) {
+                        $googleCalendarService->deleteEvent($user, $activeReminder->getGoogleEventId());
+                        
+                        $entityManager->remove($activeReminder);
+                        $entityManager->flush();
+                        $this->addFlash('success', 'Événement supprimé de Google Agenda.');
+                    }
+                    
+                }
+            } catch (\Google\Service\Exception $e) {
+                $this->addFlash('error', 'Erreur avec Google Calendar ');
+            } catch (\RuntimeException $e) {
+                $this->addFlash('error', 'Erreur lors de l\'opération sur le calendrier ');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Une erreur inattendue est survenue.');
+                
+            }
+
             return $this->redirectToRoute('app_dashboard', [], Response::HTTP_SEE_OTHER);
         }
 
+        
         return $this->render('user_supplement/edit.html.twig', [
             'user_supplement' => $userSupplement,
             'form' => $form,
