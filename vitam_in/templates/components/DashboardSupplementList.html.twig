@@ -8,6 +8,7 @@
 					<col class="w-2/12">
 					<col class="w-2/12">
 					<col class="w-2/12">
+					<col class="w-2/12">
 				</colgroup>
 
 				<thead class="sticky top-0 bg-white z-10 border-b border-[#C6C6C8]">
@@ -37,6 +38,12 @@
 							</div>
 						</th>
 						<th scope="col" class="px-2 py-3">
+							<span class="sr-only">Rappel</span>
+							<div class="flex justify-center items-center">
+								{{ ux_icon('lucide:bell', { 'aria-hidden': 'true', class: 'w-5 h-5' }) }}
+							</div>
+						</th>
+						<th scope="col" class="px-2 py-3">
 							<span class="sr-only">Options</span>
 							<div class="flex justify-center items-center">
 								{{ ux_icon('lucide:more-horizontal', { 'aria-hidden': 'true', class: 'w-5 h-5' }) }}
@@ -56,6 +63,15 @@
 							<td class="text-center px-2 py-2">{{ userSupplement.daysRemaining }}</td>
 							<td class="text-center px-2 py-2">{{ userSupplement.dosageSummary }}</td>
 							<td class="text-center px-2 py-2">{{ userSupplement.notesCount }}</td>
+							<td class="text-center px-2 py-2">
+								<div class="flex justify-center items-center">
+									{% if userSupplement.hasActiveReminder %}
+										{{ ux_icon('lucide:bell', { 'aria-hidden': 'true', class: 'w-5 h-5 text-blue-500' }) }}
+									{% else %}
+										{{ ux_icon('lucide:bell-off', { 'aria-hidden': 'true', class: 'w-5 h-5 text-gray-300' }) }}
+									{% endif %}
+								</div>
+							</td>
 							<td class="text-center px-2 py-2">
 								{# Menu déroulant avec les trois points #}
 								<details class="relative inline-block">
@@ -84,7 +100,7 @@
 						</tr>
 					{% else %}
 						<tr>
-							<td colspan="5" class="text-center px-2 py-4">
+							<td colspan="6" class="text-center px-2 py-4">
 								Ajoutez votre premier supplément pour suivre vos progrès.
 							</td>
 						</tr>

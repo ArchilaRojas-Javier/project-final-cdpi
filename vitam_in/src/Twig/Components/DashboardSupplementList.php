@@ -30,7 +30,7 @@ final class DashboardSupplementList
     }
 
     /**
-     * Ceci s'exécute lorsque le composant est monté
+     * This executes when the component is mounted.
      */
     public function mount(): void
     {
@@ -40,7 +40,7 @@ final class DashboardSupplementList
         }
 
         /** 
-         * récupère toutes les données à utiliser dans le template dans un tableau
+         * get all the data to be used in the template into an array
          * @var UserSupplement[] $userSupplementData
          */
         $userSupplementData = $this->userSupplementRepository->findByUser($user);
@@ -50,6 +50,7 @@ final class DashboardSupplementList
             $supplementName = $us->getSupplement()->getName();
             $startDate = $us->getStartDate();
             $duration = $us->getDurationDays();
+            $hasActiveReminder = $us->getReminders()->isEmpty();
             $daysRemaining = 0;
             if ($startDate && $duration) {
                 $end = (clone $startDate)->modify("+{$duration} days");
@@ -77,6 +78,7 @@ final class DashboardSupplementList
                 'dosageSummary'    => $dosageSummary,
                 'notesCount'       => $us->getNotes()->count(),
                 'supplementId'     => $supplementId,
+                'hasActiveReminder'=> $hasActiveReminder
             ];
         }, $userSupplementData);
     }

@@ -20,12 +20,13 @@ class UserSupplementRepository extends ServiceEntityRepository
        /**
         * @return UserSupplement[] Returns an array of UserSupplement objects 
         */
-       public function findByUser(User $user): array
+        public function findByUser(User $user): array
     {
         return $this->createQueryBuilder('us')
             ->andWhere('us.user = :user')
             ->setParameter('user', $user)
-            ->orderBy('us.start_date', 'DESC')
+            ->leftJoin('us.reminders', 'r', 'WITH', 'r.is_active = true')   //filtramos solo activos 
+            ->addSelect('r')                  // Cargamos los reminders en la misma consulta
             ->getQuery()
             ->getResult();
     }
