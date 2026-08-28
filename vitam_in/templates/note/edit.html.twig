@@ -1,21 +1,33 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Note{% endblock %}
+{% block title %}Edit Note
+{% endblock %}
 
 {% block body %}
-    <section class="flex flex-col items-center p-6 min-h-screen w-screen gap-6 mb-12 ">
+	<section class="flex flex-col items-center p-6 min-h-screen w-screen gap-6 mb-12">
 		{% for flash_error in app.flashes('verify_email_error') %}
 			<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
 		{% endfor %}
+		<twig:UserCard/>
 
-		<h1 class="text-[#308AFF] text-[2rem]">Edit Note</h1>
+		<h2 class="text-[#6E6F6F] text-[2rem]">Nouvelle note</h2>
+
+		<div class="w-full max-w-4xl">
+			<div class="bg-[#F0F8FD] shadow-lg rounded-lg p-4 border border-gray-200">
+
+				<div class="flex items-center justify-between gap-2 mb-3">
+					<div class="flex flex-wrap items-baseline gap-1 text-sm">
+						<span class="font-semibold text-gray-800">{{ userSupplement.supplement.name }}</span>
+						<span class="text-gray-600">{{ userSupplement.dosage ?? '' }}</span>
+						<span class="text-gray-400 text-xs">{{ "now"|date('d/m/Y H:i') }}</span>
+					</div>
+
+				</div>
+
+				{{ include('note/_form.html.twig', {'button_label': 'Modifier'}) }}
 
 
-        {{ include('note/_form.html.twig', {'button_label': 'Modifier'}) }}
-
-        {{ include('note/_delete_form.html.twig') }}
-
-		<a href="{{ path('app_notes_by_supplement', { id: userSupplement.id }) }}">Annuler</a>
-
+			</div>
+		</div>
 	</section>
 {% endblock %}
