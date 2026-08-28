@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Notes
+{% endblock %}
+
+{% block body %}
+	<section class="flex flex-col items-center p-6 min-h-screen w-screen gap-6 mb-12">
+		<twig:UserCard/>
+		<div class="flex items-center justify-between w-full max-w-4xl text-[#6E6F6F] text-[2rem]">
+			<h2>Notes</h2>
+			<a href="{{ path('app_note_new', {'userSupplement': userSupplement.id}) }}"
+				class="mr-2"
+				title="Ajouter une note">
+				{{ ux_icon('lucide:pencil-line') }}
+			</a>
+		</div>
+		{# Conteneur avec scroll sur mobile #}
+		<div class="w-full max-w-4xl flex-1 min-h-0 overflow-y-auto max-h-[70vh] md:max-h-none">
+			<div class="flex flex-col gap-4">
+				{% for note in notes %}
+					<div
+						class="bg-[#F0F8FD] shadow-lg rounded-lg p-4 border border-gray-200 hover:shadow-xl transition-shadow break-words">
+						
+						<div class="flex items-center justify-between gap-2 mb-2">
+							<div class="flex flex-wrap items-baseline gap-1 text-sm">
+								<span class="font-semibold text-gray-800">{{ note.userSupplement.supplement.name }}</span>
+								<span class="text-gray-600">{{ note.userSupplement.dosage ?? '' }}</span>
+								<span class="text-gray-400 text-xs">{{ note.createdAt ? note.createdAt|date('d/m/Y H:i') : '' }}</span>
+							</div>
+							<div class="relative">
+								<details class="relative inline-block">
+									<summary class="list-none cursor-pointer p-1 hover:bg-gray-100 rounded focus:outline-none">
+										{{ ux_icon('lucide:more-horizontal', { 'aria-hidden': 'true', class: 'w-5 h-5' }) }}
+									</summary>
+									<div class="absolute right-0 mt-1 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+										<a href="{{ path('app_note_edit', { id: note.id }) }}" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+											✏️ Modifier
+										</a>
+										<form method="post" action="{{ path('app_note_delete', { id: note.id }) }}" style="display: inline-block; width: 100%;">
+											<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ note.id) }}">
+											<button type="submit" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600">
+												🗑️ Supprimer
+											</button>
+										</form>
+									</div>
+								</details>
+							</div>
+						</div>
+						
+						<p class="text-gray-800 text-base leading-relaxed break-words">{{ note.content }}</p>
+					</div>
+				{% else %}
+					<div class="bg-[#F0F8FD] shadow-lg rounded-lg p-8 text-center text-gray-500 border border-gray-200">
+						<p class="text-lg">Il n'y a pas de notes pour ce supplément.</p>
+						<p class="text-sm mt-1">Ajoutez une nouvelle note en cliquant sur le bouton ci-dessous.</p>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+
+		<div class="flex flex-col gap-4">
+			<a href="{{ path('app_note_new', {'userSupplement': userSupplement.id}) }}" class="bg-blue-600 hover:bg-blue-700 text-white text-center font-medium py-2 px-6 rounded-lg transition-colors">
+				+ Prenez des notes
+			</a>
+			<a href="{{ path('app_dashboard') }}" class="bg-[#6E6F6F] hover:bg-gray-400 text-white text-center font-medium py-2 px-6 rounded-lg transition-colors">
+				Retour
+			</a>
+		</div>
+	</section>
+{% endblock %}

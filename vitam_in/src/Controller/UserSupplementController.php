@@ -91,13 +91,9 @@ public function new(Request $request, UserSupplementService $userSupplementServi
 }
 
    #[Route('/{id}/edit', name: 'app_user_supplement_edit', methods: ['GET', 'POST'])]
-    public function edit(
-        Request $request,
-        UserSupplement $userSupplement,
-        GoogleCalendarService $googleCalendarService,
-        ReminderRepository $reminderRepository,
-        EntityManagerInterface $entityManager
-    ): Response {
+    public function edit(Request $request, UserSupplement $userSupplement, GoogleCalendarService $googleCalendarService,
+        ReminderRepository $reminderRepository, EntityManagerInterface $entityManager): Response 
+    {
         /** @var User $user */
         $user = $this->getUser();
 

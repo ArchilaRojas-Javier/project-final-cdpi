@@ -62,7 +62,11 @@
 							</td>
 							<td class="text-center px-2 py-2">{{ userSupplement.daysRemaining }}</td>
 							<td class="text-center px-2 py-2">{{ userSupplement.dosageSummary }}</td>
-							<td class="text-center px-2 py-2">{{ userSupplement.notesCount }}</td>
+							<td class="text-center px-2 py-2">
+								<a href="{{ path('app_notes_by_supplement', { id: userSupplement.id }) }}">
+									{{ userSupplement.notesCount }}
+								</a>
+							</td>							
 							<td class="text-center px-2 py-2">
 								<div class="flex justify-center items-center">
 									{% if userSupplement.hasActiveReminder %}
