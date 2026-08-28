@@ -10,9 +10,7 @@
         Notes 
     </h2>
        
-        
-    
-    {# Contenedor de tarjetas #}
+{# Contenedor de tarjetas #}
     <div class="w-full max-w-4xl flex flex-col gap-4">
         {% for note in notes %}
             <div class="bg-white shadow-lg rounded-lg p-5 border border-gray-200 hover:shadow-xl transition-shadow">
@@ -32,9 +30,8 @@
                     <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
                        <a href="{{ path('app_note_edit', {'id': note.id}) }}"
                            class="text-yellow-600 hover:text-yellow-800 text-sm font-medium">Modifier</a>
-                        <a href="{{ path('app_note_delete', {'id': note.id}) }}"
-                           class="text-red-600 hover:text-red-800 text-sm font-medium"
-                           onclick="return confirm('¿Eliminar esta nota?')">Supprimer   </a>
+                        
+                           {{ include('note/_delete_form.html.twig') }}
                     </div>
                 </div>
             </div>
@@ -51,6 +48,12 @@
         <a href="{{ path('app_note_new', {'userSupplement': userSupplement.id}) }}"
            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors">
             + Prenez des notes
+        </a>
+    </div>
+    <div class="mt-6">
+        <a href="{{ path('app_dashboard') }}"
+           class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors">
+            Retour
         </a>
     </div>
 </section>

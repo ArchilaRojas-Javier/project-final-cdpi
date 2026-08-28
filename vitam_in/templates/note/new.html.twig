@@ -4,8 +4,6 @@
 {% endblock %}
 
 {% block body %}
-
-
 	<section class="flex flex-col items-center p-6 min-h-screen w-screen gap-6 mb-12 ">
 		{% for flash_error in app.flashes('verify_email_error') %}
 			<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
@@ -16,7 +14,7 @@
 
 		{{ include('note/_form.html.twig') }}
 
-		<a href="{{ path('app_dashboard') }}">Retour</a>
+		<a href="{{ path('app_notes_by_supplement', { id: userSupplement.id }) }}">Retour</a>
 
 	</section>
 {% endblock %}

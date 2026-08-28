@@ -15,15 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/note')]
 final class NoteController extends AbstractController
 {
-    #[Route(name: 'app_note_index', methods: ['GET'])]
-    public function index(NoteRepository $noteRepository): Response
-    {
-        return $this->render('note/index.html.twig', [
-            'notes' => $noteRepository->findAll(),
-        ]);
-    }
-
-    #[Route('/new/{userSupplement}', name: 'app_note_new', methods: ['GET', 'POST'])]
+   #[Route('/new/{userSupplement}', name: 'app_note_new', methods: ['GET', 'POST'])]
     public function new(Request $request, UserSupplement $userSupplement, EntityManagerInterface $entityManager): Response
     {
         $note = new Note();
@@ -46,7 +38,7 @@ final class NoteController extends AbstractController
         ]);
     }
 
-    #[Route('/user-supplement/{id}/notes', name: 'app_notes_by_supplement', methods: ['GET'])]
+    #[Route('/us/{id}/notes', name: 'app_notes_by_supplement', methods: ['GET'])]
     public function notesBySupplement(UserSupplement $userSupplement, NoteRepository $noteRepository): Response
     {
         
@@ -61,29 +53,38 @@ final class NoteController extends AbstractController
     #[Route('/{id}/edit', name: 'app_note_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Note $note, EntityManagerInterface $entityManager): Response
     {
+
         $form = $this->createForm(NoteType::class, $note);
         $form->handleRequest($request);
+        $userSupplement = $note->getUserSupplement(); 
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_note_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_notes_by_supplement', [
+                'id' => $userSupplement->getId()
+            ], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('note/edit.html.twig', [
             'note' => $note,
             'form' => $form,
+            'userSupplement' => $note->getUserSupplement()
         ]);
     }
 
     #[Route('/{id}', name: 'app_note_delete', methods: ['POST'])]
     public function delete(Request $request, Note $note, EntityManagerInterface $entityManager): Response
     {
+        
         if ($this->isCsrfTokenValid('delete'.$note->getId(), $request->getPayload()->getString('_token'))) {
+            $userSupplement = $note->getUserSupplement(); 
             $entityManager->remove($note);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_note_index', [], Response::HTTP_SEE_OTHER);
+         return $this->redirectToRoute('app_notes_by_supplement', [
+                'id' => $userSupplement->getId()
+            ], Response::HTTP_SEE_OTHER);
     }
 }
