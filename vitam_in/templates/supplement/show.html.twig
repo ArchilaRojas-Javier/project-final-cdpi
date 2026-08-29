@@ -9,10 +9,9 @@
 {% block body %}
 	<div class="container mx-auto p-6 mb-12">
 		<turbo-frame id="supplement-detail">
-			
-			<button type="button"
-                    onclick="if (history.length > 1) { history.back(); } else { window.location.href = '{{ path('app_home') }}'; }"
-					data-turbo="false"
+
+			<button type="button" onclick="if (history.length > 1) { history.back(); } else { window.location.href = '{{ path('app_home') }}'; }" 
+					data-turbo="false" 
 					class="inline-flex items-center text-[#308AFF] hover:underline mb-6">
 				← Retour
 			</button>
@@ -86,8 +85,8 @@
 								<a href="{{ target_url }}" data-turbo="false" class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-[300px] p-2 text-center">Demarrer mon suivi</a>
 							</div>
 
-							<h3 class="text-lg font-medium text-gray-800">Dureé de la cure
-							</h3>
+							<h2 class="text-xl font-semibold mb-2">Dureé de la cure
+							</h2>
 
 							<div>
 								{% if supplement.onDurationDays is not null %}
@@ -112,51 +111,80 @@
 								</div>
 							{% endif %}
 
-							{# //comentarios aqui #}
+							{# Comentaires #}
 							{% if supplement.comment is defined and not null %}
-								<div class="mt-6 mb-6 ">
-									<h2 class="text-xl font-semibold mb-2">Commentaires ({{ supplement.comment|length }})</h2>
-									<p class="text-gray-700">adui listamos los comentario</p>
-									{% for comment in supplement.comment %}
-										{# Solo mostramos los que estén aprobados (por seguridad) #}
-										{% if comment.isApprouved %}
-											<div class="border-b border-gray-200 py-4">
-												<div class="flex items-center gap-2 text-sm text-gray-500">
-													{# <span class="font-medium text-gray-700">
-														{{ comment.user ? comment.user.username : 'Anónimo' }}
-													</span> #}
-													<span>•</span>
-													<span>{{ comment.createdAt|date('d/m/Y H:i') }}</span>
-												</div>
-												<p class="text-gray-700 mt-1">{{ comment.content }}</p>
 
-												{# Si quieres mostrar las respuestas (respuestas anidadas) #}
-												{% if comment.response is not empty %}
-													<div class="ml-6 mt-2 space-y-2">
-														{% for response in comment.response %}
-															<div class="bg-gray-50 p-3 rounded">
-																<span class="text-sm text-gray-500">
-																	{{ response.user ? response.user.username : 'Anónimo' }}
+
+								<div class="mt-6 mb-6 ">
+									<h2 class="text-xl text-center font-semibold mb-2">Commentaires</h2>
+									{# Conteneur avec scroll sur mobile #}
+									<div class="w-full max-w-4xl flex-1 min-h-0 overflow-y-auto max-h-[40vh] md:max-h-none">
+										<div class="flex flex-col gap-4">
+
+											{% for comment in supplement.comment %}
+												{# Nous ne montrons que ceux qui sont approuvés. #}
+												{% if comment.isApprouved %}
+													<div class="bg-[#F0F8FD] shadow-lg rounded-lg p-4 border border-gray-200 hover:shadow-xl transition-shadow break-words">
+															
+														<div class="flex items-center justify-between gap-2 mb-2">
+															<div class="flex flex-wrap items-baseline gap-1 text-sm">
+																<span class="font-medium text-gray-800">
+																	{# agregar name cuando la entida user tenga name #}
+																	{{ comment.user ? comment.user.email : 'Anónimo' }}
 																</span>
-																<p class="text-gray-700">{{ response.content }}</p>
+																<span>•</span>
+																<span class="text-gray-400 text-xs">{{ comment.createdAt ? comment.createdAt|date('d/m/Y H:i') : '' }}</span>
 															</div>
-														{% endfor %}
+															{# Options réservé aux utilisateurs connectés et créateur du commentaire #}
+															{% if app.user and comment.user == app.user %}
+																<div class="relative">
+																	<details class="relative inline-block">
+																		<summary class="list-none cursor-pointer p-1 hover:bg-gray-100 rounded focus:outline-none">
+																			{{ ux_icon('lucide:more-horizontal', { 'aria-hidden': 'true', class: 'w-5 h-5' }) }}
+																		</summary>
+																		<div class="absolute right-0 mt-1 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+																			{# <a href="{{ path('app_comment_edit', { id: comment.id }) }}" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+																				✏️ Modifier
+																			</a> #}
+																			<form method="post" action="{{ path('app_comment_delete', { id: comment.id }) }}" style="display: inline-block; width: 100%;">
+																				<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+																				<button type="submit" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600">
+																					🗑️ Supprimer
+																				</button>
+																			</form>
+																		</div>
+																	</details>
+																</div>
+															{% endif %}
+														</div>
+														<p class="text-gray-800 text-base leading-relaxed break-words">{{ comment.content }}</p>
 													</div>
+															{# Si quieres mostrar las respuestas (respuestas anidadas) #}
+															{# {% if comment.response is not empty %}
+																<div class="ml-6 mt-2 space-y-2">
+																	{% for response in comment.response %}
+																		<div class="bg-gray-50 p-3 rounded">
+																			<span class="text-sm text-gray-500">
+																				{{ response.user ? response.user.username : 'Anónimo' }}
+																			</span>
+																			<p class="text-gray-700">{{ response.content }}</p>
+																		</div>
+																	{% endfor %}
+																</div>
+															{% endif %} #}
 												{% endif %}
-											</div>
-										{% endif %}
-										{% else %}
-										<p class="text-gray-500">Aún no hay comentarios para este suplemento.</p>
-								{% endfor %}
+												{% else %}
+													<p class="text-gray-500">Aucun commentaire n'a encore été publié pour ce supplément..</p>
+											{% endfor %}
+										</div>
+									</div>
 								</div>
 							{% endif %}
-							{# Botón para agregar comentario (solo si usuario logueado) #}
+							{# Bouton pour ajouter un commentaire (uniquement si l'utilisateur est connecté) #}
 							{% if app.user %}
 								<div class="flex items-center justify-center">
-									<a href="{{ path('app_comment_new', { supplementId: supplement.id }) }}"
-										data-turbo-action="advance"
-										class="inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">
-										Partager mon expérience									
+									<a href="{{ path('app_comment_new', { supplementId: supplement.id }) }}" data-turbo-action="advance" class="inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">
+										Partager mon expérience
 									</a>
 								</div>
 
@@ -170,7 +198,7 @@
 								</div>
 							{% endif %}
 
-							
+
 						</div>
 					</article>
 				</turbo-frame>
