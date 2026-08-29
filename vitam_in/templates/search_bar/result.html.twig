@@ -10,20 +10,11 @@
 		<h1 class="text-[#308AFF] text-[4rem]">Vitam-In</h1>
 
 		<h2 class="text-black text-[2rem] text-center">La guide ultime des suppléments</h2>
-		<div class="flex flex-col items-strech gap-2 container p-6">
 
-			<h2 class="text-center">
-				Trouvez le supplement ou le bien-être qui correpond à vos besoins.
-			</h2>
-
-			<div class="w-full p-2">
-
-				{{ form_start(form, {'attr': {'role': 'search','action': path('app_search_bar')}}) }}
-				{{ form_widget(form.query, {'attr': {'class': 'w-full p-1 border rounded-[1rem] p-1'}}) }}
-				{{ form_label(form.type)}}
-				{{ form_widget(form.type, {'attr': {'class': ' mt-2 p-1 border rounded-[1rem]'}}) }}
-				{{ form_end(form) }}
-			</div>
+		{{ render(controller('App\\Controller\\SearchBarController::index')) }}
+		
+		<div class="flex flex-col items-strech gap-2 p-6">
+		
 			<turbo-frame id="supplement-detail">
 				{% if results is not empty %}
 					<h2 class="text-2xl font-semibold text-gray-800 mt-8">
@@ -32,7 +23,9 @@
 					</h2>
 					<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
 						{% for supplement in results %}
-							<a href="{{ path('app_supplement_show', {'id': supplement.id}) }}" class="block bg-white rounded-2xl shadow hover:shadow-lg transition-shadow overflow-hidden">
+							<a href="{{ path('app_supplement_show', {'id': supplement.id}) }}"
+								data-turbo-action="advance"
+								class="block bg-white rounded-2xl shadow hover:shadow-lg transition-shadow overflow-hidden">
 								<div class="p-4">
 									<h3 class="text-lg font-bold text-gray-900 mb-1">{{ supplement.name }}</h3>
 									{% if supplement.description is defined %}

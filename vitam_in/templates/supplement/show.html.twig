@@ -1,17 +1,21 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	{{ supplement.name }} - Vitam-in
+	{{ supplement.name }}
+	- Vitam-in
 {% endblock %}
 
 
 {% block body %}
 	<div class="container mx-auto p-6 mb-12">
 		<turbo-frame id="supplement-detail">
-			<a href="{{ path('app_home') }}" data-turbo="false" class="inline-flex items-center text-[#308AFF] hover:underline mb-6" >
-                ← Retour à l'accueil
-            </a>
-            
+			
+			<button type="button"
+                    onclick="if (history.length > 1) { history.back(); } else { window.location.href = '{{ path('app_home') }}'; }"
+					data-turbo="false"
+					class="inline-flex items-center text-[#308AFF] hover:underline mb-6">
+				← Retour
+			</button>
 			<article class="bg-white rounded-2xl shadow-lg overflow-hidden max-w-3xl mx-auto">
 				{% if supplement.image is defined and supplement.image %}
 					<img src="{{ asset(supplement.image) }}" alt="{{ supplement.name }}" class="w-full h-64 object-cover">
@@ -33,81 +37,142 @@
 					{% if supplement.dosageSchedule is defined and supplement.dosageSchedule is not empty %}
 						<section class="mb-6" aria-labelledby="posologies-title">
 							<h2 id="posologies-title" class="text-xl font-semibold mb-4">Posologies</h2>
+
+							<dl class="space-y-4">
+								{% if supplement.dosageSchedule.male is defined and not null %}
+									<div>
+										<dt class="text-lg font-medium text-gray-800">Homme</dt>
+										<dd class="text-gray-700">
+											{{ supplement.dosageSchedule.male.dose }}
+											{{ supplement.dosageSchedule.male.unit }}
+											<ul class="list-disc list-inside text-gray-600">
+												{% for moment, quantity in supplement.dosageSchedule.male.moments %}
+													<li>{{ moment }}
+														:
+														{{ quantity }}
+														prise(s)</li>
+												{% endfor %}
+											</ul>
+										</dd>
+									</div>
+								{% endif %}
+								<dl class="space-y-4">
+									{% if supplement.dosageSchedule.female is defined and not null %}
+										<div>
+											<dt class="text-lg font-medium text-gray-800">Femme</dt>
+											<dd class="text-gray-700">
+												{{ supplement.dosageSchedule.female.dose }}
+												{{ supplement.dosageSchedule.female.unit }}
+												<ul class="list-disc list-inside text-gray-600">
+													{% for moment, quantity in supplement.dosageSchedule.female.moments %}
+														<li>{{ moment }}
+															:
+															{{ quantity }}
+															prise(s)</li>
+													{% endfor %}
+												</ul>
+											</dd>
+										</div>
+									{% endif %}
+								</section>
+							{% endif %}
+
+							<div class="flex items-center justify-center mb-6">
+								{% if app.user %}
+									{% set target_url = path('app_user_supplement_new', {supplementId: supplement.id}) %}
+								{% else %}
+									{% set target_url = path('app_login') %}
+								{% endif %}
+								<a href="{{ target_url }}" data-turbo="false" class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-[300px] p-2 text-center">Demarrer mon suivi</a>
+							</div>
+
+							<h3 class="text-lg font-medium text-gray-800">Dureé de la cure
+							</h3>
+
+							<div>
+								{% if supplement.onDurationDays is not null %}
+									<p class="text-base text-gray-700 mb-2">{{ supplement.onDurationDays }}
+										jours de prise recommandée</p>
+
+								{% endif %}
+							</div>
+
+							<div>
+								{% if supplement.offDurationDays is not null %}
+									<p class="text-base text-gray-700 mb-2">{{ supplement.offDurationDays }}
+										jours de pause recommandée</p>
+								{% endif %}
+							</div>
+
+
+							{% if supplement.precautions is defined and not null %}
+								<div class="mt-6 mb-6 ">
+									<h2 class="text-xl font-semibold mb-2">Précautions</h2>
+									<p class="text-gray-700">{{ supplement.precautions }}</p>
+								</div>
+							{% endif %}
+
+							{# //comentarios aqui #}
+							{% if supplement.comment is defined and not null %}
+								<div class="mt-6 mb-6 ">
+									<h2 class="text-xl font-semibold mb-2">Commentaires ({{ supplement.comment|length }})</h2>
+									<p class="text-gray-700">adui listamos los comentario</p>
+									{% for comment in supplement.comment %}
+										{# Solo mostramos los que estén aprobados (por seguridad) #}
+										{% if comment.isApprouved %}
+											<div class="border-b border-gray-200 py-4">
+												<div class="flex items-center gap-2 text-sm text-gray-500">
+													{# <span class="font-medium text-gray-700">
+														{{ comment.user ? comment.user.username : 'Anónimo' }}
+													</span> #}
+													<span>•</span>
+													<span>{{ comment.createdAt|date('d/m/Y H:i') }}</span>
+												</div>
+												<p class="text-gray-700 mt-1">{{ comment.content }}</p>
+
+												{# Si quieres mostrar las respuestas (respuestas anidadas) #}
+												{% if comment.response is not empty %}
+													<div class="ml-6 mt-2 space-y-2">
+														{% for response in comment.response %}
+															<div class="bg-gray-50 p-3 rounded">
+																<span class="text-sm text-gray-500">
+																	{{ response.user ? response.user.username : 'Anónimo' }}
+																</span>
+																<p class="text-gray-700">{{ response.content }}</p>
+															</div>
+														{% endfor %}
+													</div>
+												{% endif %}
+											</div>
+										{% endif %}
+										{% else %}
+										<p class="text-gray-500">Aún no hay comentarios para este suplemento.</p>
+								{% endfor %}
+								</div>
+							{% endif %}
+							{# Botón para agregar comentario (solo si usuario logueado) #}
+							{% if app.user %}
+								<div class="flex items-center justify-center">
+									<a href="{{ path('app_comment_new', { supplementId: supplement.id }) }}"
+										data-turbo-action="advance"
+										class="inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">
+										Partager mon expérience									
+									</a>
+								</div>
+
+							{% else %}
+								<div class="flex items-center justify-center">
+									{% if not app.user %}
+										<a href="{{ path('app_register') }}" data-turbo="false" class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-[300px] p-2 text-center">
+											Je m'inscris gratuitement
+										</a>
+									{% endif %}
+								</div>
+							{% endif %}
+
 							
-							<dl class="space-y-4">
-                            {% if supplement.dosageSchedule.male is defined and not null %}
-                                <div>
-                                    <dt class="text-lg font-medium text-gray-800">Homme</dt>
-                                    <dd class="text-gray-700">
-                                        {{ supplement.dosageSchedule.male.dose }} {{ supplement.dosageSchedule.male.unit }}
-                                        <ul class="list-disc list-inside text-gray-600">
-                                            {% for moment, quantity in supplement.dosageSchedule.male.moments %}
-                                                <li>{{ moment }} : {{ quantity }} prise(s)</li>
-                                            {% endfor %}
-                                        </ul>
-                                    </dd>
-                                </div>
-                            {% endif %}
-							<dl class="space-y-4">
-                            {% if supplement.dosageSchedule.female is defined and not null %}
-                                <div>
-                                    <dt class="text-lg font-medium text-gray-800">Femme</dt>
-                                    <dd class="text-gray-700">
-                                        {{ supplement.dosageSchedule.female.dose }} {{ supplement.dosageSchedule.female.unit }}
-                                        <ul class="list-disc list-inside text-gray-600">
-                                            {% for moment, quantity in supplement.dosageSchedule.female.moments %}
-                                                <li>{{ moment }} : {{ quantity }} prise(s)</li>
-                                            {% endfor %}
-                                        </ul>
-                                    </dd>
-                                </div>
-                            {% endif %}
-						</section>
-					{% endif %}
-
-					<div class="flex items-center justify-center mb-6">
-						{% if app.user %}
-    						{% set target_url = path('app_user_supplement_new', {supplementId: supplement.id}) %}
-						{% else %}
-    						{% set target_url = path('app_login') %}
-						{% endif %}
-            			<a href="{{ target_url }}" data-turbo="false" class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-[300px] p-2 text-center">Demarrer mon suivi</a>
-        			</div>
-
-					<h3 class="text-lg font-medium text-gray-800">Dureé de la cure </h3>
-					
-					<div>
-						{% if supplement.onDurationDays is not null %}
-							<p class="text-base text-gray-700 mb-2">{{ supplement.onDurationDays }}
-								jours de prise recommandée</p>
-						
-						{% endif %}
-					</div>
-					
-					<div>
-						{% if supplement.offDurationDays is not null %}
-							<p class="text-base text-gray-700 mb-2">{{ supplement.offDurationDays }}
-								jours de pause recommandée</p>
-						{% endif %}
-					</div>
-
-
-					{% if supplement.precautions is defined and not null %}
-						<div class="mt-6 mb-6 ">
-							<h2 class="text-xl font-semibold mb-2">Précautions</h2>
-							<p class="text-gray-700">{{ supplement.precautions }}</p>
 						</div>
-					{% endif %}
-
-					<div class="flex items-center justify-center">
-            			{% if not app.user %}
-    						<a href="{{ path('app_register') }}" data-turbo="false" class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-[300px] p-2 text-center">
-            					Je m'inscris gratuitement</a>
-						{% endif %}
-        			</div>
-				</div>
-			</article>
-		</turbo-frame>
-	</div>
-{% endblock %}
-
+					</article>
+				</turbo-frame>
+			</div>
+		{% endblock %}
