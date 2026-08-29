@@ -7,7 +7,7 @@
 
 
 {% block body %}
-	<div class="container mx-auto p-6 mb-12">
+	<div class="container mx-auto p-6 mb-12 ">
 		<turbo-frame id="supplement-detail">
 
 			<button type="button" onclick="if (history.length > 1) { history.back(); } else { window.location.href = '{{ path('app_home') }}'; }" 
@@ -111,11 +111,9 @@
 								</div>
 							{% endif %}
 
-							{# Comentaires #}
+							{# Commentaires #}
 							{% if supplement.comment is defined and not null %}
-
-
-								<div class="mt-6 mb-6 ">
+								<div class="mt-6 mb-6 text-[#6E6F6F]">
 									<h2 class="text-xl text-center font-semibold mb-2">Commentaires</h2>
 									{# Conteneur avec scroll sur mobile #}
 									<div class="w-full max-w-4xl flex-1 min-h-0 overflow-y-auto max-h-[40vh] md:max-h-none">
@@ -169,20 +167,25 @@
 															{% endif %}
 														</div>
 														<p class="text-gray-800 text-base leading-relaxed break-words">{{ comment.content }}</p>
+														<div class="flex gap-4 mt-2 pl-4">
+															
+															<a href="{{ path('app_comment_show', { id: comment.id }) }}" 
+																data-turbo="false"
+																class="flex items-center justify-center gap-1">
+																{{ ux_icon('lucide:message-square-more',{ 'aria-hidden': 'true', class: 'w-5 h-5 cursor-pointer hover:text-gray-700 rounded focus:outline-none' }) }} 
+																574
+															</a>
+															<a href="#" 
+																class="flex items-center justify-center gap-1"
+																data-turbo="flase"			>
+																{{ ux_icon('lucide:heart',{ 'aria-hidden': 'true', class: 'w-5 h-5 hover:text-red-700 transition-colors' }) }}
+																 574
+															</a>
+
+															
+														</div>
 													</div>
-															{# Si quieres mostrar las respuestas (respuestas anidadas) #}
-															{# {% if comment.response is not empty %}
-																<div class="ml-6 mt-2 space-y-2">
-																	{% for response in comment.response %}
-																		<div class="bg-gray-50 p-3 rounded">
-																			<span class="text-sm text-gray-500">
-																				{{ response.user ? response.user.username : 'Anónimo' }}
-																			</span>
-																			<p class="text-gray-700">{{ response.content }}</p>
-																		</div>
-																	{% endfor %}
-																</div>
-															{% endif %} #}
+															
 												{% endif %}
 												{% else %}
 													<p class="text-gray-500">Aucun commentaire n'a encore été publié pour ce supplément..</p>

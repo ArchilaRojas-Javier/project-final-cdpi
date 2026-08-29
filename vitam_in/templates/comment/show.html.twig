@@ -1,34 +1,145 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Comment{% endblock %}
+{% block title %}Comment
+{% endblock %}
 
 {% block body %}
-    <h1>Comment</h1>
+	<section class="container mx-auto flex flex-col items-center p-6 min-h-screen w-screen gap-6 mb-12 ">
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ comment.id }}</td>
-            </tr>
-            <tr>
-                <th>Content</th>
-                <td>{{ comment.content }}</td>
-            </tr>
-            <tr>
-                <th>Is_approuved</th>
-                <td>{{ comment.isApprouved ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>Created_at</th>
-                <td>{{ comment.createdAt ? comment.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+		<twig:UserCard/>
+        
+        <div class="bg-[#F0F8FD] shadow-lg w-full  rounded-lg p-4 border border-gray-200 hover:shadow-xl transition-shadow break-words">
+            <div class="flex items-center gap-2 mb-2">
+				<div>
+                    {% if comment.user.avatarUrl %}
+						<img src="{{ comment.user.avatarUrl }}" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+					{% else %}
+						<div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold text-base">
+							{{ comment.user.email|first|upper }}
+						</div>
+					{% endif %}
+                </div>
+				<div class="flex flex-wrap items-baseline gap-1 text-sm">
+					<span class="font-medium text-gray-800">
+						{# agregar name cuando la entida user tenga name #}
+						{{ comment.user ? comment.user.email : 'Anónimo' }}
+					</span>
+					<span>•</span>
+					<span class="text-gray-400 text-xs">{{ comment.createdAt ? comment.createdAt|date('d/m/Y H:i') : '' }}</span>
+				</div>
+				{# Options réservé aux utilisateurs connectés et créateur du commentaire #}
+				{% if app.user and comment.user == app.user %}
+					<div class="relative md:ml-auto">
+						<details class="relative inline-block">
+							<summary class="list-none cursor-pointer p-1 hover:bg-gray-100 rounded focus:outline-none">
+								{{ ux_icon('lucide:more-horizontal', { 'aria-hidden': 'true', class: 'w-5 h-5' }) }}
+							</summary>
+							<div
+								class="absolute right-0 mt-1 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+								{# <a href="{{ path('app_comment_edit', { id: comment.id }) }}" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+								                        ✏️ Modifier
+								                    </a> #}
+								<form method="post" action="{{ path('app_comment_delete', { id: comment.id }) }}" style="display: inline-block; width: 100%;">
+									<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+									<button type="submit" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600">
+										🗑️ Supprimer
+									</button>
+								</form>
+							</div>
+						</details>
+					</div>
+				{% endif %}
+			</div>
+			<p class="text-gray-800 text-base leading-relaxed break-words">{{ comment.content }}</p>
+			{# Icons #}
+            <div class="flex gap-4 mt-2 pl-4">
 
-    <a href="{{ path('app_comment_index') }}">back to list</a>
+                {# <a href="{{ path('app_comment_show', { id: comment.id }) }}" 
+				        data-turbo="false"
+				        class="flex items-center justify-center gap-1">
+				        {{ ux_icon('lucide:message-square-more',{ 'aria-hidden': 'true', class: 'w-5 h-5 cursor-pointer hover:text-gray-700 rounded focus:outline-none' }) }} 
+				        574
+				    </a> #}
+				<a href="#" class="flex items-center justify-center gap-1" data-turbo="flase">
+					{{ ux_icon('lucide:heart',{ 'aria-hidden': 'true', class: 'w-5 h-5 hover:text-red-700 transition-colors' }) }}
+					574
+				</a>
+            </div>
+		</div>
 
-    <a href="{{ path('app_comment_edit', {'id': comment.id}) }}">edit</a>
+		{% if comment.response is defined and not null %}
+			<div class="mt-6 mb-6 text-[#6E6F6F]">
 
-    {{ include('comment/_delete_form.html.twig') }}
+				{# Conteneur avec scroll sur mobile #}
+				<div class="w-full max-w-4xl flex-1 min-h-0 overflow-y-auto max-h-[40vh] md:max-h-none">
+					<div class="flex flex-col gap-4">
+
+						{% for response in comment.response %}
+							<div class="bg-[#F0F8FD] shadow-lg rounded-lg p-4 border border-gray-200 hover:shadow-xl transition-shadow break-words">
+
+								<div class="flex items-center gap-2 mb-2">
+									<div>
+
+										{% if response.user.avatarUrl %}
+											<img src="{{ response.user.avatarUrl }}" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+										{% else %}
+											<div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold text-base">
+												{{ response.user.email|first|upper }}
+											</div>
+										{% endif %}
+
+									</div>
+									<div class="flex flex-wrap items-baseline gap-1 text-sm">
+										<span
+											class="font-medium text-gray-800">
+											{# agregar name cuando la entida user tenga name #}
+											{{ response.user ? response.user.email : 'Anónimo' }}
+										</span>
+										<span>•</span>
+										<span class="text-gray-400 text-xs">{{ response.createdAt ? comment.createdAt|date('d/m/Y H:i') : '' }}</span>
+									</div>
+									{# Options réservé aux utilisateurs connectés et créateur du response #}
+									{% if app.user and response.user == app.user %}
+										<div class="relative md:ml-auto">
+											<details class="relative inline-block">
+												<summary class="list-none cursor-pointer p-1 hover:bg-gray-100 rounded focus:outline-none">
+													{{ ux_icon('lucide:more-horizontal', { 'aria-hidden': 'true', class: 'w-5 h-5' }) }}
+												</summary>
+												<div
+													class="absolute right-0 mt-1 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+													{# <a href="{{ path('app_comment_edit', { id: comment.id }) }}" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+																																														✏️ Modifier
+																																													</a> #}
+													<form method="post" action="{{ path('app_comment_delete', { id: comment.id }) }}" style="display: inline-block; width: 100%;">
+														<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+														<button type="submit" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600">
+															🗑️ Supprimer
+														</button>
+													</form>
+												</div>
+											</details>
+										</div>
+									{% endif %}
+								</div>
+								<p class="text-gray-800 text-base leading-relaxed break-words">{{ response.content }}</p>
+								<div class="flex gap-4 mt-2 pl-4">
+
+									<a href="{{ path('app_comment_show', { id: comment.id }) }}" data-turbo="false" class="flex items-center justify-center gap-1">
+										{{ ux_icon('lucide:message-square-more',{ 'aria-hidden': 'true', class: 'w-5 h-5 cursor-pointer hover:text-gray-700 rounded focus:outline-none' }) }}
+										574
+									</a>
+									<a href="#" class="flex items-center justify-center gap-1" data-turbo="flase">
+										{{ ux_icon('lucide:heart',{ 'aria-hidden': 'true', class: 'w-5 h-5 hover:text-red-700 transition-colors' }) }}
+										574
+									</a>
+                                </div>
+							</div>
+						{% else %}
+							<p class="text-gray-500">Aucun response n'a encore été publié pour ce supplément..</p>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		{% endif %}
+    </section>
 {% endblock %}

@@ -15,13 +15,13 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/comment')]
 final class CommentController extends AbstractController
 {
-    #[Route(name: 'app_comment_index', methods: ['GET'])]
-    public function index(CommentRepository $commentRepository): Response
-    {
-        return $this->render('comment/index.html.twig', [
-            'comments' => $commentRepository->findAll(),
-        ]);
-    }
+    // #[Route(name: 'app_comment_index', methods: ['GET'])]
+    // public function index(CommentRepository $commentRepository): Response
+    // {
+    //     return $this->render('comment/index.html.twig', [
+    //         'comments' => $commentRepository->findAll(),
+    //     ]);
+    // }
 
     #[Route('/new/comment/{supplementId}', name: 'app_comment_new')]
     public function new(Request $request, int $supplementId, SupplementRepository $supplementRepository,
@@ -38,7 +38,7 @@ final class CommentController extends AbstractController
         $comment->setSupplement($supplement);
         $comment->setUser($this->getUser());
         $comment->setCreatedAt(new \DateTimeImmutable());
-        $comment->setIsApprouved(true); // O false si requieres aprobación
+        $comment->setIsApprouved(true); // por el momento 
 
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
@@ -47,7 +47,6 @@ final class CommentController extends AbstractController
             
             $entityManagerInterface->persist($comment);
             $entityManagerInterface->flush();
-            $this->addFlash('succes',"Commentaire ajouté en attente d'approbatio");
             
             return $this->render('supplement/show.html.twig', [
                 'supplement' => $supplement,
@@ -61,38 +60,38 @@ final class CommentController extends AbstractController
             ]);
         }
 
-        // Si no es un frame (por si accedes directamente desde la URL)
+        // en cas d'accès direct via l'URL
         return $this->render('comment/new.html.twig', [
             'form' => $form->createView(),
             'supplement' => $supplement,
         ]);
     }
 
-    // #[Route('/{id}', name: 'app_comment_show', methods: ['GET'])]
-    // public function show(Comment $comment): Response
-    // {
-    //     return $this->render('comment/show.html.twig', [
-    //         'comment' => $comment,
-    //     ]);
-    // }
-
-    #[Route('/{id}/edit', name: 'app_comment_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Comment $comment, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}', name: 'app_comment_show', methods: ['GET'])]
+    public function show(Comment $comment): Response
     {
-        $form = $this->createForm(CommentType::class, $comment);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_comment_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('comment/edit.html.twig', [
+        return $this->render('comment/show.html.twig', [
             'comment' => $comment,
-            'form' => $form,
         ]);
     }
+
+    // #[Route('/{id}/edit', name: 'app_comment_edit', methods: ['GET', 'POST'])]
+    // public function edit(Request $request, Comment $comment, EntityManagerInterface $entityManager): Response
+    // {
+    //     $form = $this->createForm(CommentType::class, $comment);
+    //     $form->handleRequest($request);
+
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $entityManager->flush();
+
+    //         return $this->redirectToRoute('app_comment_index', [], Response::HTTP_SEE_OTHER);
+    //     }
+
+    //     return $this->render('comment/edit.html.twig', [
+    //         'comment' => $comment,
+    //         'form' => $form,
+    //     ]);
+    // }
 
     #[Route('/{id}', name: 'app_comment_delete', methods: ['POST'])]
     public function delete(Request $request, Comment $comment, EntityManagerInterface $entityManager): Response
