@@ -126,7 +126,18 @@
 												{% if comment.isApprouved %}
 													<div class="bg-[#F0F8FD] shadow-lg rounded-lg p-4 border border-gray-200 hover:shadow-xl transition-shadow break-words">
 															
-														<div class="flex items-center justify-between gap-2 mb-2">
+														<div class="flex items-center gap-2 mb-2">
+															<div>
+
+																{% if comment.user.avatarUrl %}
+																	<img src="{{ comment.user.avatarUrl }}" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+																{% else %}
+																	<div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold text-base">
+																		{{ comment.user.email|first|upper }}
+																	</div>
+																{% endif %}
+
+															</div>
 															<div class="flex flex-wrap items-baseline gap-1 text-sm">
 																<span class="font-medium text-gray-800">
 																	{# agregar name cuando la entida user tenga name #}
@@ -137,7 +148,7 @@
 															</div>
 															{# Options réservé aux utilisateurs connectés et créateur du commentaire #}
 															{% if app.user and comment.user == app.user %}
-																<div class="relative">
+																<div class="relative md:ml-auto">
 																	<details class="relative inline-block">
 																		<summary class="list-none cursor-pointer p-1 hover:bg-gray-100 rounded focus:outline-none">
 																			{{ ux_icon('lucide:more-horizontal', { 'aria-hidden': 'true', class: 'w-5 h-5' }) }}
