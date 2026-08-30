@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Response;
 use App\Form\ResponseType;
 use App\Repository\ResponseRepository;
+use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,23 +23,34 @@ final class ResponseController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_response_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): HttpResponse
+    #[Route('/new/{commentId}', name: 'app_response_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, CommentRepository $commentRepository, int $commentId, EntityManagerInterface $entityManager): HttpResponse
     {
+        
+        $comment = $commentRepository->find($commentId);
+        
         $response = new Response();
+        $response->setUser($this->getUser());
+        $response->setCreatedAt(new \DateTimeImmutable());
+        $response->setComment($comment);
+        
+        
         $form = $this->createForm(ResponseType::class, $response);
         $form->handleRequest($request);
-
+        
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+            
             $entityManager->persist($response);
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_response_index', [], HttpResponse::HTTP_SEE_OTHER);
+            $this->addFlash('succes','Réponse envoyée');
+            return $this->redirectToRoute('app_comment_show', ['id' => $commentId], HttpResponse::HTTP_SEE_OTHER);
         }
 
         return $this->render('response/new.html.twig', [
             'response' => $response,
             'form' => $form,
+            'comment' => $comment
         ]);
     }
 
