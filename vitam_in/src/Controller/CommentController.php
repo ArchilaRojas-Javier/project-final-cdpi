@@ -15,14 +15,6 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/comment')]
 final class CommentController extends AbstractController
 {
-    // #[Route(name: 'app_comment_index', methods: ['GET'])]
-    // public function index(CommentRepository $commentRepository): Response
-    // {
-    //     return $this->render('comment/index.html.twig', [
-    //         'comments' => $commentRepository->findAll(),
-    //     ]);
-    // }
-
     #[Route('/new/comment/{supplementId}', name: 'app_comment_new')]
     public function new(Request $request, int $supplementId, SupplementRepository $supplementRepository,
                         EntityManagerInterface $entityManagerInterface): Response 
