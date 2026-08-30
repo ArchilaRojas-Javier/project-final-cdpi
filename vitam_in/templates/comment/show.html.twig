@@ -67,7 +67,7 @@
             </div>
 		</div>
 
-		{% if comment.response is defined and not null %}
+		{% if comment.response is defined and comment.response is not empty %}
 			{# Conteneur avec scroll sur mobile #}
 			<div class="w-full pl-4 max-w-4xl flex-1 min-h-0 overflow-y-auto max-h-[40vh] md:max-h-none">
 				<div class="flex flex-col gap-4">
@@ -94,7 +94,7 @@
 										{{ response.user ? response.user.email : 'Anónimo' }}
 									</span>
 									<span>•</span>
-									<span class="text-gray-400 text-xs">{{ response.createdAt ? comment.createdAt|date('d/m/Y H:i') : '' }}</span>
+									<span class="text-gray-400 text-xs">{{ response.createdAt ? response.createdAt|date('d/m/Y H:i') : '' }}</span>
 								</div>
 								{# Options réservé aux utilisateurs connectés et créateur du response #}
 								{% if app.user and response.user == app.user %}
@@ -122,22 +122,22 @@
 							<p class="text-gray-800 text-base leading-relaxed break-words">{{ response.content }}</p>
 							<div class="flex gap-4 mt-2 pl-4">
 
-								<a href="{{ path('app_comment_show', { id: comment.id }) }}" data-turbo="false" class="flex items-center justify-center gap-1">
+								{# <a href="{{ path('app_comment_show', { id: comment.id }) }}" data-turbo="false" class="flex items-center justify-center gap-1">
 									{{ ux_icon('lucide:message-square-more',{ 'aria-hidden': 'true', class: 'w-5 h-5 cursor-pointer hover:text-gray-700 rounded focus:outline-none' }) }}
 									574
-								</a>
+								</a> #}
 								<a href="#" class="flex items-center justify-center gap-1" data-turbo="flase">
 									{{ ux_icon('lucide:heart',{ 'aria-hidden': 'true', class: 'w-5 h-5 hover:text-red-700 transition-colors' }) }}
 									574
 								</a>
 							</div>
 						</div>
-					{% else %}
-						<p class="text-gray-500">Aucun response n'a encore été publié pour ce supplément..</p>
 					{% endfor %}
 				</div>
 			</div>
+		{% else %}
+			<p class="text-gray-500">Aucun response n'a encore été publié pour ce supplément..</p>
 		{% endif %}
-		{{ render(controller('App\\Controller\\ResponseController::new',{ commentId: comment.id })) }}
+			{{ render(controller('App\\Controller\\ResponseController::new',{ commentId: comment.id })) }}
     </section>
 {% endblock %}

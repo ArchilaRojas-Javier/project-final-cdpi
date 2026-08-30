@@ -10,9 +10,7 @@
 	<div class="container mx-auto p-6 mb-12 ">
 		<turbo-frame id="supplement-detail">
 
-			<button type="button" onclick="if (history.length > 1) { history.back(); } else { window.location.href = '{{ path('app_home') }}'; }" 
-					data-turbo="false" 
-					class="inline-flex items-center text-[#308AFF] hover:underline mb-6">
+			<button type="button" onclick="if (history.length > 1) { history.back(); } else { window.location.href = '{{ path('app_home') }}'; }" data-turbo="false" class="inline-flex items-center text-[#308AFF] hover:underline mb-6">
 				← Retour
 			</button>
 			<article class="bg-white rounded-2xl shadow-lg overflow-hidden max-w-3xl mx-auto">
@@ -123,7 +121,7 @@
 												{# Nous ne montrons que ceux qui sont approuvés. #}
 												{% if comment.isApprouved %}
 													<div class="bg-[#F0F8FD] shadow-lg rounded-lg p-4 border border-gray-200 hover:shadow-xl transition-shadow break-words">
-															
+
 														<div class="flex items-center gap-2 mb-2">
 															<div>
 
@@ -137,7 +135,8 @@
 
 															</div>
 															<div class="flex flex-wrap items-baseline gap-1 text-sm">
-																<span class="font-medium text-gray-800">
+																<span
+																	class="font-medium text-gray-800">
 																	{# agregar name cuando la entida user tenga name #}
 																	{{ comment.user ? comment.user.email : 'Anónimo' }}
 																</span>
@@ -151,10 +150,11 @@
 																		<summary class="list-none cursor-pointer p-1 hover:bg-gray-100 rounded focus:outline-none">
 																			{{ ux_icon('lucide:more-horizontal', { 'aria-hidden': 'true', class: 'w-5 h-5' }) }}
 																		</summary>
-																		<div class="absolute right-0 mt-1 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+																		<div
+																			class="absolute right-0 mt-1 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-10">
 																			{# <a href="{{ path('app_comment_edit', { id: comment.id }) }}" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
-																				✏️ Modifier
-																			</a> #}
+																																							✏️ Modifier
+																																						</a> #}
 																			<form method="post" action="{{ path('app_comment_delete', { id: comment.id }) }}" style="display: inline-block; width: 100%;">
 																				<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
 																				<button type="submit" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600">
@@ -168,27 +168,20 @@
 														</div>
 														<p class="text-gray-800 text-base leading-relaxed break-words">{{ comment.content }}</p>
 														<div class="flex gap-4 mt-2 pl-4">
-															
-															<a href="{{ path('app_comment_show', { id: comment.id }) }}" 
-																data-turbo="false"
-																class="flex items-center justify-center gap-1">
-																{{ ux_icon('lucide:message-square-more',{ 'aria-hidden': 'true', class: 'w-5 h-5 cursor-pointer hover:text-gray-700 rounded focus:outline-none' }) }} 
+															<a href="{{ path('app_comment_show', { id: comment.id }) }}" data-turbo="false" class="flex items-center justify-center gap-1">
+																{{ ux_icon('lucide:message-square-more',{ 'aria-hidden': 'true', class: 'w-5 h-5 cursor-pointer hover:text-gray-700 rounded focus:outline-none' }) }}
 																574
 															</a>
-															<a href="#" 
-																class="flex items-center justify-center gap-1"
-																data-turbo="flase"			>
+															<a href="#" class="flex items-center justify-center gap-1" data-turbo="flase">
 																{{ ux_icon('lucide:heart',{ 'aria-hidden': 'true', class: 'w-5 h-5 hover:text-red-700 transition-colors' }) }}
-																 574
+																574
 															</a>
-
-															
 														</div>
 													</div>
-															
+
 												{% endif %}
-												{% else %}
-													<p class="text-gray-500">Aucun commentaire n'a encore été publié pour ce supplément..</p>
+											{% else %}
+												<p class="text-gray-500">Aucun commentaire n'a encore été publié pour ce supplément..</p>
 											{% endfor %}
 										</div>
 									</div>
@@ -201,7 +194,6 @@
 										Partager mon expérience
 									</a>
 								</div>
-
 							{% else %}
 								<div class="flex items-center justify-center">
 									{% if not app.user %}
@@ -211,8 +203,6 @@
 									{% endif %}
 								</div>
 							{% endif %}
-
-
 						</div>
 					</article>
 				</turbo-frame>

@@ -1,15 +1,42 @@
-{{ form_start(form, { attr: { 'data-turbo-frame': 'supplement-detail' } }) }}
-{{ form_widget(form) }}
-<div class="flex gap-4 mt-4">
-	<button type="submit" class="btn bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
-		Publier
-	</button>
 
-	<button type="button" 
-            onclick= "if (history.length < 1) { history.back(); } else { window.location.href = '{{ path('app_home') }}'; } "
-            data-turbo="false" 
-            class="btn bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400">
-		Annuler
-	</button>
+<div class="bg-[#F0F8FD] shadow-lg w-full rounded-lg p-4 border border-gray-200 hover:shadow-xl transition-shadow break-words">
+    <div class="flex items-center gap-2 mb-3">
+        <div>
+            {% if app.user and app.user.avatarUrl %}
+                <img src="{{ app.user.avatarUrl }}" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+            {% else %}
+                <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold text-base">
+                    {{ app.user ? app.user.email|first|upper : '?' }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="flex flex-wrap items-baseline gap-1 text-sm">
+            <span class="font-medium text-gray-800">
+                {{ app.user ? app.user.email : 'Anónimo' }}
+            </span>
+            <span>•</span>
+            <span class="text-gray-400 text-xs">{{ 'now'|date('d/m/Y H:i') }}</span>
+        </div>
+    </div>
+    
+    {{ form_start(form, {action: path('app_comment_new', { supplementId: supplement.id })})}}
+	{# {{ form_start(form, { attr: { 'data-turbo-frame': 'supplement-detail' } }) }} #}
+        <div class="mb-3">
+            {{ form_label(form) }}
+            {{ form_widget(form) }}
+            {{ form_errors(form) }}
+        </div>
+
+        <div class="flex justify-end gap-2 mt-2">
+            <button type="button" onclick="if (history.length > 1) { history.back(); } else { window.location.href = '{{ path('app_home') }}'; }" 
+					data-turbo="false" 
+					class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 transition-colors">
+				← Retour
+			</button>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">
+                {{ button_label|default('Ajouter') }}
+            </button>
+        </div>
+    {{ form_end(form) }}
 </div>
-{{ form_end(form) }}
+

@@ -17,12 +17,8 @@
             <span class="text-gray-400 text-xs">{{ 'now'|date('d/m/Y H:i') }}</span>
         </div>
     </div>
-    {# , { attr: { 'data-turbo': 'false' } } #}
-    {{ form_start(form, {
-                        action: path('app_response_new', { commentId: comment.id })
-                    }
-                )
-        }}
+    
+    {{ form_start(form, {action: path('app_response_new', { commentId: comment.id })})}}
         <div class="mb-3">
             {{ form_label(form.content) }}
             {{ form_widget(form.content) }}

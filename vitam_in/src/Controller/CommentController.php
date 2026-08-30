@@ -23,19 +23,19 @@ final class CommentController extends AbstractController
         if (!$supplement) {
             throw $this->createNotFoundException('Supplément introuvable');
         }
-        // Verify that the user is logged in.
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
+        
         $comment = new Comment();
         $comment->setSupplement($supplement);
         $comment->setUser($this->getUser());
         $comment->setCreatedAt(new \DateTimeImmutable());
         $comment->setIsApprouved(true); // por el momento 
-
+        
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
+            // Verify that the user is logged in.
+            $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
             
             $entityManagerInterface->persist($comment);
             $entityManagerInterface->flush();
