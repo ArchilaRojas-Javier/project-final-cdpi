@@ -148,9 +148,6 @@ class GoogleCalendarService
         }
     }
 
-   
-
-
     /**
      * Met à jour un événement Google Calendar existant pour un userSupplement donné.
      * 
