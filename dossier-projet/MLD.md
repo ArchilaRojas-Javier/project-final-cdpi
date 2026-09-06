@@ -1,6 +1,6 @@
 # Vitam-in
 
-## MLD
+## MLD (Modèle Logique de Données )
 
 ```mermaid
 erDiagram
