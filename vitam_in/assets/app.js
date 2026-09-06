@@ -1,4 +1,6 @@
 import './stimulus_bootstrap.js';
+import '@hotwired/turbo'; 
+import '@symfony/ux-live-component';
 /*
  * Welcome to your app's main JavaScript file!
  *

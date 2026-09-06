@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!
+{% endblock %}
+
+{% block body %}
+	<section class="flex flex-col items-center justify-center min-h-screen w-full gap-10 ">
+		{% for flash_error in app.flashes('verify_email_error') %}
+			<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+		{% endfor %}
+
+		<h1 class="text-[#308AFF] text-[4rem]">Vitam-In</h1>
+		<h2 class="text-black text-[2rem]">Se connecter</h2>
+
+
+		<div class="container-form p-6 border rounded-[0.5rem] border-[#D9D9D9] shadow-md">
+			<form method="post">
+				{% if error %}
+					<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+				{% endif %}
+
+                    <div class="flex flex-col mb-6">
+					    <label for="username">Email</label>
+					    <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control border rounded-[0.5rem] p-1" autocomplete="email" required autofocus>
+				    </div>
+                    <div class="flex flex-col mb-6">
+                        <label for="password">Mot de passe</label>
+                        <input type="password" name="_password" id="password" class="form-control border rounded-[0.5rem] p-1" autocomplete="current-password" required>
+                    </div>
+				   
+				    <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+
+
+				    <button class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-full p-2 mb-6" type="submit">
+					    Se connecter
+				    </button>
+					<button class="btn bg-[#2C2C2C] text-white border rounded-[0.5rem] w-full p-2" type="submit">
+					
+					    <a href="{{ path('connect_google_start') }}" class="text-white flex items-center justify-center gap-2">Se connecter avec Google{{ ux_icon('fa6-brands:google') }}</a>
+				    </button>
+					<div class="flex flex-col mt-6">
+						<a href="{{ path('app_register') }}" class="text-[#308AFF] text-center">Pas encore de compte ? Inscrivez-vous</a>
+					</div>
+					<div class="flex flex-col mt-6">
+						<a href="{{ path('app_forgot_password_request') }}" class="text-[#308AFF] text-center">Mot de passe oublié ?</a>
+					</div>
+			</form>
+
+
+		</div>
+	</section>
+
+{% endblock %}

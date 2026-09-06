@@ -1,0 +1,45 @@
+# Dockerfile
+FROM php:8.4-fpm-alpine
+
+# Instala todas las dependencias del sistema (igual que antes)
+RUN apk add --no-cache \
+    git \
+    unzip \
+    libzip-dev \
+    icu-dev \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
+    oniguruma-dev \
+    libxml2-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
+    pdo_mysql \
+    mbstring \
+    intl \
+    zip \
+    gd \
+    opcache \
+    && rm -rf /var/cache/apk/*
+
+# Instala Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/symfony
+
+# Copia todo el proyecto
+COPY . .
+
+# Aumenta memoria para Composer
+ENV COMPOSER_MEMORY_LIMIT=-1
+
+# Actualiza las dependencias para que se ajusten a PHP 8.4 (regenera lock file)
+RUN composer update --no-interaction --optimize-autoloader
+
+# Luego instala (ya debería ser compatible)
+RUN composer install --no-interaction --optimize-autoloader
+
+# Permisos
+RUN chown -R www-data:www-data /var/www/symfony/var /var/www/symfony/public
+
+USER www-data

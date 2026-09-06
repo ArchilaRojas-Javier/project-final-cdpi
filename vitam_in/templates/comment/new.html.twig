@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau commentaire{% endblock %}
+
+{% block body %}
+    
+
+    <section class="flex flex-col items-center p-6 min-h-screen w-screen gap-6 mb-12 ">
+   	
+        <twig:UserCard/>
+        
+        <h2 class="text-2xl text-center font-bold mb-4">{{ supplement.name }}</h2>
+
+        {{ include('comment/_form.html.twig') }}
+
+        
+    </section>
+{% endblock %}
